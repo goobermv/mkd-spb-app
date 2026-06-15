@@ -26,7 +26,6 @@ const (
 type NewsBlock struct {
 	ID                uuid.UUID
 	AuthorID          uuid.UUID
-	AuthorFullName    string
 	Title             string
 	Description       string
 	NewsBlockCategory string

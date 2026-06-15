@@ -15,7 +15,6 @@ const (
 type Notification struct {
 	ID               uuid.UUID
 	UserID           uuid.UUID
-	UserEmail        string
 	NotificationText string
 	NotificationType string
 	WasReadStatus    bool

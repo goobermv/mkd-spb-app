@@ -26,7 +26,6 @@ const (
 type Event struct {
 	ID               uuid.UUID
 	AuthorID         uuid.UUID
-	AuthorFullName   string
 	EventName        string
 	EventDescription string
 	EventStatus      string
