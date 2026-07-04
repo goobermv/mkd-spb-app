@@ -9,7 +9,7 @@ import (
 type Application struct {
 	ID                        uuid.UUID
 	UserID                    uuid.UUID
-	UserMotivationDescription string // Где будут писать зачем хотят участвовать, что хотят делать и какие навыки/опыт имеется
+	UserMotivationDescription string
 	CreatedAt                 time.Time
 	UpdatedAt                 time.Time
 }

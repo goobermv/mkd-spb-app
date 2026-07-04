@@ -29,7 +29,7 @@ type NewsBlock struct {
 	Title             string
 	Description       string
 	NewsBlockCategory string
-	PublicationDate   time.Time
+	PublicationDate   time.Time // надо подумать нужно ли это поле если есть CreatedAt
 	PublicationStatus string
 	NewsBlockPicture  string
 	CreatedAt         time.Time

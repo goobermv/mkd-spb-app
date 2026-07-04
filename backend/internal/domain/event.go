@@ -27,8 +27,8 @@ type Event struct {
 	ID               uuid.UUID
 	AuthorID         uuid.UUID
 	EventName        string
-	EventDescription string
-	EventStatus      string
+	Description      string
+	Status           string
 	EventCategory    string
 	EventDateAndTime time.Time
 	EventPicture     string
