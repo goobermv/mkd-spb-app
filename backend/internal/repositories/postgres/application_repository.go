@@ -55,7 +55,7 @@ func (r *ApplicationRepository) FindByDate(ctx context.Context, start time.Time)
 	query := `
 		SELECT id, user_id, user_motivation_description, created_at, updated_at
 		FROM applications
-		WHERE created_at >= $1 and created_at < $1
+		WHERE DATE(created_at) = DATE($1)
 	`
 	rows, err := r.db.Query(ctx, query, start)
 	if err != nil {

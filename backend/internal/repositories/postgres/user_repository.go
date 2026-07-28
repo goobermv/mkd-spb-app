@@ -25,7 +25,7 @@ func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
 	`
 
 	_, err := r.db.Exec(ctx, query, user.ID, user.Email, user.PasswordHash, user.FullName, user.BirthDate,
-		user.Country, user.JobField, user.UserDescription, user.VKLink, user.CreatedAt, user.UpdatedAt)
+		user.Country, user.JobField, user.UserDescription, user.VKLink, user.UserRole, user.CreatedAt, user.UpdatedAt)
 	return err
 }
 

@@ -132,7 +132,7 @@ func (r *EventRegistrationRepository) Update(ctx context.Context, registration *
 }
 
 func (r *EventRegistrationRepository) Delete(ctx context.Context, id uuid.UUID) error {
-	query := `DELETE FROM event_registations WHERE id = $1`
+	query := `DELETE FROM event_registrations WHERE id = $1`
 	commandTag, err := r.db.Exec(ctx, query, id)
 
 	if err != nil {

@@ -76,7 +76,7 @@ func (r *EventRepository) FindByDate(ctx context.Context, start time.Time) ([]*d
 	query := `
 		SELECT id, author_id, event_name, COALESCE(description, ''), status, event_category, event_date_and_time, event_picture, created_at, updated_at
 		FROM events
-		WHERE event_date_and_time >= $1	and event_date_and_time < $1
+		WHERE DATE(event_date_and_time) = DATE($1)
 	`
 	rows, err := r.db.Query(ctx, query, start)
 	if err != nil {
