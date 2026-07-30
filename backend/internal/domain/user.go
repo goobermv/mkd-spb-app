@@ -26,5 +26,3 @@ type User struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 }
-
-// user profile picture will probably go in the infrastructure layer

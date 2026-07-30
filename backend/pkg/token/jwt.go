@@ -5,11 +5,12 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 type CustomClaims struct {
-	UserID int    `json:"user_id"`
-	Role   string `json:"user_role"`
+	UserID uuid.UUID `json:"user_id"`
+	Role   string    `json:"user_role"`
 	jwt.RegisteredClaims
 }
 
@@ -25,7 +26,7 @@ func NewJWTManager(secretKey string, ttl time.Duration) *JWTManager {
 	}
 }
 
-func (m *JWTManager) Generate(userID int, role string) (string, error) {
+func (m *JWTManager) Generate(userID uuid.UUID, role string) (string, error) {
 	claims := CustomClaims{
 		UserID: userID,
 		Role:   role,
@@ -35,7 +36,7 @@ func (m *JWTManager) Generate(userID int, role string) (string, error) {
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(m.secretKey))
 }
 
