@@ -50,12 +50,12 @@ func (a *applicationUsecase) CreateApplication(ctx context.Context, input dtos.A
 }
 
 func (a *applicationUsecase) GetApplications(ctx context.Context, id uuid.UUID) ([]*domain.Application, error) {
-	application, err := a.applicationRepo.FindByUserID(ctx, id)
+	applications, err := a.applicationRepo.FindByUserID(ctx, id)
 	if err != nil {
 		return nil, ErrApplicationNotFound
 	}
 
-	return application, nil
+	return applications, nil
 }
 
 func (a *applicationUsecase) UpdateApplication(ctx context.Context, id uuid.UUID, input dtos.UpdateApplicationRequest) (*domain.Application, error) {
@@ -66,6 +66,10 @@ func (a *applicationUsecase) UpdateApplication(ctx context.Context, id uuid.UUID
 
 	if input.UserMotivationDescription != nil {
 		application.UserMotivationDescription = *input.UserMotivationDescription
+	}
+
+	if input.Status != nil {
+		application.Status = *input.Status
 	}
 
 	application.UpdatedAt = time.Now()

@@ -11,7 +11,7 @@ type ApplicationCreationInput struct {
 	UserMotivationDescription string    `json:"user_motivation_description"`
 }
 
-type ApplicationResponce struct {
+type ApplicationResponse struct {
 	ID                        uuid.UUID `json:"id"`
 	UserID                    uuid.UUID `json:"user_id"`
 	UserMotivationDescription string    `json:"user_motivation_description"`
@@ -22,4 +22,5 @@ type ApplicationResponce struct {
 
 type UpdateApplicationRequest struct {
 	UserMotivationDescription *string `json:"user_motivation_description"`
+	Status                    *string `json:"status"`
 }
