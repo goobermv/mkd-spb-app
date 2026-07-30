@@ -21,24 +21,24 @@ func NewApplicationRepository(db *pgxpool.Pool) *ApplicationRepository {
 
 func (r *ApplicationRepository) Create(ctx context.Context, application *domain.Application) error {
 	query := `
-		INSERT INTO applications (id, user_id, user_motivation_description, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO applications (id, user_id, user_motivation_description, status, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6)
 	`
 
-	_, err := r.db.Exec(ctx, query, application.ID, application.UserID, application.UserMotivationDescription,
+	_, err := r.db.Exec(ctx, query, application.ID, application.UserID, application.UserMotivationDescription, application.Status,
 		application.CreatedAt, application.UpdatedAt)
 	return err
 }
 
 func (r *ApplicationRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain.Application, error) {
 	query := `
-		SELECT id, user_id, user_motivation_description, created_at, updated_at
+		SELECT id, user_id, user_motivation_description, status, created_at, updated_at
 		FROM applications
 		WHERE id = $1
 	`
 	application := &domain.Application{}
 	err := r.db.QueryRow(ctx, query, id).Scan(
-		&application.ID, &application.UserID, &application.UserMotivationDescription,
+		&application.ID, &application.UserID, &application.UserMotivationDescription, &application.Status,
 		&application.CreatedAt, &application.UpdatedAt,
 	)
 
@@ -53,7 +53,7 @@ func (r *ApplicationRepository) FindByID(ctx context.Context, id uuid.UUID) (*do
 
 func (r *ApplicationRepository) FindByDate(ctx context.Context, start time.Time) ([]*domain.Application, error) {
 	query := `
-		SELECT id, user_id, user_motivation_description, created_at, updated_at
+		SELECT id, user_id, user_motivation_description, status, created_at, updated_at
 		FROM applications
 		WHERE DATE(created_at) = DATE($1)
 	`
@@ -67,7 +67,7 @@ func (r *ApplicationRepository) FindByDate(ctx context.Context, start time.Time)
 	for rows.Next() {
 		application := &domain.Application{}
 		err := rows.Scan(
-			&application.ID, &application.UserID, &application.UserMotivationDescription,
+			&application.ID, &application.UserID, &application.UserMotivationDescription, &application.Status,
 			&application.CreatedAt, &application.UpdatedAt,
 		)
 		if err != nil {
@@ -85,7 +85,7 @@ func (r *ApplicationRepository) FindByDate(ctx context.Context, start time.Time)
 
 func (r *ApplicationRepository) FindByUserID(ctx context.Context, id uuid.UUID) ([]*domain.Application, error) {
 	query := `
-		SELECT id, user_id, user_motivation_description, created_at, updated_at
+		SELECT id, user_id, user_motivation_description, status, created_at, updated_at
 		FROM applications
 		WHERE user_id = $1
 	`
@@ -99,7 +99,7 @@ func (r *ApplicationRepository) FindByUserID(ctx context.Context, id uuid.UUID) 
 	for rows.Next() {
 		application := &domain.Application{}
 		err := rows.Scan(
-			&application.ID, &application.UserID, &application.UserMotivationDescription,
+			&application.ID, &application.UserID, &application.UserMotivationDescription, &application.Status,
 			&application.CreatedAt, &application.UpdatedAt,
 		)
 		if err != nil {
@@ -118,10 +118,10 @@ func (r *ApplicationRepository) FindByUserID(ctx context.Context, id uuid.UUID) 
 func (r *ApplicationRepository) Update(ctx context.Context, application *domain.Application) error {
 	query := `
 		UPDATE applications
-		SET user_motivation_description = $1, updated_at = CURRENT_TIMESTAMP
-		WHERE id = $2
+		SET user_motivation_description = $1, status = $2, updated_at = CURRENT_TIMESTAMP
+		WHERE id = $3
 	`
-	commandTag, err := r.db.Exec(ctx, query, application.UserMotivationDescription, application.ID)
+	commandTag, err := r.db.Exec(ctx, query, application.UserMotivationDescription, application.Status, application.ID)
 
 	if err != nil {
 		return err
@@ -147,7 +147,7 @@ func (r *ApplicationRepository) Delete(ctx context.Context, id uuid.UUID) error 
 
 func (r *ApplicationRepository) FindAll(ctx context.Context) ([]*domain.Application, error) {
 	query := `
-		SELECT id, user_id, user_motivation_description, created_at, updated_at
+		SELECT id, user_id, user_motivation_description, status, created_at, updated_at
 		FROM applications
 	`
 	rows, err := r.db.Query(ctx, query)
@@ -160,7 +160,7 @@ func (r *ApplicationRepository) FindAll(ctx context.Context) ([]*domain.Applicat
 	for rows.Next() {
 		application := &domain.Application{}
 		err := rows.Scan(
-			&application.ID, &application.UserID, &application.UserMotivationDescription,
+			&application.ID, &application.UserID, &application.UserMotivationDescription, &application.Status,
 			&application.CreatedAt, &application.UpdatedAt,
 		)
 		if err != nil {

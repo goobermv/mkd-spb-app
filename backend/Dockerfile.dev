@@ -1,11 +1,8 @@
-# Might need to run a few commands for the docker files to work. Check Gemini notebook for information on this.
-# Also will need to setup postgres and redis later
-
-FROM golang:1.22-alpine
+FROM golang:1.26-alpine
 
 WORKDIR /app
 
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 
 COPY go.mod go.sum ./
 
