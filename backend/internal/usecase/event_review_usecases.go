@@ -17,7 +17,7 @@ var (
 
 type EventReviewUsecase interface {
 	CreateEventReview(ctx context.Context, input dtos.CreateEventReviewInput) (*domain.EventReview, error)
-	GetEventReviews(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error)
+	GetEventReview(ctx context.Context, id uuid.UUID) (*domain.EventReview, error)
 	UpdateEventReview(ctx context.Context, id uuid.UUID, input dtos.UpdateEventReviewRequest) (*domain.EventReview, error)
 	DeleteEventReview(ctx context.Context, id uuid.UUID) error
 }
@@ -49,13 +49,13 @@ func (e *eventReviewUsecase) CreateEventReview(ctx context.Context, input dtos.C
 	return eventReview, nil
 }
 
-func (e *eventReviewUsecase) GetEventReviews(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error) {
-	eventReviews, err := e.eventReviewRepo.FindByEventID(ctx, id)
+func (e *eventReviewUsecase) GetEventReview(ctx context.Context, id uuid.UUID) (*domain.EventReview, error) {
+	eventReview, err := e.eventReviewRepo.FindByID(ctx, id)
 	if err != nil {
 		return nil, ErrEventReviewNotFound
 	}
 
-	return eventReviews, nil
+	return eventReview, nil
 }
 
 func (e *eventReviewUsecase) UpdateEventReview(ctx context.Context, id uuid.UUID, input dtos.UpdateEventReviewRequest) (*domain.EventReview, error) {

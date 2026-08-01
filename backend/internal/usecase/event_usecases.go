@@ -18,10 +18,9 @@ var (
 
 type EventUsecase interface {
 	CreateEvent(ctx context.Context, input dtos.EventCreationInput) (*domain.Event, error)
-	GetEventByID(ctx context.Context, id uuid.UUID) (*domain.Event, error)
+	GetEvent(ctx context.Context, id uuid.UUID) (*domain.Event, error)
 	GetEventByName(ctx context.Context, name string) (*domain.Event, error)
 	GetEventsByDate(ctx context.Context, date time.Time) ([]*domain.Event, error)
-	GetEventsByAuthor(ctx context.Context, id uuid.UUID) ([]*domain.Event, error)
 	UpdateEvent(ctx context.Context, id uuid.UUID, input dtos.UpdateEventRequest) (*domain.Event, error)
 	DeleteEvent(ctx context.Context, id uuid.UUID) error
 	GetAllEvents(ctx context.Context) ([]*domain.Event, error)
@@ -58,7 +57,7 @@ func (e *eventUsecase) CreateEvent(ctx context.Context, input dtos.EventCreation
 	return event, nil
 }
 
-func (e *eventUsecase) GetEventByID(ctx context.Context, id uuid.UUID) (*domain.Event, error) {
+func (e *eventUsecase) GetEvent(ctx context.Context, id uuid.UUID) (*domain.Event, error) {
 	event, err := e.eventRepo.FindByID(ctx, id)
 	if err != nil {
 		return nil, ErrEventNotFound
@@ -78,15 +77,6 @@ func (e *eventUsecase) GetEventByName(ctx context.Context, name string) (*domain
 
 func (e *eventUsecase) GetEventsByDate(ctx context.Context, date time.Time) ([]*domain.Event, error) {
 	events, err := e.eventRepo.FindByDate(ctx, date)
-	if err != nil {
-		return nil, ErrEventsNotFound
-	}
-
-	return events, nil
-}
-
-func (e *eventUsecase) GetEventsByAuthor(ctx context.Context, id uuid.UUID) ([]*domain.Event, error) {
-	events, err := e.eventRepo.FindByAuthorID(ctx, id)
 	if err != nil {
 		return nil, ErrEventsNotFound
 	}

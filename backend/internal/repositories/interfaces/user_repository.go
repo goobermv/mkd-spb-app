@@ -10,9 +10,9 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) error
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
-	FindByFullName(ctx context.Context, fullname string) (*domain.User, error)
-	FindByEmail(ctx context.Context, email string) (*domain.User, error)
+	FindByFullName(ctx context.Context, fullname string) (*domain.User, error) //admin
+	FindByEmail(ctx context.Context, email string) (*domain.User, error)       //admin
 	Update(ctx context.Context, user *domain.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
-	FindAll(ctx context.Context) ([]*domain.User, error)
+	FindAll(ctx context.Context) ([]*domain.User, error) //admin
 }

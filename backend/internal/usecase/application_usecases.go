@@ -12,12 +12,14 @@ import (
 )
 
 var (
-	ErrApplicationNotFound = errors.New("заявка не найдена")
+	ErrApplicationNotFound  = errors.New("заявка не найдена")
+	ErrApplicationsNotFound = errors.New("заявки не найдены")
 )
 
 type ApplicationUsecase interface {
 	CreateApplication(ctx context.Context, input dtos.ApplicationCreationInput) (*domain.Application, error)
-	GetApplications(ctx context.Context, id uuid.UUID) ([]*domain.Application, error)
+	GetApplication(ctx context.Context, id uuid.UUID) (*domain.Application, error)
+	GetApplicationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.Application, error)
 	UpdateApplication(ctx context.Context, id uuid.UUID, input dtos.UpdateApplicationRequest) (*domain.Application, error)
 	DeleteApplication(ctx context.Context, id uuid.UUID) error
 }
@@ -49,7 +51,16 @@ func (a *applicationUsecase) CreateApplication(ctx context.Context, input dtos.A
 	return application, nil
 }
 
-func (a *applicationUsecase) GetApplications(ctx context.Context, id uuid.UUID) ([]*domain.Application, error) {
+func (a *applicationUsecase) GetApplication(ctx context.Context, id uuid.UUID) (*domain.Application, error) {
+	application, err := a.applicationRepo.FindByID(ctx, id)
+	if err != nil {
+		return nil, ErrApplicationNotFound
+	}
+
+	return application, nil
+}
+
+func (a *applicationUsecase) GetApplicationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.Application, error) {
 	applications, err := a.applicationRepo.FindByUserID(ctx, id)
 	if err != nil {
 		return nil, ErrApplicationNotFound

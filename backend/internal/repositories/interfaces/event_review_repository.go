@@ -10,7 +10,7 @@ import (
 type EventReviewRepository interface {
 	Create(ctx context.Context, review *domain.EventReview) error
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.EventReview, error)
-	FindByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error)
+	FindByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error) // admin + activist
 	Update(ctx context.Context, review *domain.EventReview) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }

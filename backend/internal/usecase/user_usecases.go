@@ -30,10 +30,10 @@ type TokenManager interface {
 type UserUsecase interface {
 	Register(ctx context.Context, input dtos.RegisterInput) (*domain.User, error)
 	Login(ctx context.Context, input dtos.LoginInput) (string, *domain.User, error)
-	GetProfile(ctx context.Context, id uuid.UUID) (*domain.User, error)
-	UpdateProfile(ctx context.Context, id uuid.UUID, input dtos.UpdateUserInfoRequest) (*domain.User, error)
+	GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	UpdateUser(ctx context.Context, id uuid.UUID, input dtos.UpdateUserInfoRequest) (*domain.User, error)
 	UpdatePassword(ctx context.Context, id uuid.UUID, input dtos.UpdateUserPasswordRequest) error
-	DeleteProfile(ctx context.Context, id uuid.UUID) error
+	DeleteUser(ctx context.Context, id uuid.UUID) error
 }
 
 type userUsecase struct {
@@ -103,7 +103,7 @@ func (u *userUsecase) Login(ctx context.Context, input dtos.LoginInput) (string,
 	return token, user, nil
 }
 
-func (u *userUsecase) GetProfile(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+func (u *userUsecase) GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error) {
 	user, err := u.userRepo.FindByID(ctx, id)
 	if err != nil {
 		return nil, ErrUserNotFound
@@ -113,7 +113,7 @@ func (u *userUsecase) GetProfile(ctx context.Context, id uuid.UUID) (*domain.Use
 	return user, nil
 }
 
-func (u *userUsecase) UpdateProfile(ctx context.Context, id uuid.UUID, input dtos.UpdateUserInfoRequest) (*domain.User, error) {
+func (u *userUsecase) UpdateUser(ctx context.Context, id uuid.UUID, input dtos.UpdateUserInfoRequest) (*domain.User, error) {
 	user, err := u.userRepo.FindByID(ctx, id)
 	if err != nil {
 		return nil, ErrUserNotFound
@@ -172,7 +172,7 @@ func (u *userUsecase) UpdatePassword(ctx context.Context, id uuid.UUID, input dt
 	return u.userRepo.Update(ctx, user)
 }
 
-func (u *userUsecase) DeleteProfile(ctx context.Context, id uuid.UUID) error {
+func (u *userUsecase) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	_, err := u.userRepo.FindByID(ctx, id)
 	if err != nil {
 		return ErrUserNotFound

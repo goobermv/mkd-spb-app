@@ -13,7 +13,7 @@ type EventRepository interface {
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.Event, error)
 	FindByName(ctx context.Context, name string) (*domain.Event, error)
 	FindByDate(ctx context.Context, start time.Time) ([]*domain.Event, error)
-	FindByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.Event, error)
+	FindByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.Event, error) // admin + activist
 	Update(ctx context.Context, event *domain.Event) error
 	Delete(ctx context.Context, id uuid.UUID) error
 	FindAll(ctx context.Context) ([]*domain.Event, error)

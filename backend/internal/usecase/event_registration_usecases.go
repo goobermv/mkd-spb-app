@@ -12,12 +12,14 @@ import (
 )
 
 var (
-	ErrEventRegistrationNotFound = errors.New("регистрация не найдена")
+	ErrEventRegistrationNotFound  = errors.New("регистрация не найдена")
+	ErrEventRegistrationsNotFound = errors.New("регистрации не найдены")
 )
 
 type EventRegistrationUsecase interface {
 	CreateEventRegistration(ctx context.Context, input dtos.CreateRegistrationRequest) (*domain.EventRegistration, error)
-	GetEventRegistrations(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error)
+	GetEventRegistration(ctx context.Context, id uuid.UUID) (*domain.EventRegistration, error)
+	GetEventRegistrationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error)
 	UpdateEventRegistration(ctx context.Context, id uuid.UUID, input dtos.UpdateRegistrationRequest) (*domain.EventRegistration, error)
 	DeleteEventRegistration(ctx context.Context, id uuid.UUID) error
 }
@@ -48,10 +50,19 @@ func (e *eventRegistrationUsecase) CreateEventRegistration(ctx context.Context, 
 	return eventRegistration, nil
 }
 
-func (e *eventRegistrationUsecase) GetEventRegistrations(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error) {
-	eventRegistrations, err := e.eventRegistrationRepo.FindByUserID(ctx, id)
+func (e *eventRegistrationUsecase) GetEventRegistration(ctx context.Context, id uuid.UUID) (*domain.EventRegistration, error) {
+	eventRegistration, err := e.eventRegistrationRepo.FindByID(ctx, id)
 	if err != nil {
 		return nil, ErrEventRegistrationNotFound
+	}
+
+	return eventRegistration, nil
+}
+
+func (e *eventRegistrationUsecase) GetEventRegistrationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error) {
+	eventRegistrations, err := e.eventRegistrationRepo.FindByUserID(ctx, id)
+	if err != nil {
+		return nil, ErrEventRegistrationsNotFound
 	}
 
 	return eventRegistrations, nil
