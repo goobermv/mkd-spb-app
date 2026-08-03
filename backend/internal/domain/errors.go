@@ -36,4 +36,12 @@ var (
 	ErrFailedToDeleteEventReview = errors.New("failed to delete event review")
 
 	ErrNoPermissionUpdateEventReview = errors.New("you do not have the permissions to update this review")
+
+	ErrEventNotFound       = errors.New("event not found")
+	ErrEventsNotFound      = errors.New("events not founds")
+	ErrFailedToCreateEvent = errors.New("failed to create event")
+	ErrFailedToUpdateEvent = errors.New("failed to update event")
+	ErrFailedToDeleteEvent = errors.New("failed to delete event")
+
+	ErrNoPermissionUpdateEvent = errors.New("you do not have the permissions to update this event")
 )

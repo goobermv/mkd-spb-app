@@ -43,7 +43,7 @@ func (e *eventRegistrationUsecase) CreateEventRegistration(ctx context.Context, 
 	}
 
 	if err := e.eventRegistrationRepo.Create(ctx, eventRegistration); err != nil {
-		e.logger.Errorf(err, "Failed for create registration from user: %s, for event: %s", input.UserID, input.EventID)
+		e.logger.Errorf(err, "Failed to create registration in database from user: %s, for event: %s", input.UserID, input.EventID)
 		return nil, domain.ErrFailedToCreateEventRegistration
 	}
 

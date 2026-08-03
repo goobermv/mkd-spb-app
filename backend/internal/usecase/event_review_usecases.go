@@ -45,7 +45,7 @@ func (e *eventReviewUsecase) CreateEventReview(ctx context.Context, input dtos.C
 	}
 
 	if err := e.eventReviewRepo.Create(ctx, eventReview); err != nil {
-		e.logger.Errorf(err, "Failed for create registration from user: %s", input.AuthorID)
+		e.logger.Errorf(err, "Failed to create review in database from user: %s", input.AuthorID)
 		return nil, domain.ErrFailedToCreateEventReview
 	}
 

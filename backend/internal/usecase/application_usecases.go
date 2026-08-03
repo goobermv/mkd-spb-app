@@ -44,7 +44,7 @@ func (a *applicationUsecase) CreateApplication(ctx context.Context, input dtos.A
 	}
 
 	if err := a.applicationRepo.Create(ctx, application); err != nil {
-		a.logger.Errorf(err, "Failed for create application from user: %s", input.UserID)
+		a.logger.Errorf(err, "Failed to create application in database from user: %s", input.UserID)
 		return nil, domain.ErrFailedToCreateApplication
 	}
 
