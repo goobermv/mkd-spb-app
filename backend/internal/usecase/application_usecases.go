@@ -45,7 +45,7 @@ func (a *applicationUsecase) CreateApplication(ctx context.Context, input dtos.A
 
 	if err := a.applicationRepo.Create(ctx, application); err != nil {
 		a.logger.Errorf(err, "Failed for create application from user: %s", input.UserID)
-		return nil, err
+		return nil, domain.ErrFailedToCreateApplication
 	}
 
 	a.logger.Successf("Application created successfully - ID: %s, user ID: %s", application.ID, application.UserID)
@@ -104,17 +104,17 @@ func (a *applicationUsecase) UpdateApplication(ctx context.Context, id uuid.UUID
 
 	if application.ID != id {
 		a.logger.Warnf("Application ID mismatch - expected: %s, got: %s", id, application.ID)
-		return nil, domain.ErrNoPermissionUpdateUser
+		return nil, domain.ErrNoPermissionUpdateApplication
 	}
 
 	if input.UserMotivationDescription != nil {
 		application.UserMotivationDescription = *input.UserMotivationDescription
-		a.logger.Infof("User motivation updated to: %s for user: %s", *input.UserMotivationDescription, id)
+		a.logger.Infof("User motivation updated to: %s for user: %s", application.UserMotivationDescription, id)
 	}
 
 	if input.Status != nil {
 		application.Status = *input.Status
-		a.logger.Infof("Application status updated to: %s for user: %s", *input.Status, id)
+		a.logger.Infof("Application status updated to: %s for application: %s", application.Status, id)
 	}
 
 	application.UpdatedAt = time.Now()

@@ -81,7 +81,7 @@ func (u *userUsecase) Register(ctx context.Context, input dtos.RegisterInput) (*
 
 	if err := u.userRepo.Create(ctx, user); err != nil {
 		u.logger.Errorf(err, "Failed to create user in database: %s", input.Email)
-		return nil, err
+		return nil, domain.ErrFailedToCreateUser
 	}
 
 	user.PasswordHash = ""
@@ -228,12 +228,14 @@ func (u *userUsecase) UpdatePassword(ctx context.Context, id uuid.UUID, input dt
 
 	if input.OldPassword != nil && *input.OldPassword != "" && input.NewPassword != nil && *input.NewPassword != "" {
 		u.logger.Debugf("Verifying old password for user: %s", id)
+
 		if !u.hasher.Verify(*input.OldPassword, user.PasswordHash) {
 			u.logger.Errorf(err, "Failed to verify old password for user: %s", id)
 			return domain.ErrInvalidOldPassword
 		}
 
 		u.logger.Debugf("Hashing new password for user: %s", id)
+
 		hashedPassword, err := u.hasher.Hash(*input.NewPassword)
 		if err != nil {
 			u.logger.Errorf(err, "Failed to hash new password for user: %s", id)

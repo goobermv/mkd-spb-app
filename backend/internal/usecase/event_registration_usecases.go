@@ -2,18 +2,13 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/goobermv/mkd-spb-app/internal/domain"
 	"github.com/goobermv/mkd-spb-app/internal/handlers/dtos"
 	"github.com/goobermv/mkd-spb-app/internal/repositories/interfaces"
+	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
-)
-
-var (
-	ErrEventRegistrationNotFound  = errors.New("регистрация не найдена")
-	ErrEventRegistrationsNotFound = errors.New("регистрации не найдены")
 )
 
 type EventRegistrationUsecase interface {
@@ -26,15 +21,19 @@ type EventRegistrationUsecase interface {
 
 type eventRegistrationUsecase struct {
 	eventRegistrationRepo interfaces.EventRegistrationRepository
+	logger                logger.Logger
 }
 
-func NewEventRegistrationUsecase(repo interfaces.EventRegistrationRepository) EventRegistrationUsecase {
+func NewEventRegistrationUsecase(repo interfaces.EventRegistrationRepository, logger logger.Logger) EventRegistrationUsecase {
 	return &eventRegistrationUsecase{
 		eventRegistrationRepo: repo,
+		logger:                logger,
 	}
 }
 
 func (e *eventRegistrationUsecase) CreateEventRegistration(ctx context.Context, input dtos.CreateRegistrationRequest) (*domain.EventRegistration, error) {
+	e.logger.Infof("Attempting to create event registration from user: %s, for event: %s", input.UserID, input.EventID)
+
 	eventRegistration := &domain.EventRegistration{
 		ID:                 uuid.New(),
 		UserID:             input.UserID,
@@ -44,52 +43,103 @@ func (e *eventRegistrationUsecase) CreateEventRegistration(ctx context.Context, 
 	}
 
 	if err := e.eventRegistrationRepo.Create(ctx, eventRegistration); err != nil {
-		return nil, err
+		e.logger.Errorf(err, "Failed for create registration from user: %s, for event: %s", input.UserID, input.EventID)
+		return nil, domain.ErrFailedToCreateEventRegistration
 	}
+
+	e.logger.Successf("Registration created successfully - ID: %s, user ID: %s, event ID: %s", eventRegistration.ID, eventRegistration.UserID, eventRegistration.EventID)
 
 	return eventRegistration, nil
 }
 
 func (e *eventRegistrationUsecase) GetEventRegistration(ctx context.Context, id uuid.UUID) (*domain.EventRegistration, error) {
+	e.logger.Infof("Attempting to get registration by ID: %s", id)
+
 	eventRegistration, err := e.eventRegistrationRepo.FindByID(ctx, id)
 	if err != nil {
-		return nil, ErrEventRegistrationNotFound
+		e.logger.Errorf(err, "Failed to find registration: %s", id)
+		return nil, domain.ErrEventRegistrationNotFound
 	}
+	if eventRegistration == nil {
+		e.logger.Warnf("Registration not found: %s", id)
+		return nil, domain.ErrEventRegistrationNotFound
+	}
+
+	e.logger.Successf("Registration retrieved successfully: %s", id)
 
 	return eventRegistration, nil
 }
 
 func (e *eventRegistrationUsecase) GetEventRegistrationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error) {
+	e.logger.Infof("Attempting to get registrations by ID: %s", id)
+
 	eventRegistrations, err := e.eventRegistrationRepo.FindByUserID(ctx, id)
 	if err != nil {
-		return nil, ErrEventRegistrationsNotFound
+		e.logger.Errorf(err, "Failed to find registration for user: %s", id)
+		return nil, domain.ErrEventRegistrationNotFound
 	}
+	if eventRegistrations == nil {
+		e.logger.Warnf("Registrations not found: %s", id)
+		return nil, domain.ErrEventRegistrationsNotFound
+	}
+
+	e.logger.Successf("Registrations retrieved successfully for user: %s", id)
 
 	return eventRegistrations, nil
 }
 
 func (e *eventRegistrationUsecase) UpdateEventRegistration(ctx context.Context, id uuid.UUID, input dtos.UpdateRegistrationRequest) (*domain.EventRegistration, error) {
+	e.logger.Infof("Updating registration info for ID: %s", id)
+
 	eventRegistration, err := e.eventRegistrationRepo.FindByID(ctx, id)
 	if err != nil {
-		return nil, ErrEventRegistrationNotFound
+		e.logger.Errorf(err, "Failed to find registration: %s", id)
+		return nil, domain.ErrEventRegistrationNotFound
+	}
+	if eventRegistration == nil {
+		e.logger.Warnf("Failed to find registration: %s", id)
+		return nil, domain.ErrEventRegistrationNotFound
+	}
+
+	if eventRegistration.ID != id {
+		e.logger.Warnf("Registration ID mismatch - expected: %s, got: %s", id, eventRegistration.ID)
+		return nil, domain.ErrNoPermissionUpdateEventRegistration
 	}
 
 	if input.RegistrationStatus != nil {
 		eventRegistration.RegistrationStatus = *input.RegistrationStatus
+		e.logger.Infof("Registration status updated to: %s for registration: %s", eventRegistration.RegistrationStatus, id)
 	}
 
 	if err := e.eventRegistrationRepo.Update(ctx, eventRegistration); err != nil {
-		return nil, err
+		e.logger.Errorf(err, "Failed to update registration in database: %s", id)
+		return nil, domain.ErrFailedToUpdateEventRegistration
 	}
+
+	e.logger.Successf("Registration info updated successfully: %s", id)
 
 	return eventRegistration, nil
 }
 
 func (e *eventRegistrationUsecase) DeleteEventRegistration(ctx context.Context, id uuid.UUID) error {
-	_, err := e.eventRegistrationRepo.FindByID(ctx, id)
+	e.logger.Infof("Deleting registration: %s", id)
+
+	eventRegistration, err := e.eventRegistrationRepo.FindByID(ctx, id)
 	if err != nil {
-		return ErrEventRegistrationNotFound
+		e.logger.Errorf(err, "Failed to find registration for deletion: %s", id)
+		return domain.ErrEventRegistrationNotFound
+	}
+	if eventRegistration == nil {
+		e.logger.Warnf("Registration not found: %s", id)
+		return domain.ErrEventRegistrationNotFound
 	}
 
-	return e.eventRegistrationRepo.Delete(ctx, id)
+	if err := e.eventRegistrationRepo.Delete(ctx, id); err != nil {
+		e.logger.Errorf(err, "Failed to delete application from database: %s", id)
+		return domain.ErrFailedToDeleteEventRegistration
+	}
+
+	e.logger.Successf("Registration deleted successfully: %s (User: %s)", id, eventRegistration.UserID)
+
+	return nil
 }
