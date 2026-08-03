@@ -49,9 +49,13 @@ func (u *userUsecase) Register(ctx context.Context, input dtos.RegisterInput) (*
 	u.logger.Infof("Attempting to register user with email: %s", input.Email)
 
 	existingUser, err := u.userRepo.FindByEmail(ctx, input.Email)
-	if err == nil && existingUser != nil {
+	if existingUser != nil {
 		u.logger.Warnf("Registration failed: email already exists - %s", input.Email)
 		return nil, domain.ErrUserAlreadyExists
+	}
+	if err != nil {
+		u.logger.Errorf(err, "Error when attempting to find user by email: %s", input.Email)
+		return nil, domain.ErrUserNotFound
 	}
 
 	hashedPassword, err := u.hasher.Hash(input.Password)
@@ -96,7 +100,7 @@ func (u *userUsecase) Login(ctx context.Context, input dtos.LoginInput) (string,
 		return "", nil, domain.ErrInvalidCredentials
 	}
 	if user == nil {
-		u.logger.Errorf(err, "Login failed: user not found - %s", input.Email)
+		u.logger.Warnf("Login failed: user not found - %s", input.Email)
 		return "", nil, domain.ErrInvalidCredentials
 	}
 
@@ -127,7 +131,7 @@ func (u *userUsecase) GetUser(ctx context.Context, id uuid.UUID) (*domain.User, 
 		return nil, domain.ErrUserNotFound
 	}
 	if user == nil {
-		u.logger.Errorf(err, "User not found: %s", id)
+		u.logger.Warnf("User not found: %s", id)
 		return nil, domain.ErrUserNotFound
 	}
 
@@ -247,6 +251,7 @@ func (u *userUsecase) UpdatePassword(ctx context.Context, id uuid.UUID, input dt
 	}
 
 	u.logger.Successf("Password updated successfully for user: %s", id)
+
 	return nil
 }
 
@@ -269,5 +274,6 @@ func (u *userUsecase) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	}
 
 	u.logger.Successf("User deleted successfully: %s (Email: %s)", id, user.Email)
+
 	return nil
 }
