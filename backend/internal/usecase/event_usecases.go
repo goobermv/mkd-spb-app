@@ -5,18 +5,19 @@ import (
 	"time"
 
 	"github.com/goobermv/mkd-spb-app/internal/domain"
+	"github.com/goobermv/mkd-spb-app/internal/handlers/dtos"
 	"github.com/goobermv/mkd-spb-app/internal/repositories/interfaces"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
 )
 
 type EventUsecase interface {
-	// CreateEvent(ctx context.Context, input dtos.EventCreationInput) (*domain.Event, error)
+	CreateEvent(ctx context.Context, input dtos.EventCreationInput) (*domain.Event, error)
 	GetEvent(ctx context.Context, id uuid.UUID) (*domain.Event, error)
 	GetEventByName(ctx context.Context, name string) (*domain.Event, error)
 	GetEventsByDate(ctx context.Context, date time.Time) ([]*domain.Event, error)
-	// UpdateEvent(ctx context.Context, id uuid.UUID, input dtos.UpdateEventRequest) (*domain.Event, error)
-	// DeleteEvent(ctx context.Context, id uuid.UUID) error
+	UpdateEvent(ctx context.Context, id uuid.UUID, input dtos.UpdateEventRequest) (*domain.Event, error)
+	DeleteEvent(ctx context.Context, id uuid.UUID) error
 	GetAllEvents(ctx context.Context) ([]*domain.Event, error)
 }
 
@@ -32,7 +33,6 @@ func NewEventUsecase(repo interfaces.EventRepository, logger logger.Logger) Even
 	}
 }
 
-/*
 func (e *eventUsecase) CreateEvent(ctx context.Context, input dtos.EventCreationInput) (*domain.Event, error) {
 	e.logger.Infof("Attempting to create event by user: %s", input.AuthorID)
 
@@ -58,7 +58,6 @@ func (e *eventUsecase) CreateEvent(ctx context.Context, input dtos.EventCreation
 
 	return event, nil
 }
-*/
 
 func (e *eventUsecase) GetEvent(ctx context.Context, id uuid.UUID) (*domain.Event, error) {
 	e.logger.Infof("Attempting to get event by ID: %s", id)
@@ -113,7 +112,6 @@ func (e *eventUsecase) GetEventsByDate(ctx context.Context, date time.Time) ([]*
 	return events, nil
 }
 
-/*
 func (e *eventUsecase) UpdateEvent(ctx context.Context, id uuid.UUID, input dtos.UpdateEventRequest) (*domain.Event, error) {
 	e.logger.Infof("Updating event info for ID: %s", id)
 
@@ -196,7 +194,6 @@ func (e *eventUsecase) DeleteEvent(ctx context.Context, id uuid.UUID) error {
 
 	return nil
 }
-*/
 
 func (e *eventUsecase) GetAllEvents(ctx context.Context) ([]*domain.Event, error) {
 	e.logger.Infof("Retrieving all events...")

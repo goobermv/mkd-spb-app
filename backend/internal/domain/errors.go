@@ -18,7 +18,7 @@ var (
 
 	ErrApplicationNotFound       = errors.New("application not found")
 	ErrApplicationsNotFound      = errors.New("applications not found")
-	ErrFailedToCreateApplication = errors.New("failed to create applicationr")
+	ErrFailedToCreateApplication = errors.New("failed to create application")
 	ErrFailedToUpdateApplication = errors.New("failed to update application")
 	ErrFailedToDeleteApplication = errors.New("failed to delete application")
 
@@ -40,7 +40,7 @@ var (
 	ErrNoPermissionUpdateEventReview = errors.New("you do not have the permissions to update this review")
 
 	ErrEventNotFound       = errors.New("event not found")
-	ErrEventsNotFound      = errors.New("events not founds")
+	ErrEventsNotFound      = errors.New("events not found")
 	ErrFailedToCreateEvent = errors.New("failed to create event")
 	ErrFailedToUpdateEvent = errors.New("failed to update event")
 	ErrFailedToDeleteEvent = errors.New("failed to delete event")

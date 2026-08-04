@@ -11,7 +11,7 @@ type CreateRegistrationRequest struct {
 	EventID uuid.UUID `json:"event_id"`
 }
 
-type EventRegistrationResponce struct {
+type EventRegistrationResponse struct {
 	ID                 uuid.UUID `json:"id"`
 	UserID             uuid.UUID `json:"user_id"`
 	EventID            uuid.UUID `json:"event_id"`

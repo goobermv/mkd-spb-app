@@ -5,18 +5,19 @@ import (
 	"time"
 
 	"github.com/goobermv/mkd-spb-app/internal/domain"
+	"github.com/goobermv/mkd-spb-app/internal/handlers/dtos"
 	"github.com/goobermv/mkd-spb-app/internal/repositories/interfaces"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
 )
 
 type NewsBlockUsecase interface {
-	// CreateNewsBlock(ctx context.Context, input dtos.CreateNewsBlockInput) (*domain.NewsBlock, error)
+	CreateNewsBlock(ctx context.Context, input dtos.CreateNewsBlockInput) (*domain.NewsBlock, error)
 	GetNewsBlock(ctx context.Context, id uuid.UUID) (*domain.NewsBlock, error)
 	GetNewsBlockByTitle(ctx context.Context, title string) (*domain.NewsBlock, error)
 	GetNewsBlockByDate(ctx context.Context, date time.Time) ([]*domain.NewsBlock, error)
-	// UpdateNewsBlock(ctx context.Context, id uuid.UUID, input dtos.UpdateNewsBlockRequest) (*domain.NewsBlock, error)
-	// DeleteNewsBlock(ctx context.Context, id uuid.UUID) error
+	UpdateNewsBlock(ctx context.Context, id uuid.UUID, input dtos.UpdateNewsBlockRequest) (*domain.NewsBlock, error)
+	DeleteNewsBlock(ctx context.Context, id uuid.UUID) error
 	GetAllNewsBlocks(ctx context.Context) ([]*domain.NewsBlock, error)
 }
 
@@ -25,14 +26,13 @@ type newsBlockUsecase struct {
 	logger        logger.Logger
 }
 
-func NewNewsBlockRepository(repo interfaces.NewsBlockRepository, logger logger.Logger) NewsBlockUsecase {
+func NewNewsBlockUsecase(repo interfaces.NewsBlockRepository, logger logger.Logger) NewsBlockUsecase {
 	return &newsBlockUsecase{
 		newsBlockRepo: repo,
 		logger:        logger,
 	}
 }
 
-/*
 func (n *newsBlockUsecase) CreateNewsBlock(ctx context.Context, input dtos.CreateNewsBlockInput) (*domain.NewsBlock, error) {
 	n.logger.Infof("Attempting to create news block by user: %s", input.AuthorID)
 
@@ -57,7 +57,6 @@ func (n *newsBlockUsecase) CreateNewsBlock(ctx context.Context, input dtos.Creat
 
 	return newsBlock, nil
 }
-*/
 
 func (n *newsBlockUsecase) GetNewsBlock(ctx context.Context, id uuid.UUID) (*domain.NewsBlock, error) {
 	n.logger.Infof("Attempting to get news block by id: %s", id)
@@ -113,7 +112,6 @@ func (n *newsBlockUsecase) GetNewsBlockByDate(ctx context.Context, date time.Tim
 	return newsBlocks, nil
 }
 
-/*
 func (n *newsBlockUsecase) UpdateNewsBlock(ctx context.Context, id uuid.UUID, input dtos.UpdateNewsBlockRequest) (*domain.NewsBlock, error) {
 	n.logger.Infof("Updating news block info for ID: %s", id)
 
@@ -188,7 +186,6 @@ func (n *newsBlockUsecase) DeleteNewsBlock(ctx context.Context, id uuid.UUID) er
 
 	return nil
 }
-*/
 
 func (n *newsBlockUsecase) GetAllNewsBlocks(ctx context.Context) ([]*domain.NewsBlock, error) {
 	n.logger.Infof("Retrieving all news blocks...")

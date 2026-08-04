@@ -2,19 +2,21 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"github.com/goobermv/mkd-spb-app/internal/domain"
+	"github.com/goobermv/mkd-spb-app/internal/handlers/dtos"
 	"github.com/goobermv/mkd-spb-app/internal/repositories/interfaces"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
 )
 
 type NotificationUsecase interface {
-	// CreateNotification(ctx context.Context, input dtos.CreateNotificationInput) (*domain.Notification, error)
+	CreateNotification(ctx context.Context, input dtos.CreateNotificationInput) (*domain.Notification, error)
 	GetNotification(ctx context.Context, id uuid.UUID) (*domain.Notification, error)
 	GetNotificationByUserID(ctx context.Context, id uuid.UUID) ([]*domain.Notification, error)
-	// UpdateNotification(ctx context.Context, id uuid.UUID, input dtos.UpdateNotificationRequest) (*domain.Notification, error)
-	// DeleteNotification(ctx context.Context, id uuid.UUID) error
+	UpdateNotification(ctx context.Context, id uuid.UUID, input dtos.UpdateNotificationRequest) (*domain.Notification, error)
+	DeleteNotification(ctx context.Context, id uuid.UUID) error
 }
 
 type notificationUsecase struct {
@@ -29,7 +31,6 @@ func NewNotificationUsecase(repo interfaces.NotificationRepository, logger logge
 	}
 }
 
-/*
 func (n *notificationUsecase) CreateNotification(ctx context.Context, input dtos.CreateNotificationInput) (*domain.Notification, error) {
 	n.logger.Infof("Attempting to create notification for user: %s", input.UserID)
 
@@ -51,7 +52,6 @@ func (n *notificationUsecase) CreateNotification(ctx context.Context, input dtos
 
 	return notification, nil
 }
-*/
 
 func (n *notificationUsecase) GetNotification(ctx context.Context, id uuid.UUID) (*domain.Notification, error) {
 	n.logger.Infof("Attempting to get notification by ID: %s", id)
@@ -89,7 +89,6 @@ func (n *notificationUsecase) GetNotificationByUserID(ctx context.Context, id uu
 	return notifications, nil
 }
 
-/*
 func (n *notificationUsecase) UpdateNotification(ctx context.Context, id uuid.UUID, input dtos.UpdateNotificationRequest) (*domain.Notification, error) {
 	n.logger.Infof("Updating notification info for ID: %s", id)
 
@@ -157,4 +156,3 @@ func (n *notificationUsecase) DeleteNotification(ctx context.Context, id uuid.UU
 
 	return nil
 }
-*/
