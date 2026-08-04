@@ -24,9 +24,12 @@ type UserUsecase interface {
 	Register(ctx context.Context, input dtos.RegisterInput) (*domain.User, error)
 	Login(ctx context.Context, input dtos.LoginInput) (string, *domain.User, error)
 	GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	GetUserByName(ctx context.Context, name string) (*domain.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*domain.User, error)
 	UpdateUser(ctx context.Context, id uuid.UUID, input dtos.UpdateUserInfoRequest) (*domain.User, error)
 	UpdatePassword(ctx context.Context, id uuid.UUID, input dtos.UpdateUserPasswordRequest) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetAllUsers(ctx context.Context) ([]*domain.User, error)
 }
 
 type userUsecase struct {
@@ -138,6 +141,46 @@ func (u *userUsecase) GetUser(ctx context.Context, id uuid.UUID) (*domain.User, 
 	user.PasswordHash = ""
 
 	u.logger.Successf("User retrieved successfully: %s", id)
+
+	return user, nil
+}
+
+func (u *userUsecase) GetUserByName(ctx context.Context, name string) (*domain.User, error) {
+	u.logger.Infof("Attempting to get user by name: %s", name)
+
+	user, err := u.userRepo.FindByFullName(ctx, name)
+	if err != nil {
+		u.logger.Errorf(err, "Failed to find user: %s", name)
+		return nil, domain.ErrUserNotFound
+	}
+	if user == nil {
+		u.logger.Warnf("User not found: %s", name)
+		return nil, domain.ErrUserNotFound
+	}
+
+	user.PasswordHash = ""
+
+	u.logger.Successf("User retrieved successfully: %s", name)
+
+	return user, nil
+}
+
+func (u *userUsecase) GetUserByEmail(ctx context.Context, email string) (*domain.User, error) {
+	u.logger.Infof("Attempting to get user by email: %s", email)
+
+	user, err := u.userRepo.FindByEmail(ctx, email)
+	if err != nil {
+		u.logger.Errorf(err, "Failed to find user: %s", email)
+		return nil, domain.ErrUserNotFound
+	}
+	if user == nil {
+		u.logger.Warnf("User not found: %s", email)
+		return nil, domain.ErrUserNotFound
+	}
+
+	user.PasswordHash = ""
+
+	u.logger.Successf("User retrieved successfully: %s", email)
 
 	return user, nil
 }
@@ -278,4 +321,22 @@ func (u *userUsecase) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	u.logger.Successf("User deleted successfully: %s (Email: %s)", id, user.Email)
 
 	return nil
+}
+
+func (u *userUsecase) GetAllUsers(ctx context.Context) ([]*domain.User, error) {
+	u.logger.Infof("Retrieving all users...")
+
+	users, err := u.userRepo.FindAll(ctx)
+	if err != nil {
+		u.logger.Errorf(err, "Failed to find users")
+		return nil, domain.ErrUsersNotFound
+	}
+	if users == nil {
+		u.logger.Warnf("Users not found")
+		return nil, domain.ErrUsersNotFound
+	}
+
+	u.logger.Successf("Users retrieved successfully")
+
+	return users, nil
 }

@@ -16,6 +16,7 @@ var ()
 type EventReviewUsecase interface {
 	CreateEventReview(ctx context.Context, input dtos.CreateEventReviewInput) (*domain.EventReview, error)
 	GetEventReview(ctx context.Context, id uuid.UUID) (*domain.EventReview, error)
+	GetEventReviewByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error)
 	UpdateEventReview(ctx context.Context, id uuid.UUID, input dtos.UpdateEventReviewRequest) (*domain.EventReview, error)
 	DeleteEventReview(ctx context.Context, id uuid.UUID) error
 }
@@ -68,6 +69,24 @@ func (e *eventReviewUsecase) GetEventReview(ctx context.Context, id uuid.UUID) (
 	}
 
 	e.logger.Successf("Review retrieved successfully: %s", id)
+
+	return eventReview, nil
+}
+
+func (e *eventReviewUsecase) GetEventReviewByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error) {
+	e.logger.Infof("Attempting to get reviews by event ID: %s", id)
+
+	eventReview, err := e.eventReviewRepo.FindByEventID(ctx, id)
+	if err != nil {
+		e.logger.Errorf(err, "Failed to find review: %s", id)
+		return nil, domain.ErrEventReviewNotFound
+	}
+	if eventReview == nil {
+		e.logger.Warnf("Review not found: %s", id)
+		return nil, domain.ErrEventReviewNotFound
+	}
+
+	e.logger.Successf("Reviews retrieved successfully for event: %s", id)
 
 	return eventReview, nil
 }

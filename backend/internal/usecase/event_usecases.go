@@ -16,6 +16,7 @@ type EventUsecase interface {
 	GetEvent(ctx context.Context, id uuid.UUID) (*domain.Event, error)
 	GetEventByName(ctx context.Context, name string) (*domain.Event, error)
 	GetEventsByDate(ctx context.Context, date time.Time) ([]*domain.Event, error)
+	GetByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.Event, error)
 	UpdateEvent(ctx context.Context, id uuid.UUID, input dtos.UpdateEventRequest) (*domain.Event, error)
 	DeleteEvent(ctx context.Context, id uuid.UUID) error
 	GetAllEvents(ctx context.Context) ([]*domain.Event, error)
@@ -109,6 +110,23 @@ func (e *eventUsecase) GetEventsByDate(ctx context.Context, date time.Time) ([]*
 	}
 
 	e.logger.Successf("Events retrieved successfully for: %s", date)
+	return events, nil
+}
+
+func (e *eventUsecase) GetByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.Event, error) {
+	e.logger.Infof("Attempting to get events by author id: %s", id)
+
+	events, err := e.eventRepo.FindByAuthorID(ctx, id)
+	if err != nil {
+		e.logger.Errorf(err, "Failed to find events from the author: %s", id)
+		return nil, domain.ErrEventsNotFound
+	}
+	if events == nil {
+		e.logger.Warnf("Events not found: %s", id)
+		return nil, domain.ErrEventsNotFound
+	}
+
+	e.logger.Successf("Events from author retrieved successfully: %s", id)
 	return events, nil
 }
 

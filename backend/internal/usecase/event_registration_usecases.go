@@ -14,6 +14,7 @@ import (
 type EventRegistrationUsecase interface {
 	CreateEventRegistration(ctx context.Context, input dtos.CreateRegistrationRequest) (*domain.EventRegistration, error)
 	GetEventRegistration(ctx context.Context, id uuid.UUID) (*domain.EventRegistration, error)
+	GetEventRegistrationByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error)
 	GetEventRegistrationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error)
 	UpdateEventRegistration(ctx context.Context, id uuid.UUID, input dtos.UpdateRegistrationRequest) (*domain.EventRegistration, error)
 	DeleteEventRegistration(ctx context.Context, id uuid.UUID) error
@@ -68,6 +69,24 @@ func (e *eventRegistrationUsecase) GetEventRegistration(ctx context.Context, id 
 	e.logger.Successf("Registration retrieved successfully: %s", id)
 
 	return eventRegistration, nil
+}
+
+func (e *eventRegistrationUsecase) GetEventRegistrationByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error) {
+	e.logger.Infof("Attempting to get registrations by event ID: %s", id)
+
+	eventRegistrations, err := e.eventRegistrationRepo.FindByEventID(ctx, id)
+	if err != nil {
+		e.logger.Errorf(err, "Failed to find registrations for event: %s", id)
+		return nil, domain.ErrEventRegistrationNotFound
+	}
+	if eventRegistrations == nil {
+		e.logger.Warnf("Registrations not found: %s", id)
+		return nil, domain.ErrEventRegistrationsNotFound
+	}
+
+	e.logger.Successf("Registrations retrieved successfully for event: %s", id)
+
+	return eventRegistrations, nil
 }
 
 func (e *eventRegistrationUsecase) GetEventRegistrationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error) {

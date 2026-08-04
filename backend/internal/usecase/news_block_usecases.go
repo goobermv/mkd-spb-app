@@ -16,6 +16,7 @@ type NewsBlockUsecase interface {
 	GetNewsBlock(ctx context.Context, id uuid.UUID) (*domain.NewsBlock, error)
 	GetNewsBlockByTitle(ctx context.Context, title string) (*domain.NewsBlock, error)
 	GetNewsBlockByDate(ctx context.Context, date time.Time) ([]*domain.NewsBlock, error)
+	GetNewsBlockByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.NewsBlock, error)
 	UpdateNewsBlock(ctx context.Context, id uuid.UUID, input dtos.UpdateNewsBlockRequest) (*domain.NewsBlock, error)
 	DeleteNewsBlock(ctx context.Context, id uuid.UUID) error
 	GetAllNewsBlocks(ctx context.Context) ([]*domain.NewsBlock, error)
@@ -108,6 +109,24 @@ func (n *newsBlockUsecase) GetNewsBlockByDate(ctx context.Context, date time.Tim
 	}
 
 	n.logger.Successf("News block retrieved successfully for date: %s", date)
+
+	return newsBlocks, nil
+}
+
+func (n *newsBlockUsecase) GetNewsBlockByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.NewsBlock, error) {
+	n.logger.Infof("Attempting to get news blocks by author id: %s", id)
+
+	newsBlocks, err := n.newsBlockRepo.FindByAuthorID(ctx, id)
+	if err != nil {
+		n.logger.Errorf(err, "Failed to find news block: %s", id)
+		return nil, domain.ErrNewsBlockNotFound
+	}
+	if newsBlocks == nil {
+		n.logger.Warnf("News block not found: %s", id)
+		return nil, domain.ErrNewsBlockNotFound
+	}
+
+	n.logger.Successf("News block by author retrieved successfully: %s", id)
 
 	return newsBlocks, nil
 }

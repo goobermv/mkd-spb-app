@@ -14,9 +14,11 @@ import (
 type ApplicationUsecase interface {
 	CreateApplication(ctx context.Context, input dtos.ApplicationCreationInput) (*domain.Application, error)
 	GetApplication(ctx context.Context, id uuid.UUID) (*domain.Application, error)
+	GetApplicationByDate(ctx context.Context, date time.Time) ([]*domain.Application, error)
 	GetApplicationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.Application, error)
 	UpdateApplication(ctx context.Context, id uuid.UUID, input dtos.UpdateApplicationRequest) (*domain.Application, error)
 	DeleteApplication(ctx context.Context, id uuid.UUID) error
+	GetAllApplications(ctx context.Context) ([]*domain.Application, error)
 }
 
 type applicationUsecase struct {
@@ -69,6 +71,24 @@ func (a *applicationUsecase) GetApplication(ctx context.Context, id uuid.UUID) (
 	a.logger.Successf("Application retrieved successfully: %s", id)
 
 	return application, nil
+}
+
+func (a *applicationUsecase) GetApplicationByDate(ctx context.Context, date time.Time) ([]*domain.Application, error) {
+	a.logger.Infof("Attempting to get applications by date: %s", date)
+
+	applications, err := a.applicationRepo.FindByDate(ctx, date)
+	if err != nil {
+		a.logger.Infof("Failed to find applications by date: %s", date)
+		return nil, domain.ErrApplicationNotFound
+	}
+	if applications == nil {
+		a.logger.Warnf("Applications not found: %s", date)
+		return nil, domain.ErrApplicationsNotFound
+	}
+
+	a.logger.Successf("Applications retrieved successfully for the date: %s", date)
+
+	return applications, nil
 }
 
 func (a *applicationUsecase) GetApplicationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.Application, error) {
@@ -150,4 +170,22 @@ func (a *applicationUsecase) DeleteApplication(ctx context.Context, id uuid.UUID
 	a.logger.Successf("Application deleted successfully: %s (User: %s)", id, application.UserID)
 
 	return nil
+}
+
+func (a *applicationUsecase) GetAllApplications(ctx context.Context) ([]*domain.Application, error) {
+	a.logger.Infof("Retrieving all applications...")
+
+	applications, err := a.applicationRepo.FindAll(ctx)
+	if err != nil {
+		a.logger.Errorf(err, "Failed to find applications")
+		return nil, domain.ErrEventsNotFound
+	}
+	if applications == nil {
+		a.logger.Warnf("Applications not found")
+		return nil, domain.ErrEventsNotFound
+	}
+
+	a.logger.Successf("Applications retrieved successfully")
+
+	return applications, nil
 }

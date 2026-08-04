@@ -6,6 +6,7 @@ var (
 	ErrUserAlreadyExists     = errors.New("user with this email already exists")
 	ErrInvalidCredentials    = errors.New("incorrect email or password")
 	ErrUserNotFound          = errors.New("user not found")
+	ErrUsersNotFound         = errors.New("users not found")
 	ErrInvalidOldPassword    = errors.New("incorrect old password")
 	ErrEmailExists           = errors.New("user with this email already exists")
 	ErrFailedToHashPassword  = errors.New("failed to hash password")
