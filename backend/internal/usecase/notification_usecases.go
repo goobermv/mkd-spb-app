@@ -4,18 +4,17 @@ import (
 	"context"
 
 	"github.com/goobermv/mkd-spb-app/internal/domain"
-	"github.com/goobermv/mkd-spb-app/internal/handlers/dtos"
 	"github.com/goobermv/mkd-spb-app/internal/repositories/interfaces"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
 )
 
 type NotificationUsecase interface {
-	CreateNotification(ctx context.Context, input dtos.CreateNotificationInput) (*domain.Notification, error)
+	// CreateNotification(ctx context.Context, input dtos.CreateNotificationInput) (*domain.Notification, error)
 	GetNotification(ctx context.Context, id uuid.UUID) (*domain.Notification, error)
 	GetNotificationByUserID(ctx context.Context, id uuid.UUID) ([]*domain.Notification, error)
-	UpdateNotification(ctx context.Context, id uuid.UUID, input dtos.UpdateNotificationRequest) (*domain.Notification, error)
-	DeleteNotification(ctx context.Context, id uuid.UUID) error
+	// UpdateNotification(ctx context.Context, id uuid.UUID, input dtos.UpdateNotificationRequest) (*domain.Notification, error)
+	// DeleteNotification(ctx context.Context, id uuid.UUID) error
 }
 
 type notificationUsecase struct {
@@ -45,7 +44,7 @@ func (n *notificationUsecase) CreateNotification(ctx context.Context, input dtos
 
 	if err := n.notificationRepo.Create(ctx, notification); err != nil {
 		n.logger.Errorf(err, "Failed to create notification in database from user: %s", input.UserID)
-		return nil, err
+		return nil, domain.ErrFailedToCreateNotification
 	}
 
 	n.logger.Successf("Notification created successfully - ID: %s, user ID: %s", notification.ID, notification.UserID)

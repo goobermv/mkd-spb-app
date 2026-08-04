@@ -158,7 +158,7 @@ func (n *newsBlockUsecase) UpdateNewsBlock(ctx context.Context, id uuid.UUID, in
 
 	if err := n.newsBlockRepo.Update(ctx, newsBlock); err != nil {
 		n.logger.Errorf(err, "Failed to update news block in database: %s", id)
-		return nil, err
+		return nil, domain.ErrFailedToUpdateNewsBlock
 	}
 
 	n.logger.Successf("News block info updated successfully: %s", id)

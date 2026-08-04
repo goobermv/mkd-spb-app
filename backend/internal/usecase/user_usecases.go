@@ -61,7 +61,7 @@ func (u *userUsecase) Register(ctx context.Context, input dtos.RegisterInput) (*
 	hashedPassword, err := u.hasher.Hash(input.Password)
 	if err != nil {
 		u.logger.Errorf(err, "Failed to hash password for user: %s", input.Email)
-		return nil, err
+		return nil, domain.ErrFailedToHashPassword
 	}
 
 	user := &domain.User{
@@ -112,7 +112,7 @@ func (u *userUsecase) Login(ctx context.Context, input dtos.LoginInput) (string,
 	token, err := u.tokenManager.Generate(user.ID, user.UserRole)
 	if err != nil {
 		u.logger.Errorf(err, "Failed to generate token for user: %s", user.ID)
-		return "", nil, err
+		return "", nil, domain.ErrFailedToGenerateToken
 	}
 
 	user.PasswordHash = ""
@@ -208,7 +208,7 @@ func (u *userUsecase) UpdateUser(ctx context.Context, id uuid.UUID, input dtos.U
 
 	if err := u.userRepo.Update(ctx, user); err != nil {
 		u.logger.Errorf(err, "Failed to update user in database: %s", id)
-		return nil, err
+		return nil, domain.ErrFailedToUpdateUser
 	}
 
 	user.PasswordHash = ""
@@ -239,7 +239,7 @@ func (u *userUsecase) UpdatePassword(ctx context.Context, id uuid.UUID, input dt
 		hashedPassword, err := u.hasher.Hash(*input.NewPassword)
 		if err != nil {
 			u.logger.Errorf(err, "Failed to hash new password for user: %s", id)
-			return err
+			return domain.ErrFailedToHashPassword
 		}
 
 		user.PasswordHash = hashedPassword

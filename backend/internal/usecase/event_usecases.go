@@ -51,7 +51,7 @@ func (e *eventUsecase) CreateEvent(ctx context.Context, input dtos.EventCreation
 
 	if err := e.eventRepo.Create(ctx, event); err != nil {
 		e.logger.Errorf(err, "Failed to create event in database by user: %s", input.AuthorID)
-		return nil, err
+		return nil, domain.ErrFailedToCreateEvent
 	}
 
 	e.logger.Successf("Event created successfully - ID: %s, user ID: %s", event.ID, event.AuthorID)
