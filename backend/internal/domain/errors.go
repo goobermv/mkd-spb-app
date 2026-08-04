@@ -44,4 +44,20 @@ var (
 	ErrFailedToDeleteEvent = errors.New("failed to delete event")
 
 	ErrNoPermissionUpdateEvent = errors.New("you do not have the permissions to update this event")
+
+	ErrNewsBlockNotFound       = errors.New("news block not found")
+	ErrNewsBlocksNotFound      = errors.New("news blocks not found")
+	ErrFailedToCreateNewsBlock = errors.New("failed to create news block")
+	ErrFailedToUpdateNewsBlock = errors.New("failed to update news block")
+	ErrFailedToDeleteNewsBlock = errors.New("failed to delete news block")
+
+	ErrNoPermissionUpdateNewsBlock = errors.New("you do not have the permissions to update this news block")
+
+	ErrNotificationNotFound       = errors.New("notification not found")
+	ErrNotificationsNotFound      = errors.New("notifications not found")
+	ErrFailedToCreateNotification = errors.New("failed to create notification")
+	ErrFailedToUpdateNotification = errors.New("failed to update nnotification")
+	ErrFailedToDeleteNotification = errors.New("failed to delete notification")
+
+	ErrNoPermissionUpdateNotification = errors.New("you do not have the permissions to update this notification")
 )

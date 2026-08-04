@@ -8,9 +8,9 @@ import (
 )
 
 type NotificationRepository interface {
-	Create(ctx context.Context, notification *domain.Notification) error
+	Create(ctx context.Context, notification *domain.Notification) error // admin + activist
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.Notification, error)
 	FindByUserID(ctx context.Context, id uuid.UUID) ([]*domain.Notification, error)
-	Update(ctx context.Context, notification *domain.Notification) error
-	Delete(ctx context.Context, id uuid.UUID) error
+	Update(ctx context.Context, notification *domain.Notification) error // admin + activist
+	Delete(ctx context.Context, id uuid.UUID) error                      // admin + activist
 }

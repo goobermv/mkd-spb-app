@@ -9,12 +9,12 @@ import (
 )
 
 type NewsBlockRepository interface {
-	Create(ctx context.Context, newsBlock *domain.NewsBlock) error
+	Create(ctx context.Context, newsBlock *domain.NewsBlock) error // admin + activist
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.NewsBlock, error)
 	FindByTitle(ctx context.Context, title string) (*domain.NewsBlock, error)
 	FindByDate(ctx context.Context, date time.Time) ([]*domain.NewsBlock, error)
 	FindByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.NewsBlock, error) // admin
-	Update(ctx context.Context, newsBlock *domain.NewsBlock) error
-	Delete(ctx context.Context, id uuid.UUID) error
+	Update(ctx context.Context, newsBlock *domain.NewsBlock) error                 // admin + activist
+	Delete(ctx context.Context, id uuid.UUID) error                                // admin + activist
 	FindAll(ctx context.Context) ([]*domain.NewsBlock, error)
 }
