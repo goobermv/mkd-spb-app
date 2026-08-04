@@ -213,7 +213,7 @@ func (u *userUsecase) UpdateUser(ctx context.Context, id uuid.UUID, input dtos.U
 
 	user.PasswordHash = ""
 
-	u.logger.Successf("User info updated successfully: %s", id)
+	u.logger.Successf("User info updated successfully for user: %s", id)
 
 	return user, nil
 }

@@ -47,7 +47,7 @@ func (n *notificationUsecase) CreateNotification(ctx context.Context, input dtos
 		return nil, domain.ErrFailedToCreateNotification
 	}
 
-	n.logger.Successf("Notification created successfully - ID: %s, user ID: %s", notification.ID, notification.UserID)
+	n.logger.Successf("Notification created successfully - ID: %s", notification.ID)
 
 	return notification, nil
 }
@@ -153,7 +153,7 @@ func (n *notificationUsecase) DeleteNotification(ctx context.Context, id uuid.UU
 		return domain.ErrFailedToDeleteNotification
 	}
 
-	n.logger.Successf("Notification deleted successfully: %s (User: %s)", id, notification.UserID)
+	n.logger.Successf("Notification deleted successfully: %s", id)
 
 	return nil
 }
