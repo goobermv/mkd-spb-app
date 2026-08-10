@@ -7,14 +7,14 @@ import (
 )
 
 type CreateNewsBlockInput struct {
-	AuthorID          uuid.UUID `json:"author_id"`
-	Title             string    `json:"title"`
-	Description       string    `json:"description"`
-	NewsBlockCategory string    `json:"news_block_category"`
-	NewsBlockPicture  string    `json:"news_block_picture"`
+	AuthorID          uuid.UUID `json:"author_id" validate:"required"`
+	Title             string    `json:"title" validate:"required"`
+	Description       string    `json:"description" validate:"required"`
+	NewsBlockCategory string    `json:"news_block_category" validate:"required"`
+	NewsBlockPicture  string    `json:"news_block_picture" validate:"required"`
 }
 
-type NewsBlock struct {
+type NewsBlockResponse struct {
 	ID                uuid.UUID `json:"id"`
 	AuthorID          uuid.UUID `json:"author_id"`
 	Title             string    `json:"title"`
@@ -28,9 +28,9 @@ type NewsBlock struct {
 }
 
 type UpdateNewsBlockRequest struct {
-	Title             *string    `json:"title"`
-	Description       *string    `json:"description"`
-	NewsBlockCategory *string    `json:"news_block_category"`
-	PublicationDate   *time.Time `json:"publication_date"`
-	NewsBlockPicture  *string    `json:"news_block_picture"`
+	Title             *string    `json:"title,omitempty"`
+	Description       *string    `json:"description,omitempty"`
+	NewsBlockCategory *string    `json:"news_block_category,omitempty"`
+	PublicationDate   *time.Time `json:"publication_date,omitempty"`
+	NewsBlockPicture  *string    `json:"news_block_picture,omitempty"`
 }

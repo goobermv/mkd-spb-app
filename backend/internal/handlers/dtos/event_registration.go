@@ -7,8 +7,8 @@ import (
 )
 
 type CreateRegistrationRequest struct {
-	UserID  uuid.UUID `json:"user_id"`
-	EventID uuid.UUID `json:"event_id"`
+	UserID  uuid.UUID `json:"user_id" validate:"required"`
+	EventID uuid.UUID `json:"event_id" validate:"required"`
 }
 
 type EventRegistrationResponse struct {
@@ -20,5 +20,5 @@ type EventRegistrationResponse struct {
 }
 
 type UpdateRegistrationRequest struct {
-	RegistrationStatus *string `json:"registration_status"`
+	RegistrationStatus *string `json:"registration_status,omitempty"`
 }

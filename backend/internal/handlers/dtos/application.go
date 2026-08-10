@@ -7,8 +7,8 @@ import (
 )
 
 type ApplicationCreationInput struct {
-	UserID                    uuid.UUID `json:"user_id"`
-	UserMotivationDescription string    `json:"user_motivation_description"`
+	UserID                    uuid.UUID `json:"user_id" validate:"required"`
+	UserMotivationDescription string    `json:"user_motivation_description" validate:"required"`
 }
 
 type ApplicationResponse struct {
@@ -21,6 +21,6 @@ type ApplicationResponse struct {
 }
 
 type UpdateApplicationRequest struct {
-	UserMotivationDescription *string `json:"user_motivation_description"`
-	Status                    *string `json:"status"`
+	UserMotivationDescription *string `json:"user_motivation_description,omitempty"`
+	Status                    *string `json:"status,omitempty"`
 }
