@@ -9,10 +9,10 @@ import (
 type EventCreationInput struct {
 	AuthorID         uuid.UUID `json:"author_id" validate:"required"`
 	EventName        string    `json:"event_name" validate:"required"`
-	Description      string    `json:"description"`
-	EventCategory    string    `json:"event_category"`
-	EventDateAndTime time.Time `json:"event_date_and_time"`
-	EventPicture     string    `json:"event_picture"`
+	Description      string    `json:"description" validate:"required"`
+	EventCategory    string    `json:"event_category" validate:"required"`
+	EventDateAndTime time.Time `json:"event_date_and_time" validate:"required"`
+	EventPicture     string    `json:"event_picture" validate:"required"`
 }
 
 type EventResponse struct {
