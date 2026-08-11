@@ -14,7 +14,7 @@ import (
 type NotificationUsecase interface {
 	CreateNotification(ctx context.Context, input dtos.CreateNotificationInput) (*domain.Notification, error)
 	GetNotification(ctx context.Context, id uuid.UUID) (*domain.Notification, error)
-	GetNotificationByUserID(ctx context.Context, id uuid.UUID) ([]*domain.Notification, error)
+	GetNotificationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.Notification, error)
 	UpdateNotification(ctx context.Context, id uuid.UUID, input dtos.UpdateNotificationRequest) (*domain.Notification, error)
 	DeleteNotification(ctx context.Context, id uuid.UUID) error
 }
@@ -71,7 +71,7 @@ func (n *notificationUsecase) GetNotification(ctx context.Context, id uuid.UUID)
 	return notification, nil
 }
 
-func (n *notificationUsecase) GetNotificationByUserID(ctx context.Context, id uuid.UUID) ([]*domain.Notification, error) {
+func (n *notificationUsecase) GetNotificationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.Notification, error) {
 	n.logger.Infof("Attempting to get notifications by user ID: %s", id)
 
 	notifications, err := n.notificationRepo.FindByUserID(ctx, id)
