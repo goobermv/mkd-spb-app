@@ -16,7 +16,7 @@ var ()
 type EventReviewUsecase interface {
 	CreateEventReview(ctx context.Context, input dtos.CreateEventReviewInput) (*domain.EventReview, error)
 	GetEventReview(ctx context.Context, id uuid.UUID) (*domain.EventReview, error)
-	GetEventReviewByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error)
+	GetEventReviewsByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error)
 	UpdateEventReview(ctx context.Context, id uuid.UUID, input dtos.UpdateEventReviewRequest) (*domain.EventReview, error)
 	DeleteEventReview(ctx context.Context, id uuid.UUID) error
 }
@@ -73,7 +73,7 @@ func (e *eventReviewUsecase) GetEventReview(ctx context.Context, id uuid.UUID) (
 	return eventReview, nil
 }
 
-func (e *eventReviewUsecase) GetEventReviewByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error) {
+func (e *eventReviewUsecase) GetEventReviewsByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventReview, error) {
 	e.logger.Infof("Attempting to get reviews by event ID: %s", id)
 
 	eventReview, err := e.eventReviewRepo.FindByEventID(ctx, id)
