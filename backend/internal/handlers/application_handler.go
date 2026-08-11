@@ -45,13 +45,13 @@ func (h *ApplicationHandler) CreateApplication(w http.ResponseWriter, r *http.Re
 
 	var input dtos.ApplicationCreationInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		h.logger.Errorf(err, "Failed to decode creation input")
+		h.logger.Errorf(err, "Failed to decode application creation input")
 		respondError(w, http.StatusBadRequest, "Invalid request format")
 		return
 	}
 
 	if err := h.validator.Struct(input); err != nil {
-		h.logger.Errorf(err, "Validation failed for creation input")
+		h.logger.Errorf(err, "Validation failed for application creation input")
 		respondError(w, http.StatusBadRequest, "Validation error: "+err.Error())
 		return
 	}
