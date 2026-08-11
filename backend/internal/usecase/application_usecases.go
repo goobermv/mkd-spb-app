@@ -14,7 +14,7 @@ import (
 type ApplicationUsecase interface {
 	CreateApplication(ctx context.Context, input dtos.ApplicationCreationInput) (*domain.Application, error)
 	GetApplication(ctx context.Context, id uuid.UUID) (*domain.Application, error)
-	GetApplicationByDate(ctx context.Context, date time.Time) ([]*domain.Application, error)
+	GetApplicationsByDate(ctx context.Context, date time.Time) ([]*domain.Application, error)
 	GetApplicationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.Application, error)
 	UpdateApplication(ctx context.Context, id uuid.UUID, input dtos.UpdateApplicationRequest) (*domain.Application, error)
 	DeleteApplication(ctx context.Context, id uuid.UUID) error
@@ -73,7 +73,7 @@ func (a *applicationUsecase) GetApplication(ctx context.Context, id uuid.UUID) (
 	return application, nil
 }
 
-func (a *applicationUsecase) GetApplicationByDate(ctx context.Context, date time.Time) ([]*domain.Application, error) {
+func (a *applicationUsecase) GetApplicationsByDate(ctx context.Context, date time.Time) ([]*domain.Application, error) {
 	a.logger.Infof("Attempting to get applications by date: %s", date)
 
 	applications, err := a.applicationRepo.FindByDate(ctx, date)

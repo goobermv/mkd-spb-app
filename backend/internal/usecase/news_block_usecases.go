@@ -15,8 +15,8 @@ type NewsBlockUsecase interface {
 	CreateNewsBlock(ctx context.Context, input dtos.CreateNewsBlockInput) (*domain.NewsBlock, error)
 	GetNewsBlock(ctx context.Context, id uuid.UUID) (*domain.NewsBlock, error)
 	GetNewsBlockByTitle(ctx context.Context, title string) (*domain.NewsBlock, error)
-	GetNewsBlockByDate(ctx context.Context, date time.Time) ([]*domain.NewsBlock, error)
-	GetNewsBlockByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.NewsBlock, error)
+	GetNewsBlocksByDate(ctx context.Context, date time.Time) ([]*domain.NewsBlock, error)
+	GetNewsBlocksByAuthor(ctx context.Context, id uuid.UUID) ([]*domain.NewsBlock, error)
 	UpdateNewsBlock(ctx context.Context, id uuid.UUID, input dtos.UpdateNewsBlockRequest) (*domain.NewsBlock, error)
 	DeleteNewsBlock(ctx context.Context, id uuid.UUID) error
 	GetAllNewsBlocks(ctx context.Context) ([]*domain.NewsBlock, error)
@@ -95,7 +95,7 @@ func (n *newsBlockUsecase) GetNewsBlockByTitle(ctx context.Context, title string
 	return newsBlock, nil
 }
 
-func (n *newsBlockUsecase) GetNewsBlockByDate(ctx context.Context, date time.Time) ([]*domain.NewsBlock, error) {
+func (n *newsBlockUsecase) GetNewsBlocksByDate(ctx context.Context, date time.Time) ([]*domain.NewsBlock, error) {
 	n.logger.Infof("Attempting to get news blocks by date: %s", date)
 
 	newsBlocks, err := n.newsBlockRepo.FindByDate(ctx, date)
@@ -113,7 +113,7 @@ func (n *newsBlockUsecase) GetNewsBlockByDate(ctx context.Context, date time.Tim
 	return newsBlocks, nil
 }
 
-func (n *newsBlockUsecase) GetNewsBlockByAuthorID(ctx context.Context, id uuid.UUID) ([]*domain.NewsBlock, error) {
+func (n *newsBlockUsecase) GetNewsBlocksByAuthor(ctx context.Context, id uuid.UUID) ([]*domain.NewsBlock, error) {
 	n.logger.Infof("Attempting to get news blocks by author id: %s", id)
 
 	newsBlocks, err := n.newsBlockRepo.FindByAuthorID(ctx, id)

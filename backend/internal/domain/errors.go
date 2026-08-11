@@ -34,6 +34,7 @@ var (
 	ErrNoPermissionUpdateEventRegistration = errors.New("you do not have the permissions to update this registration")
 
 	ErrEventReviewNotFound       = errors.New("event review not found")
+	ErrEventReviewsNotFound      = errors.New("event reviews not found")
 	ErrFailedToCreateEventReview = errors.New("failed to create event review")
 	ErrFailedToUpdateEventReview = errors.New("failed to update event review")
 	ErrFailedToDeleteEventReview = errors.New("failed to delete event review")
