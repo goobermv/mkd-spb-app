@@ -20,9 +20,9 @@ type EventReviewHandler struct {
 	validator          *validator.Validate
 }
 
-func NewEventReviewHandler(applicationUseCase usecase.EventReviewUsecase, logger logger.Logger, validator *validator.Validate) *EventReviewHandler {
+func NewEventReviewHandler(eventReviewUseCase usecase.EventReviewUsecase, logger logger.Logger, validator *validator.Validate) *EventReviewHandler {
 	return &EventReviewHandler{
-		eventReviewUsecase: applicationUseCase,
+		eventReviewUsecase: eventReviewUseCase,
 		logger:             logger,
 		validator:          validator,
 	}
@@ -93,7 +93,7 @@ func (h *EventReviewHandler) GetEventReview(w http.ResponseWriter, r *http.Reque
 	respondJSON(w, http.StatusOK, mapToEventReviewResponse(eventReview))
 }
 
-func (h *EventReviewHandler) GetEventReviewByEventID(w http.ResponseWriter, r *http.Request) {
+func (h *EventReviewHandler) GetEventReviewsByEvent(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
 
 	idStr := chi.URLParam(r, "event_id")
@@ -104,7 +104,7 @@ func (h *EventReviewHandler) GetEventReviewByEventID(w http.ResponseWriter, r *h
 		return
 	}
 
-	eventReviews, err := h.eventReviewUsecase.GetEventReviewsByEventID(r.Context(), eventID)
+	eventReviews, err := h.eventReviewUsecase.GetEventReviewsByEvent(r.Context(), eventID)
 	if err != nil {
 		if errors.Is(err, domain.ErrEventReviewsNotFound) {
 			h.logger.Warnf("No event reviews found")
@@ -121,7 +121,7 @@ func (h *EventReviewHandler) GetEventReviewByEventID(w http.ResponseWriter, r *h
 		response[i] = mapToEventReviewResponse(eventReview)
 	}
 
-	h.logger.Successf("HTTP response 200 OK: retrieved %d eventReviews", len(eventReviews))
+	h.logger.Successf("HTTP response 200 OK: retrieved %d event reviews", len(eventReviews))
 	respondJSON(w, http.StatusOK, response)
 }
 

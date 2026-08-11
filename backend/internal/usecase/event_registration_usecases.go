@@ -14,7 +14,7 @@ import (
 type EventRegistrationUsecase interface {
 	CreateEventRegistration(ctx context.Context, input dtos.CreateRegistrationRequest) (*domain.EventRegistration, error)
 	GetEventRegistration(ctx context.Context, id uuid.UUID) (*domain.EventRegistration, error)
-	GetEventRegistrationByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error)
+	GetEventRegistrationsByEvent(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error)
 	GetEventRegistrationsByUser(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error)
 	UpdateEventRegistration(ctx context.Context, id uuid.UUID, input dtos.UpdateRegistrationRequest) (*domain.EventRegistration, error)
 	DeleteEventRegistration(ctx context.Context, id uuid.UUID) error
@@ -71,7 +71,7 @@ func (e *eventRegistrationUsecase) GetEventRegistration(ctx context.Context, id 
 	return eventRegistration, nil
 }
 
-func (e *eventRegistrationUsecase) GetEventRegistrationByEventID(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error) {
+func (e *eventRegistrationUsecase) GetEventRegistrationsByEvent(ctx context.Context, id uuid.UUID) ([]*domain.EventRegistration, error) {
 	e.logger.Infof("Attempting to get registrations by event ID: %s", id)
 
 	eventRegistrations, err := e.eventRegistrationRepo.FindByEventID(ctx, id)
