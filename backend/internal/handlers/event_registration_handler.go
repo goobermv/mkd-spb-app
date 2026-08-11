@@ -135,7 +135,7 @@ func (h *EventRegistrationHandler) GetEventRegistrationsByUser(w http.ResponseWr
 		return
 	}
 
-	eventRegistrations, err := h.eventRegistrationUsecase.GetEventRegistrationsByEvent(r.Context(), userID)
+	eventRegistrations, err := h.eventRegistrationUsecase.GetEventRegistrationsByUser(r.Context(), userID)
 	if err != nil {
 		if errors.Is(err, domain.ErrEventRegistrationsNotFound) {
 			h.logger.Warnf("No event registrations found")
