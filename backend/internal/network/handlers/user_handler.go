@@ -236,6 +236,49 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, mapToUserResponse(user))
 }
 
+func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
+
+	idStr := chi.URLParam(r, "id")
+	userID, err := uuid.Parse(idStr)
+	if err != nil {
+		h.logger.Errorf(err, "Invalid user ID format in URL for update: %s", idStr)
+		respondError(w, http.StatusBadRequest, "Invalid ID format")
+		return
+	}
+
+	var input dtos.UpdateUserPasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		h.logger.Errorf(err, "Failed to decode update user input for ID: %s", userID)
+		respondError(w, http.StatusBadRequest, "Invalid request format")
+		return
+	}
+
+	if err := h.validator.Struct(input); err != nil {
+		h.logger.Errorf(err, "Validation failed for update user input for ID: %s", userID)
+		respondError(w, http.StatusBadRequest, "Validation error: "+err.Error())
+		return
+	}
+
+	err = h.userUsecase.UpdatePassword(r.Context(), userID, input)
+	if err != nil {
+		if errors.Is(err, domain.ErrUserNotFound) {
+			h.logger.Warnf("User not found for update, ID: %s", userID)
+			respondError(w, http.StatusNotFound, err.Error())
+			return
+		}
+		h.logger.Errorf(err, "Internal error during update for user ID: %s", userID)
+		respondError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	h.logger.Successf("HTTP response 200 OK for updated user ID: %s", userID)
+
+	respondJSON(w, http.StatusOK, map[string]string{
+		"message": "Password updated successfully",
+	})
+}
+
 func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
 
