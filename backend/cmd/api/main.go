@@ -25,7 +25,13 @@ import (
 )
 
 func main() {
-	dbURL := os.Getenv("DATABASE_URL")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
 	if dbURL == "" {
 		dbURL = "postgres://user:password@localhost:5432/mkd_spb?sslmode=disable"
 	}
