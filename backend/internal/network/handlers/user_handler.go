@@ -8,8 +8,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	"github.com/goobermv/mkd-spb-app/internal/domain"
-	"github.com/goobermv/mkd-spb-app/internal/handlers/dtos"
-	"github.com/goobermv/mkd-spb-app/internal/usecase"
+	"github.com/goobermv/mkd-spb-app/internal/network/dtos"
+	usecase "github.com/goobermv/mkd-spb-app/internal/usecases"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
 )

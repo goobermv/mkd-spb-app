@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/goobermv/mkd-spb-app/internal/domain"
-	"github.com/goobermv/mkd-spb-app/internal/handlers/dtos"
+	"github.com/goobermv/mkd-spb-app/internal/network/dtos"
 	"github.com/goobermv/mkd-spb-app/internal/repositories/interfaces"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
