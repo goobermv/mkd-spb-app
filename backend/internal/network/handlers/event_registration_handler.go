@@ -92,7 +92,7 @@ func (h *EventRegistrationHandler) GetEventRegistration(w http.ResponseWriter, r
 	respondJSON(w, http.StatusOK, mapToEventRegistrationResponse(eventRegistration))
 }
 
-func (h *EventRegistrationHandler) GetEventRegistrationByEvent(w http.ResponseWriter, r *http.Request) {
+func (h *EventRegistrationHandler) GetEventRegistrationsByEvent(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
 
 	idStr := chi.URLParam(r, "event_id")
