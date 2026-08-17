@@ -16,17 +16,6 @@ services:
     networks:
       - mkd_network
 
-  redis:
-    image: redis:7-alpine
-    container_name: mkd_redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redisdata:/data
-    networks:
-      - mkd_network
-
   backend:
     build:
       context: ./backend
@@ -40,11 +29,8 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=4601
       - DB_NAME=mkd_spb_app_db
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
     depends_on:
       - postgres
-      - redis
     volumes:
       - ./backend:/app
     networks:
@@ -67,7 +53,6 @@ services:
 
 volumes:
   pgdata:
-  redisdata:
 
 networks:
   mkd_network:
