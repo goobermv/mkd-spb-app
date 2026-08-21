@@ -9,10 +9,19 @@ const LoginPage = ({ setCurrentUser }) => {
     const formData = new FormData(e.target);
     const email = formData.get('email');
     
-    const role = (email.includes('admin') || email.includes('activist')) ? 'activist' : 'user';
+    let role = 'user';
+    let fullName = 'Обычный Пользователь';
+
+    if (email.includes('admin')) {
+      role = 'admin';
+      fullName = 'Администратор МКД';
+    } else if (email.includes('activist')) {
+      role = 'activist';
+      fullName = 'Активист Иванов';
+    }
 
     setCurrentUser({
-      fullName: role === 'activist' ? "Активист Иванов" : "Обычный Пользователь",
+      fullName: fullName,
       email: email,
       birthDate: "2000-01-01",
       country: "Россия",
@@ -36,7 +45,7 @@ const LoginPage = ({ setCurrentUser }) => {
             name="email"
             type="email" 
             required 
-            placeholder="test@mail.ru (или activist@mail.ru)"
+            placeholder="admin@mail.ru, activist@... или любая"
             className="w-full h-12 rounded-full px-5 mb-6 outline-none border border-transparent focus:border-[#0FA958] transition-colors" 
           />
 

@@ -6,6 +6,7 @@ const Layout = ({ children, currentUser }) => {
   const navigate = useNavigate();
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isProfilePage = location.pathname === '/profile';
 
   const linkClass = (path) => 
     `font-bold text-lg hover:text-[#0FA958] transition-colors ${
@@ -73,7 +74,7 @@ const Layout = ({ children, currentUser }) => {
         {children}
       </main>
 
-      {!isAuthPage && (
+      {!isAuthPage && !isProfilePage && (
         <footer className="bg-[#E4D596] py-10 px-8 mt-auto border-t-[12px] border-[#D3C380]">
           <div className="container mx-auto max-w-[1200px]">
             <h4 className="font-bold text-xl mb-4 text-gray-800">Доп инфа. (Контакты и т.д.)</h4>
