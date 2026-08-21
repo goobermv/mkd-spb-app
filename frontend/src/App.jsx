@@ -12,6 +12,38 @@ const SECTORS = [
   "Спорт и здоровье"
 ];
 
+const COUNTRIES = [
+  "Россия", "Беларусь", "Казахстан", "Австралия", "Австрия", "Азербайджан", "Албания", 
+  "Алжир", "Ангола", "Андорра", "Антигуа и Барбуда", "Аргентина", "Армения", "Афганистан", 
+  "Багамские Острова", "Бангладеш", "Барбадос", "Бахрейн", "Белиз", "Бельгия", "Бенин", 
+  "Болгария", "Боливия", "Босния и Герцеговина", "Ботсвана", "Бразилия", "Бруней", 
+  "Буркина-Фасо", "Бурунди", "Бутан", "Вануату", "Ватикан", "Великобритания", "Венгрия", 
+  "Венесуэла", "Восточный Тимор", "Вьетнам", "Габон", "Гаити", "Гайана", "Гамбия", "Гана", 
+  "Гватемала", "Гвинея", "Гвинея-Бисау", "Германия", "Гондурас", "Гренада", "Греция", 
+  "Грузия", "Дания", "Джибути", "Доминика", "Доминиканская Республика", "Египет", 
+  "Замбия", "Зимбабве", "Израиль", "Индия", "Индонезия", "Иордания", "Ирак", "Иран", 
+  "Ирландия", "Исландия", "Испания", "Италия", "Йемен", "Кабо-Верде", "Камбоджа", 
+  "Камерун", "Канада", "Катар", "Кения", "Кипр", "Кыргызстан", "Кирибати", "Китай", 
+  "Колумбия", "Коморские Острова", "Конго (ДРК)", "Конго (Республика)", "Коста-Рика", 
+  "Кот-д'Ивуар", "Куба", "Кувейт", "Лаос", "Латвия", "Лесото", "Либерия", "Ливан", 
+  "Ливия", "Литва", "Лихтенштейн", "Люксембург", "Маврикий", "Мавритания", "Мадагаскар", 
+  "Малави", "Малайзия", "Мали", "Мальдивы", "Мальта", "Марокко", "Маршалловы Острова", 
+  "Мексика", "Микронезия", "Мозамбик", "Молдавия", "Монако", "Монголия", "Мьянма", 
+  "Намибия", "Науру", "Непал", "Нигер", "Нигерия", "Нидерланды", "Никарагуа", 
+  "Новая Зеландия", "Норвегия", "ОАЭ", "Оман", "Пакистан", "Палау", "Панама", 
+  "Папуа — Новая Гвинея", "Парагвай", "Перу", "Польша", "Португалия", "Руанда", 
+  "Румыния", "Сальвадор", "Самоа", "Сан-Марино", "Сан-Томе и Принсипи", "Саудовская Аравия", 
+  "Северная Македония", "Сейшельские Острова", "Сенегал", "Сент-Винсент и Гренадины", 
+  "Сент-Китс и Невис", "Сент-Люсия", "Сербия", "Сингапур", "Сирия", "Словакия", 
+  "Словения", "США", "Сомали", "Судан", "Суринам", "Сьерра-Леоне", "Таджикистан", 
+  "Таиланд", "Танзания", "Того", "Тонга", "Тринидад и Тобаго", "Тувалу", "Тунис", 
+  "Туркменистан", "Турция", "Уганда", "Узбекистан", "Украина", "Уругвай", "Фиджи", 
+  "Филиппины", "Финляндия", "Франция", "Хорватия", "ЦАР", "Чад", "Черногория", "Чехия", 
+  "Чили", "Швейцария", "Швеция", "Шри-Ланка", "Эквадор", "Экваториальная Гвинея", 
+  "Эритрея", "Эсватини", "Эстония", "Эфиопия", "ЮАР", "Южная Корея", "Южный Судан", 
+  "Ямайка", "Япония"
+];
+
 const ScrollManager = () => {
   const { pathname, hash } = useLocation();
 
@@ -76,20 +108,253 @@ const NewsCard = ({ title, date, description }) => (
   </div>
 );
 
+const LoginPage = ({ setCurrentUser }) => {
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    
+    setCurrentUser(prev => prev || {
+      fullName: "Пользователь",
+      email: email,
+      birthDate: "Не указана",
+      country: "Не указана",
+      jobField: "Не указано",
+      vkLink: "",
+      userDescription: ""
+    });
+    
+    navigate('/profile');
+  };
+
+  return (
+    <div className="flex-grow flex items-center justify-center bg-white py-12 px-4">
+      <div className="bg-[#F6EFE6] w-full max-w-md rounded-[30px] p-10 shadow-sm">
+        <h2 className="text-3xl font-bold mb-8 text-gray-900">Вход</h2>
+        
+        <form onSubmit={handleLogin} className="flex flex-col">
+          <label className="text-lg font-bold mb-2 text-gray-900">Почта</label>
+          <input 
+            name="email"
+            type="email" 
+            required 
+            className="w-full h-12 rounded-full px-5 mb-6 outline-none border border-transparent focus:border-[#0FA958] transition-colors" 
+          />
+
+          <label className="text-lg font-bold mb-2 text-gray-900">Пароль</label>
+          <input 
+            type="password" 
+            required 
+            className="w-full h-12 rounded-full px-5 mb-8 outline-none border border-transparent focus:border-[#0FA958] transition-colors" 
+          />
+
+          <button 
+            type="submit" 
+            className="bg-[#0FA958] text-white font-bold py-3 rounded-full mb-4 hover:bg-green-600 transition-colors shadow-md"
+          >
+            Войти
+          </button>
+
+          <button type="button" className="text-gray-900 font-bold hover:text-gray-600 transition-colors text-center w-full mb-6">
+            Забыл пароль
+          </button>
+
+          <button 
+            type="button"
+            onClick={() => navigate('/register')}
+            className="text-sm font-semibold text-gray-700 hover:text-[#0FA958] transition-colors text-center w-full underline"
+          >
+            Ещё не зарегистрирован? Создай аккаунт
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const RegisterPage = ({ setCurrentUser }) => {
+  const navigate = useNavigate();
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    setCurrentUser(data);
+    navigate('/profile'); 
+  };
+
+  return (
+    <div className="flex-grow flex items-center justify-center bg-white py-12 px-4">
+      <div className="bg-[#F6EFE6] w-full max-w-3xl rounded-[30px] p-10 shadow-sm">
+        <h2 className="text-3xl font-bold mb-8 text-gray-900 text-center">Регистрация</h2>
+        
+        <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+          
+          <div className="flex flex-col col-span-1 md:col-span-2">
+            <label className="text-base font-bold mb-2 text-gray-900">ФИО</label>
+            <input name="fullName" type="text" required className="w-full h-10 rounded-full px-5 outline-none focus:border-[#0FA958] border border-transparent shadow-sm" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-base font-bold mb-2 text-gray-900">Электронная почта</label>
+            <input name="email" type="email" required className="w-full h-10 rounded-full px-5 outline-none focus:border-[#0FA958] border border-transparent shadow-sm" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-base font-bold mb-2 text-gray-900">Пароль</label>
+            <input name="passwordHash" type="password" required className="w-full h-10 rounded-full px-5 outline-none focus:border-[#0FA958] border border-transparent shadow-sm" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-base font-bold mb-2 text-gray-900">Дата рождения</label>
+            <input name="birthDate" type="date" required className="w-full h-10 rounded-full px-5 outline-none focus:border-[#0FA958] border border-transparent shadow-sm text-gray-600" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-base font-bold mb-2 text-gray-900">Страна</label>
+            <input 
+              name="country" 
+              list="countries-list" 
+              type="text" 
+              required 
+              placeholder="Выберите или введите страну"
+              className="w-full h-10 rounded-full px-5 outline-none focus:border-[#0FA958] border border-transparent shadow-sm" 
+            />
+            <datalist id="countries-list">
+              {COUNTRIES.map(c => <option key={c} value={c} />)}
+            </datalist>
+          </div>
+
+          <div className="flex flex-col col-span-1 md:col-span-2">
+            <label className="text-base font-bold mb-2 text-gray-900">Место учебы/работы</label>
+            <input name="jobField" type="text" required className="w-full h-10 rounded-full px-5 outline-none focus:border-[#0FA958] border border-transparent shadow-sm" />
+          </div>
+
+          <div className="flex flex-col col-span-1 md:col-span-2">
+            <label className="text-base font-bold mb-2 text-gray-900">Ссылка на ВКонтакте</label>
+            <input name="vkLink" type="url" placeholder="https://vk.com/id..." className="w-full h-10 rounded-full px-5 outline-none focus:border-[#0FA958] border border-transparent shadow-sm" />
+          </div>
+
+          <div className="flex flex-col col-span-1 md:col-span-2">
+            <label className="text-base font-bold mb-2 text-gray-900">О себе</label>
+            <textarea 
+              name="userDescription" 
+              rows="3" 
+              placeholder="Расскажите немного о себе, о ваших хобби и интересах"
+              className="w-full rounded-2xl py-3 px-5 outline-none focus:border-[#0FA958] border border-transparent shadow-sm resize-none"
+            ></textarea>
+          </div>
+
+          <div className="col-span-1 md:col-span-2 mt-4">
+            <button 
+              type="submit" 
+              className="w-full bg-[#0FA958] text-white text-lg font-bold py-3 rounded-full hover:bg-green-600 transition-colors shadow-md"
+            >
+              Создать аккаунт
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const ProfilePage = ({ currentUser, setCurrentUser }) => {
+  const navigate = useNavigate();
+
+  const user = currentUser || {
+    fullName: "Пользователь не авторизован",
+    email: "—",
+    birthDate: "—",
+    country: "—",
+    jobField: "—",
+    vkLink: "",
+    userDescription: ""
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    navigate('/');
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-12 max-w-[1000px]">
+      <div className="bg-white rounded-[40px] p-10 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-10">
+        
+        <div className="md:w-1/3 flex flex-col items-center border-r border-gray-100 pr-0 md:pr-10">
+          <div className="w-32 h-32 bg-gray-200 rounded-full mb-6 flex items-center justify-center text-4xl shadow-inner">
+            👤
+          </div>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2 text-center">{user.fullName}</h3>
+          <p className="text-gray-500 mb-8">Участник</p>
+          <button 
+            onClick={handleLogout}
+            className="text-red-500 font-bold hover:text-red-700 transition-colors"
+          >
+            Выйти из аккаунта
+          </button>
+        </div>
+        
+        <div className="md:w-2/3">
+          <h2 className="text-3xl font-bold mb-8 text-gray-800">Личный кабинет</h2>
+          
+          <div className="bg-[#F5EFE6] rounded-3xl p-6 mb-6 flex flex-col gap-3">
+            <h4 className="font-bold text-xl mb-2 text-gray-900 border-b pb-2 border-gray-300">Мои данные</h4>
+            
+            <p className="text-gray-800">
+              <strong className="font-semibold text-gray-900">Электронная почта:</strong> {user.email}
+            </p>
+            
+            <p className="text-gray-800">
+              <strong className="font-semibold text-gray-900">Дата рождения:</strong> {user.birthDate}
+            </p>
+
+            <p className="text-gray-800">
+              <strong className="font-semibold text-gray-900">Страна:</strong> {user.country}
+            </p>
+
+            <p className="text-gray-800">
+              <strong className="font-semibold text-gray-900">Место учебы/работы:</strong> {user.jobField}
+            </p>
+
+            {user.vkLink && (
+              <p className="text-gray-800">
+                <strong className="font-semibold text-gray-900">ВКонтакте:</strong>{' '}
+                <a href={user.vkLink} target="_blank" rel="noreferrer" className="text-[#0FA958] underline hover:text-green-700 break-all">
+                  {user.vkLink}
+                </a>
+              </p>
+            )}
+
+            {user.userDescription && (
+              <p className="text-gray-800">
+                <strong className="font-semibold text-gray-900">О себе:</strong> {user.userDescription}
+              </p>
+            )}
+          </div>
+
+          <div className="bg-[#E4D596] rounded-3xl p-6 text-white shadow-sm">
+            <h4 className="font-bold text-lg mb-2 text-gray-800">Мои мероприятия</h4>
+            <p className="text-gray-700">Вы пока не зарегистрированы ни на одно мероприятие.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
 const HomePage = ({ newsList }) => {
-  const heroSlides = [
-    "Место для фото 1",
-    "Место для фото 2",
-    "Место для фото 3"
-  ];
+  const heroSlides = ["Место для фото 1", "Место для фото 2", "Место для фото 3", "Место для фото 4"];
   const [heroSlide, setHeroSlide] = useState(0);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
 
   useEffect(() => {
     if (isHeroPaused) return;
-    const interval = setInterval(() => {
-      setHeroSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 4000);
+    const interval = setInterval(() => setHeroSlide((prev) => (prev + 1) % heroSlides.length), 4000);
     return () => clearInterval(interval);
   }, [isHeroPaused, heroSlides.length]);
 
@@ -98,15 +363,12 @@ const HomePage = ({ newsList }) => {
 
   const approvedNews = newsList.filter(news => news.approved);
   const top5News = approvedNews.slice(0, 5);
-
   const [newsIndex, setNewsIndex] = useState(0);
   const [isNewsPaused, setIsNewsPaused] = useState(false);
 
   useEffect(() => {
     if (isNewsPaused || top5News.length === 0) return;
-    const interval = setInterval(() => {
-      setNewsIndex((prev) => (prev + 1) % top5News.length);
-    }, 4500);
+    const interval = setInterval(() => setNewsIndex((prev) => (prev + 1) % top5News.length), 4500);
     return () => clearInterval(interval);
   }, [isNewsPaused, top5News.length]);
 
@@ -135,21 +397,11 @@ const HomePage = ({ newsList }) => {
         <div className="absolute inset-0 flex items-center justify-center text-gray-500 font-bold text-2xl">
           {heroSlides[heroSlide]}
         </div>
-        <button 
-          onClick={prevHeroSlide} 
-          className="bg-white/90 p-3 rounded-full hover:bg-white transition-all duration-300 z-10 shadow-md hover:shadow-xl hover:-translate-x-1 text-gray-700"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
+        <button onClick={prevHeroSlide} className="bg-white/90 p-3 rounded-full hover:bg-white transition-all duration-300 z-10 shadow-md hover:shadow-xl hover:-translate-x-1 text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
         </button>
-        <button 
-          onClick={nextHeroSlide} 
-          className="bg-white/90 p-3 rounded-full hover:bg-white transition-all duration-300 z-10 shadow-md hover:shadow-xl hover:translate-x-1 text-gray-700"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
+        <button onClick={nextHeroSlide} className="bg-white/90 p-3 rounded-full hover:bg-white transition-all duration-300 z-10 shadow-md hover:shadow-xl hover:translate-x-1 text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
         </button>
       </section>
 
@@ -165,39 +417,18 @@ const HomePage = ({ newsList }) => {
           >
             {top5News.length > 0 ? (
               <>
-                <button 
-                  onClick={prevNews} 
-                  className="bg-white p-3 rounded-full shadow-md transition-all duration-300 z-10 hover:shadow-lg hover:-translate-x-1 text-gray-700"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                  </svg>
+                <button onClick={prevNews} className="bg-white p-3 rounded-full shadow-md transition-all duration-300 z-10 hover:shadow-lg hover:-translate-x-1 text-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
                 </button>
-                
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                  {visibleNews.map(item => (
-                    <NewsCard 
-                      key={item.id} 
-                      title={item.title} 
-                      date={item.date} 
-                      description={item.description} 
-                    />
-                  ))}
+                  {visibleNews.map(item => <NewsCard key={item.id} title={item.title} date={item.date} description={item.description} />)}
                 </div>
-
-                <button 
-                  onClick={nextNews} 
-                  className="bg-white p-3 rounded-full shadow-md transition-all duration-300 z-10 hover:shadow-lg hover:translate-x-1 text-gray-700"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                  </svg>
+                <button onClick={nextNews} className="bg-white p-3 rounded-full shadow-md transition-all duration-300 z-10 hover:shadow-lg hover:translate-x-1 text-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                 </button>
               </>
             ) : (
-              <p className="text-center text-gray-700 text-lg w-full py-10">
-                Новостей пока нет (ожидание данных из БД).
-              </p>
+              <p className="text-center text-gray-700 text-lg w-full py-10">Новостей пока нет (ожидание данных из БД).</p>
             )}
           </div>
         </div>
@@ -205,28 +436,19 @@ const HomePage = ({ newsList }) => {
 
       <section id="about" className="container mx-auto px-4 py-16 scroll-mt-24">
         <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">О нас</h2>
-        
         <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10">
           <div className="md:w-1/2">
             <h3 className="text-2xl font-bold mb-4 text-[#0FA958]">Наша история</h3>
             <p className="text-lg font-medium mb-4">Открыт - 3 ноября 2024 г.</p>
             <p className="text-gray-700 leading-relaxed text-justify">Здесь будет располагаться подробный текст об истории создания МКД Санкт-Петербурга. Мы дополним этот текст позже, когда будет готова полная информация.</p>
           </div>
-          <div className="md:w-1/3 h-[300px] w-full bg-gray-200 rounded-3xl flex justify-center items-center text-gray-500 shadow-inner">
-             Место для фото "История"
-          </div>
+          <div className="md:w-1/3 h-[300px] w-full bg-gray-200 rounded-3xl flex justify-center items-center text-gray-500 shadow-inner">Место для фото "История"</div>
         </div>
-
         <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10">
-          <div className="md:w-1/3 h-[300px] w-full bg-gray-200 rounded-3xl flex justify-center items-center text-gray-500 shadow-inner order-2 md:order-1">
-             Место для фото "Миссия"
-          </div>
+          <div className="md:w-1/3 h-[300px] w-full bg-gray-200 rounded-3xl flex justify-center items-center text-gray-500 shadow-inner order-2 md:order-1">Место для фото "Миссия"</div>
           <div className="md:w-1/2 order-1 md:order-2">
             <h3 className="text-2xl font-bold mb-4 text-[#0FA958]">Наша миссия</h3>
-            <p className="text-lg text-gray-800 font-medium mb-4">
-              Формирование глобального сообщества лидеров на принципах равенства, 
-              укрепление долгосрочных связей СПб/РФ с миром.
-            </p>
+            <p className="text-lg text-gray-800 font-medium mb-4">Формирование глобального сообщества лидеров на принципах равенства, укрепление долгосрочных связей СПб/РФ с миром.</p>
             <p className="text-gray-700 leading-relaxed text-justify">Здесь будет размещена расширенная информация о миссии организации, ее целях и задачах на будущее.</p>
           </div>
         </div>
@@ -235,8 +457,7 @@ const HomePage = ({ newsList }) => {
       <section className="container mx-auto px-4 py-16 text-center bg-[#FCEB9C] rounded-[40px] mb-12 shadow-sm max-w-4xl">
         <h3 className="text-3xl font-bold mb-6 text-gray-800">Как стать активистом?</h3>
         <p className="text-lg mb-4 text-gray-700">Мы ищем активных людей, готовых развивать город вместе с нами!</p>
-        <p className="text-lg mb-8 text-gray-700">Здесь появится подробная инструкция по вступлению в волонтерское движение.</p>
-        <button className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full transition-colors text-lg shadow-md hover:shadow-lg">
+        <button className="bg-[#0FA958] mt-4 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full transition-colors text-lg shadow-md hover:shadow-lg">
           Подать заявку
         </button>
       </section>
@@ -246,31 +467,17 @@ const HomePage = ({ newsList }) => {
 
 const EventsPage = ({ eventsList }) => {
   const approvedEvents = eventsList.filter(event => event.approved);
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-[1200px]">
       <div className="bg-[#E4D596] rounded-[40px] p-8 pb-12 shadow-md">
-        <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 md:w-1/3 mx-auto shadow-sm">
-          Мероприятия
-        </h2>
-        
+        <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 md:w-1/3 mx-auto shadow-sm">Мероприятия</h2>
         <div className="flex flex-col md:flex-row gap-6">
           <Sidebar />
-          
           <div className="md:w-3/4 flex flex-col">
             {approvedEvents.length > 0 ? (
-              approvedEvents.map(event => (
-                <EventCard 
-                  key={event.id} 
-                  title={event.title} 
-                  date={event.date} 
-                  description={event.description} 
-                />
-              ))
+              approvedEvents.map(event => <EventCard key={event.id} title={event.title} date={event.date} description={event.description} />)
             ) : (
-              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl">
-                Мероприятий пока нет.
-              </p>
+              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl">Мероприятий пока нет.</p>
             )}
           </div>
         </div>
@@ -281,31 +488,17 @@ const EventsPage = ({ eventsList }) => {
 
 const NewsPage = ({ newsList }) => {
   const approvedNews = newsList.filter(news => news.approved);
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-[1200px]">
       <div className="bg-[#E4D596] rounded-[40px] p-8 pb-12 shadow-md">
-        <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 md:w-1/3 mx-auto shadow-sm">
-          Новости
-        </h2>
-        
+        <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 md:w-1/3 mx-auto shadow-sm">Новости</h2>
         <div className="flex flex-col md:flex-row gap-6">
           <Sidebar />
-          
           <div className="md:w-3/4 grid grid-cols-1 lg:grid-cols-2 gap-6">
             {approvedNews.length > 0 ? (
-              approvedNews.map(news => (
-                <NewsCard 
-                  key={news.id} 
-                  title={news.title} 
-                  date={news.date} 
-                  description={news.description} 
-                />
-              ))
+              approvedNews.map(news => <NewsCard key={news.id} title={news.title} date={news.date} description={news.description} />)
             ) : (
-              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl col-span-full">
-                Новостей пока нет.
-              </p>
+              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl col-span-full">Новостей пока нет.</p>
             )}
           </div>
         </div>
@@ -408,6 +601,8 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+
   const linkClass = (path) => 
     `font-bold text-lg hover:text-[#0FA958] transition-colors ${
       location.pathname === path && !location.hash ? 'text-[#0FA958]' : 'text-gray-800'
@@ -435,54 +630,45 @@ const Layout = ({ children }) => {
     <div className="min-h-screen bg-[#FBF9F6] flex flex-col font-sans">
       
       <header className="bg-white py-4 px-8 flex items-center shadow-md sticky top-0 z-50">
-        
         <div className="flex-1 flex justify-start">
           <a href="/" onClick={handleLogoClick} className="flex items-center cursor-pointer">
             <img src="/МКД_логотип.jpg" alt="МКД Логотип" className="h-16 w-16 object-contain" />
           </a>
         </div>
 
-        <nav className="hidden md:flex gap-8 items-center justify-center">
-          <a 
-            href="/#about" 
-            onClick={handleAboutClick} 
-            className={`font-bold text-lg hover:text-[#0FA958] transition-colors ${
-              location.hash === '#about' ? 'text-[#0FA958]' : 'text-gray-800'
-            }`}
-          >
-            О нас
-          </a>
-          <Link to="/city" className={linkClass('/city')}>О нашем городе</Link>
-          <Link to="/news" className={linkClass('/news')}>Новости</Link>
-          <Link to="/events" className={linkClass('/events')}>Мероприятия</Link>
-        </nav>
+        {!isAuthPage && (
+          <>
+            <nav className="hidden md:flex gap-8 items-center justify-center">
+              <a href="/#about" onClick={handleAboutClick} className={`font-bold text-lg hover:text-[#0FA958] transition-colors ${location.hash === '#about' ? 'text-[#0FA958]' : 'text-gray-800'}`}>О нас</a>
+              <Link to="/city" className={linkClass('/city')}>О нашем городе</Link>
+              <Link to="/news" className={linkClass('/news')}>Новости</Link>
+              <Link to="/events" className={linkClass('/events')}>Мероприятия</Link>
+            </nav>
 
-        <div className="flex-1 flex gap-4 items-center justify-end">
-          <button className="border-2 border-[#0FA958] text-[#0FA958] bg-white font-bold rounded-full px-4 py-1 hover:bg-[#0FA958] hover:text-white transition-colors">
-            RU
-          </button>
-          <button className="bg-[#0FA958] text-white font-bold rounded-full px-6 py-2 hover:bg-green-600 transition-colors shadow-sm">
-            Войти
-          </button>
-          <button className="bg-[#C5E1A5] text-green-900 font-bold rounded-full px-6 py-2 hover:bg-[#aed884] transition-colors shadow-sm">
-            Регистрация
-          </button>
-        </div>
+            <div className="flex-1 flex gap-4 items-center justify-end">
+              <button className="border-2 border-[#0FA958] text-[#0FA958] bg-white font-bold rounded-full px-4 py-1 hover:bg-[#0FA958] hover:text-white transition-colors">RU</button>
+              <button onClick={() => navigate('/login')} className="bg-[#0FA958] text-white font-bold rounded-full px-6 py-2 hover:bg-green-600 transition-colors shadow-sm">Войти</button>
+              <button onClick={() => navigate('/register')} className="bg-[#C5E1A5] text-green-900 font-bold rounded-full px-6 py-2 hover:bg-[#aed884] transition-colors shadow-sm">Регистрация</button>
+            </div>
+          </>
+        )}
       </header>
 
-      <main className="flex-grow">
+      <main className="flex-grow flex flex-col">
         {children}
       </main>
 
-      <footer className="bg-[#E4D596] py-10 px-8 mt-auto border-t-[12px] border-[#D3C380]">
-        <div className="container mx-auto max-w-[1200px]">
-          <h4 className="font-bold text-xl mb-4 text-gray-800">Доп инфа. (Контакты и т.д.)</h4>
-          <ul className="list-disc pl-5 font-medium space-y-2 text-gray-800">
-            <li>Почта</li>
-            <li>Ссылки на соц. сети</li>
-          </ul>
-        </div>
-      </footer>
+      {!isAuthPage && (
+        <footer className="bg-[#E4D596] py-10 px-8 mt-auto border-t-[12px] border-[#D3C380]">
+          <div className="container mx-auto max-w-[1200px]">
+            <h4 className="font-bold text-xl mb-4 text-gray-800">Доп инфа. (Контакты и т.д.)</h4>
+            <ul className="list-disc pl-5 font-medium space-y-2 text-gray-800">
+              <li>Почта</li>
+              <li>Ссылки на соц. сети</li>
+            </ul>
+          </div>
+        </footer>
+      )}
       
     </div>
   );
@@ -491,21 +677,9 @@ const Layout = ({ children }) => {
 export default function App() {
   const [news, setNews] = useState([]);
   const [events, setEvents] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  // Настройка подключения к вашей БД / API
   useEffect(() => {
-    // В будущем расскоментируйте или настройте под ваш endpoint бэкенда:
-    /*
-    fetch('/api/news')
-      .then(res => res.json())
-      .then(data => setNews(data))
-      .catch(() => setNews([]));
-
-    fetch('/api/events')
-      .then(res => res.json())
-      .then(data => setEvents(data))
-      .catch(() => setEvents([]));
-    */
   }, []);
 
   return (
@@ -517,6 +691,9 @@ export default function App() {
           <Route path="/events" element={<EventsPage eventsList={events} />} />
           <Route path="/news" element={<NewsPage newsList={news} />} />
           <Route path="/city" element={<CityPage />} />
+          <Route path="/login" element={<LoginPage setCurrentUser={setCurrentUser} />} />
+          <Route path="/register" element={<RegisterPage setCurrentUser={setCurrentUser} />} />
+          <Route path="/profile" element={<ProfilePage currentUser={currentUser} setCurrentUser={setCurrentUser} />} />
         </Routes>
       </Layout>
     </BrowserRouter>
