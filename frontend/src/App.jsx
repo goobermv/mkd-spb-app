@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 
 const SECTORS = [
   "Государственное управление",
@@ -12,27 +12,19 @@ const SECTORS = [
   "Спорт и здоровье"
 ];
 
-const DB_NEWS = [
-  { id: 1, title: "Инфоповод 1", date: "01.08.2026", approved: true },
-  { id: 2, title: "Инфоповод 2", date: "05.08.2026", approved: true },
-  { id: 3, title: "Инфоповод 3", date: "10.08.2026", approved: true },
-  { id: 4, title: "Инфоповод 4", date: "12.08.2026", approved: true },
-  { id: 5, title: "Инфоповод 5", date: "15.08.2026", approved: true },
-  { id: 6, title: "Скрытая новость", date: "16.08.2026", approved: false },
-];
-
-const DB_EVENTS = [
-  { id: 1, title: "Мероприятие 1", date: "20.08.2026", approved: true },
-  { id: 2, title: "Мероприятие 2", date: "22.08.2026", approved: true },
-  { id: 3, title: "Скрытое мероприятие", date: "25.08.2026", approved: false },
-];
-
 const ScrollManager = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [pathname]);
+    if (hash === '#about') {
+      const element = document.getElementById('about');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [pathname, hash]);
 
   return null;
 };
@@ -53,12 +45,12 @@ const Sidebar = () => (
   </aside>
 );
 
-const EventCard = ({ title, date }) => (
+const EventCard = ({ title, date, description }) => (
   <div className="bg-[#F5EFE6] rounded-2xl p-6 flex flex-col md:flex-row justify-between mb-6 shadow-sm">
     <div className="flex flex-col justify-between w-full md:w-1/2 pr-4">
       <div>
         <h3 className="text-xl font-bold mb-2">{title}</h3>
-        <p className="text-gray-700">Текст с информацией...</p>
+        <p className="text-gray-700">{description || "Текст с информацией..."}</p>
       </div>
       <div className="mt-8">
         <p className="mb-4 font-semibold text-gray-600">Дата: {date}</p>
@@ -73,35 +65,75 @@ const EventCard = ({ title, date }) => (
   </div>
 );
 
-const NewsCard = ({ title, date }) => (
-  <div className="bg-[#F5EFE6] rounded-2xl p-6 flex flex-col shadow-sm h-full">
-    <h3 className="text-xl font-bold mb-2">{title}</h3>
-    <p className="text-gray-700 mb-6 flex-grow">Текст с информацией...</p>
-    <p className="mb-4 font-semibold text-gray-600">Дата: {date}</p>
-    <div className="w-full flex justify-center items-center bg-white rounded-xl h-[200px] border border-gray-100 shadow-inner">
-      <span className="text-gray-400">Афиша</span>
+const NewsCard = ({ title, date, description }) => (
+  <div className="bg-[#F5EFE6] rounded-2xl p-4 flex flex-col shadow-sm h-full">
+    <div className="bg-white flex items-center justify-center text-gray-400 h-[150px] rounded-xl mb-4 border border-gray-100">
+      Фото новости
     </div>
+    <h4 className="font-bold mb-2 text-lg">{title}</h4>
+    <p className="text-sm text-gray-600 mb-4 flex-grow">{description || "Краткая информация..."}</p>
+    <p className="text-sm font-bold text-gray-800">{date}</p>
   </div>
 );
 
-const HomePage = () => {
+const HomePage = ({ newsList }) => {
+  const heroSlides = [
+    "Место для фото 1",
+    "Место для фото 2",
+    "Место для фото 3"
+  ];
   const [heroSlide, setHeroSlide] = useState(0);
-  const heroSlidesCount = 3;
-  const nextHeroSlide = () => setHeroSlide((prev) => (prev + 1) % heroSlidesCount);
-  const prevHeroSlide = () => setHeroSlide((prev) => (prev - 1 + heroSlidesCount) % heroSlidesCount);
+  const [isHeroPaused, setIsHeroPaused] = useState(false);
 
-  const [newsStartIndex, setNewsStartIndex] = useState(0);
-  const approvedNews = DB_NEWS.filter(news => news.approved);
-  const visibleNews = approvedNews.slice(newsStartIndex, newsStartIndex + 3);
-  
-  const nextNews = () => setNewsStartIndex((prev) => Math.min(prev + 1, approvedNews.length - 3));
-  const prevNews = () => setNewsStartIndex((prev) => Math.max(prev - 1, 0));
+  useEffect(() => {
+    if (isHeroPaused) return;
+    const interval = setInterval(() => {
+      setHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isHeroPaused, heroSlides.length]);
+
+  const nextHeroSlide = () => setHeroSlide((prev) => (prev + 1) % heroSlides.length);
+  const prevHeroSlide = () => setHeroSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+
+  const approvedNews = newsList.filter(news => news.approved);
+  const top5News = approvedNews.slice(0, 5);
+
+  const [newsIndex, setNewsIndex] = useState(0);
+  const [isNewsPaused, setIsNewsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isNewsPaused || top5News.length === 0) return;
+    const interval = setInterval(() => {
+      setNewsIndex((prev) => (prev + 1) % top5News.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [isNewsPaused, top5News.length]);
+
+  const nextNews = () => setNewsIndex((prev) => (prev + 1) % top5News.length);
+  const prevNews = () => setNewsIndex((prev) => (prev - 1 + top5News.length) % top5News.length);
+
+  const getVisibleNews = () => {
+    if (top5News.length === 0) return [];
+    const count = Math.min(3, top5News.length);
+    const visible = [];
+    for (let i = 0; i < count; i++) {
+      visible.push(top5News[(newsIndex + i) % top5News.length]);
+    }
+    return visible;
+  };
+
+  const visibleNews = getVisibleNews();
 
   return (
     <div className="flex flex-col">
-      <section className="bg-gray-200 w-full h-[400px] relative overflow-hidden flex items-center justify-between px-10">
+      <section 
+        className="bg-gray-200 w-full h-[400px] relative overflow-hidden flex items-center justify-between px-10"
+        onMouseEnter={() => setIsHeroPaused(true)}
+        onMouseLeave={() => setIsHeroPaused(false)}
+      >
         <div className="absolute inset-0 flex items-center justify-center text-gray-500 font-bold text-2xl">
-          Место для фото {heroSlide + 1}
+          {heroSlides[heroSlide]}
         </div>
         <button 
           onClick={prevHeroSlide} 
@@ -126,44 +158,52 @@ const HomePage = () => {
           <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 mx-auto shadow-sm">
             Новости
           </h2>
-          <div className="bg-[#EEE6C4] rounded-[30px] p-8 flex items-center gap-4 relative">
-            <button 
-              onClick={prevNews} 
-              disabled={newsStartIndex === 0} 
-              className="bg-white p-3 rounded-full shadow-md disabled:opacity-40 disabled:hover:translate-x-0 transition-all duration-300 z-10 hover:shadow-lg hover:-translate-x-1 text-gray-700"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
-            </button>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-              {visibleNews.map(item => (
-                <div key={item.id} className="bg-[#F5EFE6] rounded-2xl p-4 flex flex-col h-full shadow-sm">
-                  <div className="bg-white flex items-center justify-center text-gray-400 h-[150px] rounded-xl mb-4 border border-gray-100">
-                    Фото новости
-                  </div>
-                  <h4 className="font-bold mb-2 text-lg">{item.title}</h4>
-                  <p className="text-sm text-gray-600 mb-4 flex-grow">Краткая информация...</p>
-                  <p className="text-sm font-bold text-gray-800">{item.date}</p>
+          <div 
+            className="bg-[#EEE6C4] rounded-[30px] p-8 flex items-center gap-4 relative min-h-[300px]"
+            onMouseEnter={() => setIsNewsPaused(true)}
+            onMouseLeave={() => setIsNewsPaused(false)}
+          >
+            {top5News.length > 0 ? (
+              <>
+                <button 
+                  onClick={prevNews} 
+                  className="bg-white p-3 rounded-full shadow-md transition-all duration-300 z-10 hover:shadow-lg hover:-translate-x-1 text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                  </svg>
+                </button>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                  {visibleNews.map(item => (
+                    <NewsCard 
+                      key={item.id} 
+                      title={item.title} 
+                      date={item.date} 
+                      description={item.description} 
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <button 
-              onClick={nextNews} 
-              disabled={newsStartIndex >= approvedNews.length - 3} 
-              className="bg-white p-3 rounded-full shadow-md disabled:opacity-40 disabled:hover:translate-x-0 transition-all duration-300 z-10 hover:shadow-lg hover:translate-x-1 text-gray-700"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
-            </button>
+                <button 
+                  onClick={nextNews} 
+                  className="bg-white p-3 rounded-full shadow-md transition-all duration-300 z-10 hover:shadow-lg hover:translate-x-1 text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
+              </>
+            ) : (
+              <p className="text-center text-gray-700 text-lg w-full py-10">
+                Новостей пока нет (ожидание данных из БД).
+              </p>
+            )}
           </div>
         </div>
       </section>
 
-      <section className="container mx-auto px-4 py-16">
+      <section id="about" className="container mx-auto px-4 py-16 scroll-mt-24">
         <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">О нас</h2>
         
         <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10">
@@ -204,8 +244,8 @@ const HomePage = () => {
   );
 };
 
-const EventsPage = () => {
-  const approvedEvents = DB_EVENTS.filter(event => event.approved);
+const EventsPage = ({ eventsList }) => {
+  const approvedEvents = eventsList.filter(event => event.approved);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-[1200px]">
@@ -220,10 +260,17 @@ const EventsPage = () => {
           <div className="md:w-3/4 flex flex-col">
             {approvedEvents.length > 0 ? (
               approvedEvents.map(event => (
-                <EventCard key={event.id} title={event.title} date={event.date} />
+                <EventCard 
+                  key={event.id} 
+                  title={event.title} 
+                  date={event.date} 
+                  description={event.description} 
+                />
               ))
             ) : (
-              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl">Мероприятий пока нет.</p>
+              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl">
+                Мероприятий пока нет.
+              </p>
             )}
           </div>
         </div>
@@ -232,8 +279,8 @@ const EventsPage = () => {
   );
 };
 
-const NewsPage = () => {
-  const approvedNews = DB_NEWS.filter(news => news.approved);
+const NewsPage = ({ newsList }) => {
+  const approvedNews = newsList.filter(news => news.approved);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-[1200px]">
@@ -248,10 +295,17 @@ const NewsPage = () => {
           <div className="md:w-3/4 grid grid-cols-1 lg:grid-cols-2 gap-6">
             {approvedNews.length > 0 ? (
               approvedNews.map(news => (
-                <NewsCard key={news.id} title={news.title} date={news.date} />
+                <NewsCard 
+                  key={news.id} 
+                  title={news.title} 
+                  date={news.date} 
+                  description={news.description} 
+                />
               ))
             ) : (
-              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl col-span-full">Новостей пока нет.</p>
+              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl col-span-full">
+                Новостей пока нет.
+              </p>
             )}
           </div>
         </div>
@@ -262,7 +316,6 @@ const NewsPage = () => {
 
 const CityPage = () => (
   <div className="container mx-auto px-4 py-12 max-w-[1200px]">
-    
     <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">
       О нашем городе — Санкт-Петербург
     </h2>
@@ -353,11 +406,30 @@ const CityPage = () => (
 
 const Layout = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const linkClass = (path) => 
     `font-bold text-lg hover:text-[#0FA958] transition-colors ${
-      location.pathname === path ? 'text-[#0FA958]' : 'text-gray-800'
+      location.pathname === path && !location.hash ? 'text-[#0FA958]' : 'text-gray-800'
     }`;
+
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    if (location.pathname === '/' && !location.hash) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate('/');
+    }
+  };
+
+  const handleAboutClick = (e) => {
+    e.preventDefault();
+    if (location.pathname === '/') {
+      document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/#about');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FBF9F6] flex flex-col font-sans">
@@ -365,13 +437,21 @@ const Layout = ({ children }) => {
       <header className="bg-white py-4 px-8 flex items-center shadow-md sticky top-0 z-50">
         
         <div className="flex-1 flex justify-start">
-          <Link to="/" className="flex items-center">
+          <a href="/" onClick={handleLogoClick} className="flex items-center cursor-pointer">
             <img src="/МКД_логотип.jpg" alt="МКД Логотип" className="h-16 w-16 object-contain" />
-          </Link>
+          </a>
         </div>
 
         <nav className="hidden md:flex gap-8 items-center justify-center">
-          <Link to="/" className={linkClass('/')}>О нас</Link>
+          <a 
+            href="/#about" 
+            onClick={handleAboutClick} 
+            className={`font-bold text-lg hover:text-[#0FA958] transition-colors ${
+              location.hash === '#about' ? 'text-[#0FA958]' : 'text-gray-800'
+            }`}
+          >
+            О нас
+          </a>
           <Link to="/city" className={linkClass('/city')}>О нашем городе</Link>
           <Link to="/news" className={linkClass('/news')}>Новости</Link>
           <Link to="/events" className={linkClass('/events')}>Мероприятия</Link>
@@ -409,14 +489,33 @@ const Layout = ({ children }) => {
 };
 
 export default function App() {
+  const [news, setNews] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  // Настройка подключения к вашей БД / API
+  useEffect(() => {
+    // В будущем расскоментируйте или настройте под ваш endpoint бэкенда:
+    /*
+    fetch('/api/news')
+      .then(res => res.json())
+      .then(data => setNews(data))
+      .catch(() => setNews([]));
+
+    fetch('/api/events')
+      .then(res => res.json())
+      .then(data => setEvents(data))
+      .catch(() => setEvents([]));
+    */
+  }, []);
+
   return (
     <BrowserRouter>
       <ScrollManager />
       <Layout>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/news" element={<NewsPage />} />
+          <Route path="/" element={<HomePage newsList={news} />} />
+          <Route path="/events" element={<EventsPage eventsList={events} />} />
+          <Route path="/news" element={<NewsPage newsList={news} />} />
           <Route path="/city" element={<CityPage />} />
         </Routes>
       </Layout>
