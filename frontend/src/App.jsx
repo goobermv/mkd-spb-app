@@ -103,8 +103,22 @@ const HomePage = () => {
         <div className="absolute inset-0 flex items-center justify-center text-gray-500 font-bold text-2xl">
           Место для фото {heroSlide + 1}
         </div>
-        <button onClick={prevHeroSlide} className="bg-white/80 p-3 rounded-full hover:bg-white transition-colors z-10 shadow-lg">⬅️</button>
-        <button onClick={nextHeroSlide} className="bg-white/80 p-3 rounded-full hover:bg-white transition-colors z-10 shadow-lg">➡️</button>
+        <button 
+          onClick={prevHeroSlide} 
+          className="bg-white/90 p-3 rounded-full hover:bg-white transition-all duration-300 z-10 shadow-md hover:shadow-xl hover:-translate-x-1 text-gray-700"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </button>
+        <button 
+          onClick={nextHeroSlide} 
+          className="bg-white/90 p-3 rounded-full hover:bg-white transition-all duration-300 z-10 shadow-md hover:shadow-xl hover:translate-x-1 text-gray-700"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
       </section>
 
       <section className="container mx-auto px-4 py-12">
@@ -116,8 +130,12 @@ const HomePage = () => {
             <button 
               onClick={prevNews} 
               disabled={newsStartIndex === 0} 
-              className="bg-white p-3 rounded-full shadow-md disabled:opacity-30 transition-opacity z-10"
-            >⬅️</button>
+              className="bg-white p-3 rounded-full shadow-md disabled:opacity-40 disabled:hover:translate-x-0 transition-all duration-300 z-10 hover:shadow-lg hover:-translate-x-1 text-gray-700"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
               {visibleNews.map(item => (
@@ -135,8 +153,12 @@ const HomePage = () => {
             <button 
               onClick={nextNews} 
               disabled={newsStartIndex >= approvedNews.length - 3} 
-              className="bg-white p-3 rounded-full shadow-md disabled:opacity-30 transition-opacity z-10"
-            >➡️</button>
+              className="bg-white p-3 rounded-full shadow-md disabled:opacity-40 disabled:hover:translate-x-0 transition-all duration-300 z-10 hover:shadow-lg hover:translate-x-1 text-gray-700"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
           </div>
         </div>
       </section>
@@ -239,8 +261,93 @@ const NewsPage = () => {
 };
 
 const CityPage = () => (
-  <div className="min-h-[70vh] bg-white flex items-center justify-center">
-    <p className="text-gray-400 text-2xl font-bold">Страница города (в разработке)</p>
+  <div className="container mx-auto px-4 py-12 max-w-[1200px]">
+    
+    <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">
+      О нашем городе — Санкт-Петербург
+    </h2>
+
+    <div className="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div className="md:w-1/2">
+        <h3 className="text-2xl font-bold mb-4 text-[#0FA958]">Культурная столица</h3>
+        <p className="text-gray-700 leading-relaxed mb-4 text-justify text-lg">
+          Санкт-Петербург — один из красивейших мегаполисов мира, основанный Петром Великим в 1703 году. 
+          Город часто с любовью называют «Северной Венецией» из-за невероятного обилия рек, каналов, 
+          живописных набережных и сотен мостов, разводные пролеты которых стали визитной карточкой города.
+        </p>
+        <p className="text-gray-700 leading-relaxed text-justify text-lg">
+          Архитектурный облик Северной столицы поражает гармонией стилей: от изящного петровского барокко 
+          до строгого классицизма и выразительного модерна. Исторический центр Петербурга входит в список 
+          объектов Всемирного наследия ЮНЕСКО. Город обладает богатейшим литературным и художественным наследием, 
+          вдохновлявшим Пушкина, Достоевского и Гоголя, и по праву остается культурным сердцем страны.
+        </p>
+      </div>
+      
+      <div className="md:w-1/2 w-full h-[350px] bg-[#F5EFE6] rounded-3xl flex flex-col justify-center items-center text-gray-400 shadow-inner overflow-hidden border border-gray-200">
+        <span className="text-4xl mb-2">🏛️</span>
+        <span className="font-bold">Место для фото: Архитектура СПб</span>
+      </div>
+    </div>
+
+    <div className="flex flex-col md:flex-row items-center gap-10 mb-20">
+      <div className="md:w-1/2 w-full h-[350px] bg-[#F5EFE6] rounded-3xl flex flex-col justify-center items-center text-gray-400 shadow-inner overflow-hidden border border-gray-200 order-2 md:order-1">
+         <span className="text-4xl mb-2">🎓</span>
+         <span className="font-bold">Место для фото: Студенты / ВУЗы</span>
+      </div>
+      <div className="md:w-1/2 order-1 md:order-2">
+        <h3 className="text-2xl font-bold mb-4 text-[#0FA958]">Наука и инновации</h3>
+        <p className="text-gray-700 leading-relaxed mb-4 text-justify text-lg">
+          Петербург не только хранит вековые традиции, но и по праву считается крупнейшим 
+          научно-образовательным центром. Здесь расположены ведущие вузы страны, выпускающие 
+          высококлассных специалистов в самых разных областях — от фундаментальной физики 
+          и инженерии до передовой медицины.
+        </p>
+        <p className="text-gray-700 leading-relaxed text-justify text-lg">
+          Сегодня город стремительно смотрит в будущее: здесь активно развивается IT-сектор, 
+          искусственный интеллект, биотехнологии и креативные индустрии. Современные технопарки 
+          и исследовательские центры делают Петербург идеальным местом для стартапов, молодых 
+          ученых и инициативных предпринимателей, стремящихся реализовать свои самые смелые идеи.
+        </p>
+      </div>
+    </div>
+
+    <div className="bg-[#E4D596] rounded-[40px] p-8 md:p-12 shadow-md">
+      <h3 className="text-3xl font-bold mb-6 text-gray-800 text-center">Город для молодежи</h3>
+      <p className="text-lg text-gray-800 text-center max-w-3xl mx-auto mb-10 font-medium">
+        Санкт-Петербург предоставляет огромные возможности для самореализации, гражданской 
+        активности и волонтерства. Именно здесь мы объединяем инициативных людей для создания 
+        комфортной городской среды.
+      </p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-[#FBF9F6] p-6 rounded-3xl shadow-sm text-center flex flex-col items-center">
+          <div className="h-40 w-full bg-white rounded-2xl mb-6 flex flex-col justify-center items-center text-gray-400 border border-gray-100">
+            <span className="text-3xl mb-1">🤝</span>
+            <span className="text-sm font-bold">Фото: Общество</span>
+          </div>
+          <h4 className="font-bold text-xl mb-3 text-gray-800">Общественные проекты</h4>
+          <p className="text-base text-gray-600">Участие в развитии городской инфраструктуры и социальных инициативах.</p>
+        </div>
+        
+        <div className="bg-[#FBF9F6] p-6 rounded-3xl shadow-sm text-center flex flex-col items-center">
+          <div className="h-40 w-full bg-white rounded-2xl mb-6 flex flex-col justify-center items-center text-gray-400 border border-gray-100">
+            <span className="text-3xl mb-1">🏃‍♂️</span>
+            <span className="text-sm font-bold">Фото: Спорт</span>
+          </div>
+          <h4 className="font-bold text-xl mb-3 text-gray-800">Спорт и здоровье</h4>
+          <p className="text-base text-gray-600">Сотни современных площадок, марафоны и фестивали для активного отдыха.</p>
+        </div>
+        
+        <div className="bg-[#FBF9F6] p-6 rounded-3xl shadow-sm text-center flex flex-col items-center">
+          <div className="h-40 w-full bg-white rounded-2xl mb-6 flex flex-col justify-center items-center text-gray-400 border border-gray-100">
+            <span className="text-3xl mb-1">🎨</span>
+            <span className="text-sm font-bold">Фото: Творчество</span>
+          </div>
+          <h4 className="font-bold text-xl mb-3 text-gray-800">Творческий потенциал</h4>
+          <p className="text-base text-gray-600">Креативные кластеры, современные выставки, концерты и уникальные арт-пространства.</p>
+        </div>
+      </div>
+    </div>
   </div>
 );
 
