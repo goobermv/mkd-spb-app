@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NewsCard from '../components/NewsCard';
 
 const HomePage = ({ newsList }) => {
+  const navigate = useNavigate();
+  
   const heroSlides = ["Место для фото 1", "Место для фото 2", "Место для фото 3", "Место для фото 4"];
   const [heroSlide, setHeroSlide] = useState(0);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
@@ -19,12 +22,14 @@ const HomePage = ({ newsList }) => {
   const top5News = approvedNews.slice(0, 5);
   const [newsIndex, setNewsIndex] = useState(0);
   const [isNewsPaused, setIsNewsPaused] = useState(false);
+  
+  const [selectedNews, setSelectedNews] = useState(null);
 
   useEffect(() => {
-    if (isNewsPaused || top5News.length === 0) return;
+    if (isNewsPaused || top5News.length === 0 || selectedNews) return;
     const interval = setInterval(() => setNewsIndex((prev) => (prev + 1) % top5News.length), 4500);
     return () => clearInterval(interval);
-  }, [isNewsPaused, top5News.length]);
+  }, [isNewsPaused, top5News.length, selectedNews]);
 
   const nextNews = () => setNewsIndex((prev) => (prev + 1) % top5News.length);
   const prevNews = () => setNewsIndex((prev) => (prev - 1 + top5News.length) % top5News.length);
@@ -54,6 +59,7 @@ const HomePage = ({ newsList }) => {
           <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 mx-auto shadow-sm">
             Новости
           </h2>
+          
           <div 
             className="bg-[#EEE6C4] rounded-[30px] p-8 flex items-center gap-4 relative min-h-[300px]"
             onMouseEnter={() => setIsNewsPaused(true)}
@@ -61,11 +67,15 @@ const HomePage = ({ newsList }) => {
           >
             {top5News.length > 0 ? (
               <>
-                <button onClick={prevNews} className="bg-white p-3 rounded-full shadow-md z-10"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
+                <button onClick={prevNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                  {visibleNews.map(item => <NewsCard key={item.id} title={item.title} date={item.date} description={item.description} />)}
+                  {visibleNews.map(item => (
+                    <div key={item.id} onClick={() => setSelectedNews(item)} className="cursor-pointer transition-transform hover:scale-[1.02] h-full">
+                      <NewsCard title={item.title} date={item.date} description={item.description} />
+                    </div>
+                  ))}
                 </div>
-                <button onClick={nextNews} className="bg-white p-3 rounded-full shadow-md z-10"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+                <button onClick={nextNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
               </>
             ) : (
               <p className="text-center text-gray-700 text-lg w-full py-10">Новостей пока нет.</p>
@@ -73,6 +83,42 @@ const HomePage = ({ newsList }) => {
           </div>
         </div>
       </section>
+
+      {selectedNews && (
+        <div 
+          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedNews(null)}
+        >
+          <div 
+            className="bg-[#F6EFE6] rounded-[30px] p-8 md:p-10 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button onClick={() => setSelectedNews(null)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 pr-6">{selectedNews.title}</h3>
+                <p className="text-gray-700 text-lg leading-relaxed mb-6 whitespace-pre-line">{selectedNews.description}</p>
+              </div>
+              <div>
+                <p className="text-gray-900 text-lg mb-6">Дата: {selectedNews.date}</p>
+                <button 
+                  onClick={() => navigate('/news')}
+                  className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-3.5 px-8 rounded-full transition-colors shadow-md text-lg"
+                >
+                  Перейти ко всем новостям
+                </button>
+              </div>
+            </div>
+
+            <div className="md:w-[350px] md:h-[450px] h-[300px] bg-white rounded-3xl shadow-inner flex items-center justify-center text-gray-800 font-medium flex-shrink-0">
+              Афиша
+            </div>
+          </div>
+        </div>
+      )}
 
       <section id="about" className="container mx-auto px-4 py-16 scroll-mt-24">
         <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">О нас</h2>
