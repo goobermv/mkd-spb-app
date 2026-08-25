@@ -31,7 +31,11 @@ const LoginPage = ({ setCurrentUser }) => {
       role: role 
     });
     
-    navigate('/profile');
+    if (sessionStorage.getItem('pendingApplication') === 'true') {
+      navigate('/');
+    } else {
+      navigate('/profile');
+    }
   };
 
   return (

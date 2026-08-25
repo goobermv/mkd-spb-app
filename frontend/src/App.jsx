@@ -25,7 +25,7 @@ export default function App() {
       <ScrollManager />
       <Layout currentUser={currentUser}>
         <Routes>
-          <Route path="/" element={<HomePage newsList={news} />} />
+          <Route path="/" element={<HomePage newsList={news} currentUser={currentUser} />} />
           <Route path="/events" element={<EventsPage eventsList={events} />} />
           <Route path="/news" element={<NewsPage newsList={news} />} />
           <Route path="/city" element={<CityPage />} />

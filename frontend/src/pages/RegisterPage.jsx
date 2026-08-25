@@ -12,7 +12,12 @@ const RegisterPage = ({ setCurrentUser }) => {
     
     data.role = 'user';
     setCurrentUser(data);
-    navigate('/profile'); 
+    
+    if (sessionStorage.getItem('pendingApplication') === 'true') {
+      navigate('/');
+    } else {
+      navigate('/profile');
+    }
   };
 
   return (
