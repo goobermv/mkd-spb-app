@@ -13,42 +13,49 @@ const NewsPage = ({ newsList }) => {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-[1200px]">
-      <div className="bg-[#E4D596] rounded-[40px] p-8 pb-12 shadow-md">
-        <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 md:w-1/3 mx-auto shadow-sm">Новости</h2>
-        <div className="flex flex-col md:flex-row gap-6">
+    <div className="container mx-auto px-4 py-8 max-w-[1200px] font-['Onest',sans-serif]">
+      <div className="bg-[#F0D8C2] rounded-tl-[80px] rounded-br-[80px] rounded-tr-xl rounded-bl-xl p-10 pb-16 shadow-2xl relative overflow-hidden border-t-8 border-[#EB5893]">
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#FBBA00] rounded-tl-full opacity-20"></div>
+        <h2 className="text-4xl text-[#2E1D67] font-black text-center mb-10 bg-white rounded-full py-4 w-full md:w-1/2 mx-auto shadow-md uppercase tracking-widest border-2 border-dashed border-[#EB5893] relative z-10">
+          Новости МКД СПб
+        </h2>
+        <div className="flex flex-col md:flex-row gap-8 relative z-10">
           <Sidebar selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
           
           <div className="md:w-3/4 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {filteredNews.length > 0 ? (
               filteredNews.map(news => (
-                <div key={news.id} onClick={() => setSelectedNews(news)} className="cursor-pointer transition-transform hover:scale-[1.02] h-full">
+                <div key={news.id} onClick={() => setSelectedNews(news)} className="cursor-pointer transition-transform hover:-translate-y-1 h-full">
                   <NewsCard title={news.title} date={news.date} description={news.description} />
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-700 text-lg py-10 bg-white/50 rounded-2xl col-span-full">
-                По выбранным категориям новостей пока нет.
-              </p>
+              <div className="col-span-full flex items-center justify-center h-full min-h-[300px] bg-white/40 backdrop-blur-sm rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl border-2 border-dashed border-[#2E1D67]/30">
+                <p className="text-center text-[#2E1D67] text-xl font-bold uppercase tracking-widest">По выбранным категориям новостей пока нет.</p>
+              </div>
             )}
           </div>
         </div>
       </div>
 
       {selectedNews && (
-        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedNews(null)}>
-          <div className="bg-[#F6EFE6] rounded-[30px] p-8 md:p-10 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setSelectedNews(null)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedNews(null)}>
+          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl font-['Onest',sans-serif]" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setSelectedNews(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+              ×
             </button>
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-between mt-4 md:mt-0">
               <div>
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 pr-6">{selectedNews.title}</h3>
-                <p className="text-gray-700 text-lg leading-relaxed mb-6 whitespace-pre-line">{selectedNews.description}</p>
+                <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-widest mb-6 pr-6 leading-tight">{selectedNews.title}</h3>
+                <p className="text-gray-700 text-lg font-medium leading-relaxed mb-8 whitespace-pre-line">{selectedNews.description}</p>
               </div>
-              <div><p className="text-gray-900 text-lg">Дата: {selectedNews.date}</p></div>
+              <div>
+                <p className="text-[#6856BC] font-black text-xl mb-6">📅 Дата: {selectedNews.date}</p>
+              </div>
             </div>
-            <div className="md:w-[350px] md:h-[450px] h-[300px] bg-white rounded-3xl shadow-inner flex items-center justify-center text-gray-800 font-medium flex-shrink-0">Афиша</div>
+            <div className="md:w-[350px] md:h-[450px] h-[300px] bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl shadow-inner flex items-center justify-center text-[#2E1D67] font-black uppercase tracking-widest text-xl flex-shrink-0 border-4 border-white">
+              Фото
+            </div>
           </div>
         </div>
       )}

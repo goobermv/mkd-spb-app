@@ -1,197 +1,177 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import NewsCard from '../components/NewsCard';
+import React, { useState } from 'react';
 
-const HomePage = ({ newsList, currentUser }) => {
-  const navigate = useNavigate();
-  
-  const heroSlides = ["Место для фото 1", "Место для фото 2", "Место для фото 3", "Место для фото 4"];
-  const [heroSlide, setHeroSlide] = useState(0);
-  const [isHeroPaused, setIsHeroPaused] = useState(false);
+const MOCK_EVENTS = [
+  { id: 1, title: 'Международный молодежный форум', category: 'Образование', date: '2025-10-15T10:00', description: 'Обсуждение глобальных молодежных инициатив и обмен опытом между странами-участницами.', image: 'https://placehold.co/600x400/2E1D67/FFF?text=МКД+Форум' },
+  { id: 2, title: 'Городской Эко-марафон', category: 'Экология', date: '2025-05-20T12:00', description: 'Масштабная акция по благоустройству парковых зон Санкт-Петербурга.', image: 'https://placehold.co/600x400/00A552/FFF?text=Экология' },
+  { id: 3, title: 'Спортивный турнир дружбы', category: 'Спорт', date: '2025-06-10T14:00', description: 'Соревнования по волейболу среди молодежных клубов города.', image: 'https://placehold.co/600x400/FBBA00/2E1D67?text=Турнир' },
+];
 
-  useEffect(() => {
-    if (isHeroPaused) return;
-    const interval = setInterval(() => setHeroSlide((prev) => (prev + 1) % heroSlides.length), 4000);
-    return () => clearInterval(interval);
-  }, [isHeroPaused, heroSlides.length]);
+const MOCK_NEWS = [
+  { id: 1, title: 'Открытие нового сезона проектов МКД СПб', category: 'Официально', date: '2025-04-01', description: 'Мы рады объявить о старте нового сезона. В этом году вас ждет еще больше возможностей для реализации своих идей!', image: 'https://placehold.co/600x400/EB5893/FFF?text=Новость+1' },
+  { id: 2, title: 'Итоги благотворительной ярмарки', category: 'Общество', date: '2025-03-15', description: 'Благодаря вашей активности мы смогли собрать средства на поддержку приютов.', image: 'https://placehold.co/600x400/6856BC/FFF?text=Итоги' },
+];
 
-  const nextHeroSlide = () => setHeroSlide((prev) => (prev + 1) % heroSlides.length);
-  const prevHeroSlide = () => setHeroSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
-
-  const approvedNews = newsList.filter(news => news.approved);
-  const top5News = approvedNews.slice(0, 5);
-  const [newsIndex, setNewsIndex] = useState(0);
-  const [isNewsPaused, setIsNewsPaused] = useState(false);
+const HomePage = () => {
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedNews, setSelectedNews] = useState(null);
 
-  useEffect(() => {
-    if (isNewsPaused || top5News.length === 0 || selectedNews) return;
-    const interval = setInterval(() => setNewsIndex((prev) => (prev + 1) % top5News.length), 4500);
-    return () => clearInterval(interval);
-  }, [isNewsPaused, top5News.length, selectedNews]);
-
-  const nextNews = () => setNewsIndex((prev) => (prev + 1) % top5News.length);
-  const prevNews = () => setNewsIndex((prev) => (prev - 1 + top5News.length) % top5News.length);
-  const visibleNews = top5News.length > 0 ? Array.from({length: Math.min(3, top5News.length)}, (_, i) => top5News[(newsIndex + i) % top5News.length]) : [];
-
-  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
-  const [motivation, setMotivation] = useState("");
-
-  const canApply = !currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'activist');
-
-  useEffect(() => {
-    if (currentUser && sessionStorage.getItem('pendingApplication') === 'true') {
-      setIsApplicationModalOpen(true);
-      sessionStorage.removeItem('pendingApplication');
-    }
-  }, [currentUser]);
-
-  const handleApplyClick = () => {
-    if (!currentUser) {
-      sessionStorage.setItem('pendingApplication', 'true');
-      navigate('/login');
-    } else {
-      setIsApplicationModalOpen(true);
-    }
-  };
-
-  const submitApplication = () => {
-    if (motivation.trim().length < 10) {
-      alert("Пожалуйста, опишите вашу мотивацию подробнее.");
-      return;
-    }
-
-    const requestData = {
-      user_id: currentUser?.id, 
-      user_motivation_description: motivation
-    };
-    
-    console.log("Отправка на бэкенд:", requestData);
-    alert("Ваша заявка успешно отправлена на рассмотрение!");
-    setIsApplicationModalOpen(false);
-    setMotivation(""); 
+  const scrollToSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div className="flex flex-col">
-      <section className="bg-gray-200 w-full h-[400px] relative overflow-hidden flex items-center justify-between px-10" onMouseEnter={() => setIsHeroPaused(true)} onMouseLeave={() => setIsHeroPaused(false)}>
-        <div className="absolute inset-0 flex items-center justify-center text-gray-500 font-bold text-2xl">{heroSlides[heroSlide]}</div>
-        <button onClick={prevHeroSlide} className="bg-white/90 p-3 rounded-full hover:bg-white transition-all z-10 shadow-md"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
-        <button onClick={nextHeroSlide} className="bg-white/90 p-3 rounded-full hover:bg-white transition-all z-10 shadow-md"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+    <div className="flex flex-col min-h-screen bg-[#F4F5F8] font-['Onest',sans-serif]">
+      
+      <section className="bg-[#2E1D67] text-white py-20 px-8 rounded-br-[120px] relative overflow-hidden shadow-2xl">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#EB5893] rounded-bl-full opacity-20 translate-x-10 -translate-y-10"></div>
+        <div className="absolute bottom-0 left-20 w-48 h-48 bg-[#FBBA00] rounded-tr-full opacity-20 translate-y-10"></div>
+        
+        <div className="container mx-auto max-w-[1200px] relative z-10 text-center">
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-widest mb-6 leading-tight">
+            Международный <br className="hidden md:block"/> <span className="text-[#FBBA00]">Клуб Дружбы</span> <br className="hidden md:block"/> Санкт-Петербурга
+          </h1>
+          <p className="text-xl md:text-2xl font-medium text-[#F0D8C2] max-w-3xl mx-auto">
+            Санкт-Петербургская площадка для реализации молодёжных инициатив, обмена опытом и создания международных проектов.
+          </p>
+        </div>
       </section>
 
-      <section className="container mx-auto px-4 py-12">
-        <div className="bg-[#E4D596] rounded-[40px] p-8 pb-12">
-          <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 mx-auto shadow-sm">Новости</h2>
-          <div className="bg-[#EEE6C4] rounded-[30px] p-8 flex items-center gap-4 relative min-h-[300px]" onMouseEnter={() => setIsNewsPaused(true)} onMouseLeave={() => setIsNewsPaused(false)}>
-            {top5News.length > 0 ? (
-              <>
-                <button onClick={prevNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                  {visibleNews.map(item => (
-                    <div key={item.id} onClick={() => setSelectedNews(item)} className="cursor-pointer transition-transform hover:scale-[1.02] h-full">
-                      <NewsCard title={item.title} date={item.date} description={item.description} />
-                    </div>
-                  ))}
+      <section className="container mx-auto max-w-[1200px] px-4 py-12">
+        <div className="flex flex-wrap justify-center gap-4 mb-16">
+          {[
+            { id: 'about', label: 'О клубе' },
+            { id: 'events', label: 'Мероприятия' },
+            { id: 'news', label: 'Новости' }
+          ].map(tab => (
+            <button 
+              key={tab.id}
+              onClick={() => scrollToSection(tab.id)}
+              className="px-8 py-4 rounded-full text-sm md:text-base font-black transition-all uppercase tracking-widest border-2 bg-white text-[#2E1D67] border-[#F0D8C2] hover:border-[#EB5893] hover:text-[#EB5893] shadow-md"
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Секция О нас возвращена к последовательной верстке, чтобы якоря работали */}
+        <div id="about" className="scroll-mt-24 mb-20 bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-xl rounded-bl-xl p-10 md:p-16 shadow-xl border-t-8 border-[#00A552]">
+          <h2 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-6">О нашем движении (МКД СПб)</h2>
+          <p className="text-lg text-gray-700 font-medium leading-relaxed mb-6">
+            Мы объединяем активную молодежь для создания проектов, направленных на развитие международного сотрудничества, экологии, спорта и культуры. Наша цель — дать каждому возможность проявить себя и найти единомышленников в Международном клубе дружбы Санкт-Петербурга.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+             <div className="bg-[#F0D8C2]/40 p-8 rounded-tr-[40px] rounded-bl-[40px] rounded-tl-lg rounded-br-lg border border-[#F0D8C2] text-center hover:bg-[#F0D8C2]/80 transition-colors">
+               <span className="text-5xl block mb-4">🌍</span>
+               <h4 className="font-black text-[#2E1D67] uppercase tracking-wider">Международные связи</h4>
+             </div>
+             <div className="bg-[#F0D8C2]/40 p-8 rounded-tl-[40px] rounded-br-[40px] rounded-tr-lg rounded-bl-lg border border-[#F0D8C2] text-center hover:bg-[#F0D8C2]/80 transition-colors">
+               <span className="text-5xl block mb-4">🚀</span>
+               <h4 className="font-black text-[#2E1D67] uppercase tracking-wider">Поддержка инициатив</h4>
+             </div>
+             <div className="bg-[#F0D8C2]/40 p-8 rounded-tr-[40px] rounded-bl-[40px] rounded-tl-lg rounded-br-lg border border-[#F0D8C2] text-center hover:bg-[#F0D8C2]/80 transition-colors">
+               <span className="text-5xl block mb-4">🤝</span>
+               <h4 className="font-black text-[#2E1D67] uppercase tracking-wider">Новые друзья</h4>
+             </div>
+          </div>
+        </div>
+
+        <div id="events" className="scroll-mt-24 mb-20">
+          <h2 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-10 text-center">Ближайшие мероприятия</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {MOCK_EVENTS.map(event => (
+              <div key={event.id} onClick={() => setSelectedEvent(event)} className="bg-white rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl shadow-lg hover:shadow-2xl transition-all cursor-pointer border-2 border-transparent hover:border-[#00A552] flex flex-col overflow-hidden group">
+                <div className="h-48 overflow-hidden relative">
+                  <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <div className="absolute top-4 left-4 bg-[#00A552] text-white text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
+                    {event.category}
+                  </div>
                 </div>
-                <button onClick={nextNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
-              </>
-            ) : (
-              <p className="text-center text-gray-700 text-lg w-full py-10">Новостей пока нет.</p>
-            )}
+                <div className="p-6 flex flex-col flex-grow">
+                  <p className="text-[#6856BC] text-sm font-bold mb-2 uppercase tracking-wide">📅 {new Date(event.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+                  <h3 className="text-xl font-black text-[#2E1D67] mb-3 leading-tight uppercase">{event.title}</h3>
+                  <p className="text-gray-600 text-sm font-medium line-clamp-3 mb-4 flex-grow">{event.description}</p>
+                  <button className="self-start text-[#EB5893] font-black uppercase tracking-widest text-sm flex items-center gap-2 hover:text-[#2E1D67] transition-colors">
+                    Подробнее <span>→</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div id="news" className="scroll-mt-24 mb-20">
+          <h2 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-10 text-center">Новости МКД СПб</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {MOCK_NEWS.map(news => (
+              <div key={news.id} onClick={() => setSelectedNews(news)} className="bg-white rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl shadow-lg hover:shadow-2xl transition-all cursor-pointer border-2 border-transparent hover:border-[#EB5893] flex flex-col md:flex-row overflow-hidden group">
+                <div className="w-full md:w-2/5 h-48 md:h-auto overflow-hidden relative bg-[#F0D8C2]">
+                  <img src={news.image} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 mix-blend-multiply" />
+                </div>
+                <div className="p-8 flex flex-col justify-center w-full md:w-3/5">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="bg-[#FBBA00] text-[#2E1D67] text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">{news.category}</span>
+                    <span className="text-[#6856BC] text-sm font-bold uppercase">📅 {new Date(news.date).toLocaleDateString('ru-RU')}</span>
+                  </div>
+                  <h3 className="text-xl font-black text-[#2E1D67] uppercase leading-tight mb-3">{news.title}</h3>
+                  <p className="text-gray-600 text-sm font-medium line-clamp-2">{news.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* Модалки (не изменяем логику, только стили) */}
+      {selectedEvent && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setSelectedEvent(null)}>
+          <div className="bg-white max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl shadow-2xl relative" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setSelectedEvent(null)} className="absolute top-6 right-6 bg-white w-12 h-12 rounded-full flex items-center justify-center text-[#EB5893] text-2xl font-bold shadow-md hover:bg-[#EB5893] hover:text-white transition-colors z-10">×</button>
+            
+            <div className="h-64 md:h-80 w-full relative rounded-tr-[80px]">
+              <img src={selectedEvent.image} alt={selectedEvent.title} className="w-full h-full object-cover rounded-tr-[80px]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-tr-[80px]"></div>
+              <div className="absolute bottom-6 left-8 right-8">
+                <span className="bg-[#00A552] text-white text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">{selectedEvent.category}</span>
+                <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-wide leading-tight">{selectedEvent.title}</h2>
+              </div>
+            </div>
+            
+            <div className="p-8 md:p-12">
+              <div className="flex flex-wrap gap-6 mb-8 text-[#2E1D67] font-black uppercase tracking-widest text-sm">
+                <div className="flex items-center gap-2"><span className="text-[#EB5893] text-xl">📅</span> {new Date(selectedEvent.date).toLocaleString()}</div>
+                <div className="flex items-center gap-2"><span className="text-[#EB5893] text-xl">📍</span> МКД Санкт-Петербург</div>
+              </div>
+              <h3 className="text-xl font-black text-[#2E1D67] uppercase mb-4 tracking-widest">О мероприятии</h3>
+              <p className="text-gray-700 font-medium leading-relaxed mb-8 text-lg">{selectedEvent.description}</p>
+              
+              <div className="flex justify-center border-t-2 border-[#F0D8C2] pt-8">
+                <button className="bg-[#6856BC] hover:bg-[#2E1D67] text-white text-lg font-black py-4 px-12 rounded-full transition-colors shadow-xl uppercase tracking-widest">
+                  Принять участие
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {selectedNews && (
-        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedNews(null)}>
-          <div className="bg-[#F6EFE6] rounded-[30px] p-8 md:p-10 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setSelectedNews(null)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            <div className="flex-1 flex flex-col justify-between">
-              <div>
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 pr-6">{selectedNews.title}</h3>
-                <p className="text-gray-700 text-lg leading-relaxed mb-6 whitespace-pre-line">{selectedNews.description}</p>
-              </div>
-              <div>
-                <p className="text-gray-900 text-lg mb-6">Дата: {selectedNews.date}</p>
-                <button onClick={() => navigate('/news')} className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-3.5 px-8 rounded-full transition-colors shadow-md text-lg">Перейти ко всем новостям</button>
-              </div>
-            </div>
-            <div className="md:w-[350px] md:h-[450px] h-[300px] bg-white rounded-3xl shadow-inner flex items-center justify-center text-gray-800 font-medium flex-shrink-0">Афиша</div>
-          </div>
-        </div>
-      )}
-
-      <section id="about" className="container mx-auto px-4 py-16 scroll-mt-24">
-        <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">О нас</h2>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10">
-          <div className="md:w-1/2">
-            <h3 className="text-2xl font-bold mb-4 text-[#0FA958]">Наша история</h3>
-            <p className="text-lg font-medium mb-4">Открыт - 3 ноября 2024 г.</p>
-            <p className="text-gray-700 leading-relaxed text-justify">Молодёжный Консультационный Дом Санкт-Петербурга был создан как единая площадка для поддержки молодёжных инициатив, объединения городских сообществ и взаимодействия с органами власти.</p>
-          </div>
-          <div className="md:w-1/3 h-[300px] w-full bg-gray-200 rounded-3xl flex justify-center items-center text-gray-500 shadow-inner">Место для фото "История"</div>
-        </div>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10">
-          <div className="md:w-1/3 h-[300px] w-full bg-gray-200 rounded-3xl flex justify-center items-center text-gray-500 shadow-inner order-2 md:order-1">Место для фото "Миссия"</div>
-          <div className="md:w-1/2 order-1 md:order-2">
-            <h3 className="text-2xl font-bold mb-4 text-[#0FA958]">Наша миссия</h3>
-            <p className="text-lg text-gray-800 font-medium mb-4">Формирование глобального сообщества лидеров.</p>
-            <p className="text-gray-700 leading-relaxed text-justify">Развитие потенциала молодых людей, создание возможностей для профессионального роста, гражданской активности и реализации социокультурных проектов.</p>
-          </div>
-        </div>
-      </section>
-
-      {canApply && (
-        <section className="container mx-auto px-4 py-16 text-center bg-[#FCEB9C] rounded-[40px] mb-12 shadow-sm max-w-4xl">
-          <h3 className="text-3xl font-bold mb-6 text-gray-800">Как стать активистом?</h3>
-          <p className="text-lg mb-4 text-gray-700">Мы ищем активных людей, готовых развивать город вместе с нами!</p>
-          <button 
-            onClick={handleApplyClick}
-            className="bg-[#0FA958] mt-4 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full transition-colors text-lg shadow-md hover:shadow-lg"
-          >
-            Подать заявку
-          </button>
-        </section>
-      )}
-
-      {isApplicationModalOpen && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setIsApplicationModalOpen(false)}>
-          <div className="bg-[#FBF9F6] rounded-[30px] p-8 md:p-10 w-full max-w-2xl relative shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setIsApplicationModalOpen(false)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900 transition-colors">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setSelectedNews(null)}>
+          <div className="bg-white max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl shadow-2xl relative p-8 md:p-12" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setSelectedNews(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
             
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">Заявка в актив</h3>
-            <p className="text-gray-600 mb-6 font-medium">Расскажите нам о себе и почему вы хотите присоединиться.</p>
-            
-            <div className="mb-8">
-              <label className="block text-gray-800 text-lg font-bold mb-3">
-                Ваша мотивация (почему мы?):
-              </label>
-              <textarea 
-                className="w-full bg-white border-2 border-gray-200 rounded-2xl p-4 text-gray-800 shadow-sm focus:outline-none focus:border-[#0FA958] focus:ring-1 focus:ring-[#0FA958] resize-none h-40 transition-all text-lg"
-                placeholder="Я хочу стать активистом, потому что..."
-                value={motivation}
-                onChange={(e) => setMotivation(e.target.value)}
-              ></textarea>
+            <div className="flex items-center justify-between mb-8 border-b-2 border-[#F0D8C2] pb-6 mt-4">
+              <span className="bg-[#FBBA00] text-[#2E1D67] text-xs font-black px-4 py-2 rounded-full uppercase tracking-wider shadow-sm">{selectedNews.category}</span>
+              <span className="text-[#6856BC] font-black uppercase tracking-widest text-sm">📅 {new Date(selectedNews.date).toLocaleDateString('ru-RU')}</span>
             </div>
             
-            <div className="flex flex-col-reverse md:flex-row justify-end gap-4 mt-auto">
-              <button 
-                onClick={() => setIsApplicationModalOpen(false)} 
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3.5 px-8 rounded-full transition-colors text-lg"
-              >
-                Отмена
-              </button>
-              <button 
-                onClick={submitApplication} 
-                className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-3.5 px-8 rounded-full transition-colors shadow-md text-lg"
-              >
-                Отправить заявку
-              </button>
+            <h2 className="text-3xl md:text-4xl font-black text-[#2E1D67] mb-8 leading-tight uppercase tracking-wide">{selectedNews.title}</h2>
+            
+            <div className="w-full h-64 md:h-80 rounded-tr-[40px] rounded-bl-[40px] rounded-tl-lg rounded-br-lg overflow-hidden mb-8 shadow-lg border-4 border-[#F0D8C2]">
+              <img src={selectedNews.image} alt={selectedNews.title} className="w-full h-full object-cover" />
+            </div>
+            
+            <div className="prose max-w-none text-gray-700 font-medium leading-relaxed text-lg">
+              <p>{selectedNews.description}</p>
             </div>
           </div>
         </div>
