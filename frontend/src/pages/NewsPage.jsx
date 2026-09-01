@@ -13,11 +13,11 @@ const NewsPage = ({ newsList }) => {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-[1200px] font-['Onest',sans-serif]">
+    <div className="container mx-auto px-4 py-8 max-w-[1400px] font-['Onest',sans-serif]">
       <div className="bg-[#F0D8C2] rounded-tl-[80px] rounded-br-[80px] rounded-tr-xl rounded-bl-xl p-10 pb-16 shadow-2xl relative overflow-hidden border-t-8 border-[#EB5893]">
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#FBBA00] rounded-tl-full opacity-20"></div>
-        <h2 className="text-4xl text-[#2E1D67] font-black text-center mb-10 bg-white rounded-full py-4 w-full md:w-1/2 mx-auto shadow-md uppercase tracking-widest border-2 border-dashed border-[#EB5893] relative z-10">
-          Новости МКД СПб
+        <h2 className="text-3xl md:text-4xl text-white font-black bg-[#6856BC]/50 rounded-full py-4 px-12 mx-auto w-fit mb-10 shadow-sm uppercase tracking-widest backdrop-blur-sm border border-[#6856BC] block relative z-10 text-center">
+          Новости
         </h2>
         <div className="flex flex-col md:flex-row gap-8 relative z-10">
           <Sidebar selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
@@ -50,7 +50,7 @@ const NewsPage = ({ newsList }) => {
                 <p className="text-gray-700 text-lg font-medium leading-relaxed mb-8 whitespace-pre-line">{selectedNews.description}</p>
               </div>
               <div>
-                <p className="text-[#6856BC] font-black text-xl mb-6">📅 Дата: {selectedNews.date}</p>
+                <p className="text-[#6856BC] font-black text-xl mb-6"> Дата: {selectedNews.date}</p>
               </div>
             </div>
             <div className="md:w-[350px] md:h-[450px] h-[300px] bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl shadow-inner flex items-center justify-center text-[#2E1D67] font-black uppercase tracking-widest text-xl flex-shrink-0 border-4 border-white">

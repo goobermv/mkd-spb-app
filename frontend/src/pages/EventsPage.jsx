@@ -13,11 +13,11 @@ const EventsPage = ({ eventsList }) => {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-[1200px] font-['Onest',sans-serif]">
+    <div className="container mx-auto px-4 py-8 max-w-[1400px] font-['Onest',sans-serif]">
       <div className="bg-[#2E1D67] rounded-tl-[80px] rounded-br-[80px] rounded-tr-xl rounded-bl-xl p-10 pb-16 shadow-2xl relative overflow-hidden border-t-8 border-[#00A552]">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB5893] rounded-bl-full opacity-20"></div>
-        <h2 className="text-4xl text-white font-black text-center mb-10 bg-[#6856BC]/50 rounded-full py-4 w-full md:w-1/2 mx-auto shadow-sm uppercase tracking-widest backdrop-blur-sm border border-[#6856BC]">
-          Мероприятия МКД СПб
+        <h2 className="text-3xl md:text-4xl text-white font-black bg-[#6856BC]/50 rounded-full py-4 px-12 mx-auto w-fit mb-10 shadow-sm uppercase tracking-widest backdrop-blur-sm border border-[#6856BC] block relative z-10 text-center">
+          Мероприятия
         </h2>
         <div className="flex flex-col md:flex-row gap-8 relative z-10">
           <Sidebar selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
@@ -50,7 +50,7 @@ const EventsPage = ({ eventsList }) => {
                 <p className="text-gray-700 text-lg font-medium leading-relaxed mb-8 whitespace-pre-line">{selectedEvent.description}</p>
               </div>
               <div>
-                <p className="text-[#6856BC] font-black text-xl mb-6">📅 {selectedEvent.date}</p>
+                <p className="text-[#6856BC] font-black text-xl mb-6"> {selectedEvent.date}</p>
                 <button className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black py-4 px-10 rounded-full transition-colors shadow-xl text-lg uppercase tracking-widest">
                   Зарегистрироваться
                 </button>

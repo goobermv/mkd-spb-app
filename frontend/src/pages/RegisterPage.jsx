@@ -34,7 +34,7 @@ const RegisterPage = ({ setCurrentUser }) => {
         <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           <div className="flex flex-col col-span-1 md:col-span-2">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">ФИО</label>
-            <input name="fullName" type="text" required placeholder="Введите ваше полное имя" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+            <input name="full_name" type="text" required placeholder="Введите ваше полное имя" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
           </div>
 
           <div className="flex flex-col">
@@ -44,27 +44,37 @@ const RegisterPage = ({ setCurrentUser }) => {
 
           <div className="flex flex-col">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Пароль</label>
-            <input name="passwordHash" type="password" required placeholder="••••••••" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+            <input name="password" type="password" required placeholder="••••••••" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
           </div>
 
           <div className="flex flex-col">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Дата рождения</label>
-            <input name="birthDate" type="date" required className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors cursor-pointer" />
+            <input name="birth_date" type="date" required className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors cursor-pointer" />
           </div>
 
           <div className="flex flex-col">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Страна / Гражданство</label>
-            <select name="country" required className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors appearance-none cursor-pointer">
-              <option value="" disabled selected>Выберите страну</option>
+            <select name="country" required defaultValue="" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors appearance-none cursor-pointer">
+              <option value="" disabled>Выберите страну</option>
               {COUNTRIES.map((c, idx) => (
                 <option key={idx} value={c}>{c}</option>
               ))}
             </select>
           </div>
           
-          <div className="flex flex-col col-span-1 md:col-span-2">
+          <div className="flex flex-col">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Место учебы / работы</label>
-            <input name="jobField" type="text" placeholder="Университет или организация" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+            <input name="job_field" type="text" required placeholder="Университет или организация" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Ссылка на ВК</label>
+            <input name="vk_link" type="url" placeholder="https://vk.com/id..." className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+          </div>
+
+          <div className="flex flex-col col-span-1 md:col-span-2">
+            <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">О себе</label>
+            <textarea name="user_description" rows="3" placeholder="Расскажите немного о себе, своих навыках и интересах..." className="w-full rounded-[28px] py-4 px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors resize-none"></textarea>
           </div>
 
           <div className="col-span-1 md:col-span-2 mt-4">

@@ -389,8 +389,8 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           {activeTab === 'Стать активистом' && (
             <div className="max-w-2xl">
                <p className="text-gray-700 text-lg mb-8 font-medium leading-relaxed bg-[#F0D8C2]/40 p-6 rounded-2xl border border-[#F0D8C2]">
-                 Активисты имеют возможность предлагать свои мероприятия, публиковать новости и участвовать в организации жизни Клуба Дружбы Санкт-Петербурга. Опишите вашу мотивацию, чтобы администратор рассмотрел заявку.
-               </p>
+                  Опишите вашу мотивацию, чтобы администратор рассмотрел заявку.
+                </p>
                <form onSubmit={handleApplyForActivist} className="flex flex-col gap-6">
                   <div>
                     <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Почему вы хотите стать активистом МКД СПб?</label>
@@ -791,15 +791,15 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
                 </div>
                 <div>
                   <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Дата и время</label>
-                  <input type="datetime-local" name="event_date_and_time" defaultValue={editingEvent?.event_date_and_time} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67] transition-colors cursor-pointer" />
+                  <input type="datetime-local" name="event_date_and_time" defaultValue={editingEvent?.event_date_and_time} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors" />
                 </div>
               </div>
               <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Описание</label>
-                <textarea name="description" defaultValue={editingEvent?.description} required rows="6" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors resize-none" placeholder="Опишите программу, цели и аудиторию..."></textarea>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Описание мероприятия</label>
+                <textarea name="description" defaultValue={editingEvent?.description} required rows="8" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors resize-none" placeholder="Подробное описание..."></textarea>
               </div>
               <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Обложка</label>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Афиша / Обложка</label>
                 <input type="file" name="event_picture" accept="image/*" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-3 outline-none focus:border-[#6856BC] transition-colors file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:uppercase file:tracking-widest file:bg-[#2E1D67] file:text-white hover:file:bg-[#1a1040] cursor-pointer" />
               </div>
               <button type="submit" className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-4 rounded-full transition-colors shadow-xl mt-6 text-lg">
@@ -809,7 +809,6 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
