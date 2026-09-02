@@ -11,6 +11,7 @@ import CityPage from './pages/CityPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import NotificationsDropdown from './components/NotificationsDropdown'
 
 export default function App() {
   const [news, setNews] = useState([]);

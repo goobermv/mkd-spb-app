@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SECTORS } from '../data/constants'; 
+import { downloadList } from '../utils/export';
+import ReviewModal from '../components/ReviewModal';
 
 const ProfilePage = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
@@ -24,6 +26,8 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [selectedEventForReview, setSelectedEventForReview] = useState(null);
   
   const [eventFileName, setEventFileName] = useState('');
   const [newsFileName, setNewsFileName] = useState('');
@@ -563,8 +567,8 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           {activeTab === 'База пользователей' && isAdmin && (
             <div className="flex flex-col gap-6">
               <div className="flex justify-end mb-4">
-                 <button onClick={() => downloadList('Список_Всех_Пользователей')} className="bg-white border-2 border-[#2E1D67] text-[#2E1D67] font-black uppercase tracking-widest py-3 px-6 rounded-full text-sm hover:bg-[#2E1D67] hover:text-white transition-colors shadow-md">
-                    ⬇ Скачать список (CSV)
+                 <button onClick={() => downloadList('Участники_мероприятия')} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black py-2 px-6 rounded-full transition-colors shadow-md">
+                    Выгрузить CSV
                  </button>
               </div>
               {usersList.map(user => (
@@ -654,12 +658,6 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
                 </div>
               </div>
             )}
-            
-            {viewingEvent.status === 'approved' && viewingEvent.author_id !== currentUser.id && (
-               <button onClick={() => alert('Чат с организаторами МКД СПб пока в разработке.')} className="bg-white border-2 border-[#2E1D67] text-[#2E1D67] hover:bg-[#2E1D67] hover:text-white font-black uppercase tracking-widest py-4 px-8 rounded-full text-sm transition-colors mt-6 shadow-md w-full md:w-auto">
-                 💬 Задать вопрос организатору
-               </button>
-            )}
           </div>
         </div>
       )}
@@ -736,7 +734,6 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
         </div>
       )}
 
-      {/* Окна Создания / Редактирования Мероприятия и Новости (развернутые) */}
       {(isEventModalOpen || editingEvent) && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex justify-center p-4 overflow-y-auto" onClick={() => {setIsEventModalOpen(false); setEditingEvent(null); setEventFileName('');}}>
           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl m-auto" onClick={e => e.stopPropagation()}>
@@ -848,6 +845,15 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           </div>
         </div>
       )}
+
+      <ReviewModal 
+        isOpen={isReviewOpen} 
+        onClose={() => setIsReviewOpen(false)} 
+        eventName={selectedEventForReview?.title}
+        onSubmit={(data) => {
+          console.log('Отправка отзыва на бэкенд:', data);
+        }} 
+      />
 
     </div>
   );
