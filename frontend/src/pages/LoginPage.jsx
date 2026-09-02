@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const LoginPage = ({ setCurrentUser }) => {
   const navigate = useNavigate();
@@ -7,77 +7,47 @@ const LoginPage = ({ setCurrentUser }) => {
   const handleLogin = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const email = formData.get('email');
+    const data = Object.fromEntries(formData.entries());
     
-    let role = 'user';
-    let fullName = 'Обычный Пользователь';
-
-    if (email.includes('admin')) {
-      role = 'admin';
-      fullName = 'Администратор МКД';
-    } else if (email.includes('activist')) {
-      role = 'activist';
-      fullName = 'Активист Иванов';
-    }
-
-    setCurrentUser({
-      fullName: fullName,
-      email: email,
-      birthDate: "2000-01-01",
-      country: "Россия",
-      jobField: "СПбГУ",
-      vkLink: "https://vk.com/id123456",
-      userDescription: "Интересуюсь социальными проектами и развитием городской среды.",
-      role: role 
-    });
+    data.role = 'admin';
+    setCurrentUser(data);
     
-    if (sessionStorage.getItem('pendingApplication') === 'true') {
-      navigate('/');
-    } else {
-      navigate('/profile');
-    }
+    navigate('/profile');
   };
 
   return (
-    <div className="flex-grow flex items-center justify-center bg-white py-12 px-4">
-      <div className="bg-[#F6EFE6] w-full max-w-md rounded-[30px] p-10 shadow-sm">
-        <h2 className="text-3xl font-bold mb-8 text-gray-900">Вход</h2>
+    <div className="flex-grow flex items-center justify-center bg-[#F4F5F8] py-16 px-4 relative overflow-hidden font-['Onest',sans-serif]">
+      <div className="absolute top-10 right-10 w-64 h-64 bg-[#FBBA00] rounded-bl-full rounded-tr-full opacity-20"></div>
+      <div className="absolute bottom-10 left-10 w-80 h-80 bg-[#00A552] rounded-tl-full rounded-br-full opacity-10"></div>
+
+      <div className="bg-white w-full max-w-2xl rounded-tl-[80px] rounded-br-[80px] rounded-tr-3xl rounded-bl-3xl p-10 md:p-14 shadow-2xl relative z-10 border-t-8 border-[#EB5893]">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-black text-[#2E1D67] uppercase tracking-widest mb-2">Вход</h2>
+          <p className="text-[#6856BC] font-bold uppercase tracking-wide">Добро пожаловать в МКД СПб!</p>
+        </div>
         
-        <form onSubmit={handleLogin} className="flex flex-col">
-          <label className="text-lg font-bold mb-2 text-gray-900">Почта</label>
-          <input 
-            name="email"
-            type="email" 
-            required 
-            placeholder="admin@mail.ru, activist@... или любая"
-            className="w-full h-12 rounded-full px-5 mb-6 outline-none border border-transparent focus:border-[#0FA958] transition-colors" 
-          />
+        <form onSubmit={handleLogin} className="flex flex-col gap-y-6">
+          <div className="flex flex-col">
+            <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Email</label>
+            <input name="email" type="email" required placeholder="example@mail.ru" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+          </div>
 
-          <label className="text-lg font-bold mb-2 text-gray-900">Пароль</label>
-          <input 
-            type="password" 
-            required 
-            className="w-full h-12 rounded-full px-5 mb-8 outline-none border border-transparent focus:border-[#0FA958] transition-colors" 
-          />
+          <div className="flex flex-col">
+            <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Пароль</label>
+            <input name="password" type="password" required placeholder="••••••••" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+          </div>
 
-          <button 
-            type="submit" 
-            className="bg-[#0FA958] text-white font-bold py-3 rounded-full mb-4 hover:bg-green-600 transition-colors shadow-md"
-          >
-            Войти
-          </button>
-
-          <button type="button" className="text-gray-900 font-bold hover:text-gray-600 transition-colors text-center w-full mb-6">
-            Забыл пароль
-          </button>
-
-          <button 
-            type="button"
-            onClick={() => navigate('/register')}
-            className="text-sm font-semibold text-gray-700 hover:text-[#0FA958] transition-colors text-center w-full underline"
-          >
-            Ещё не зарегистрирован? Создай аккаунт
-          </button>
+          <div className="mt-4">
+            <button type="submit" className="w-full bg-[#FBBA00] hover:bg-[#e0a700] text-white text-xl font-black py-4 rounded-full transition-colors shadow-xl uppercase tracking-widest">
+              Войти
+            </button>
+          </div>
+          
+          <div className="text-center mt-2">
+            <p className="text-sm font-bold text-[#2E1D67] uppercase tracking-wide">
+              Еще нет аккаунта? <Link to="/register" className="text-[#00A552] hover:text-[#2E1D67] transition-colors underline underline-offset-4">Зарегистрироваться</Link>
+            </p>
+          </div>
         </form>
       </div>
     </div>

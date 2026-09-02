@@ -24,6 +24,9 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
+  
+  const [eventFileName, setEventFileName] = useState('');
+  const [newsFileName, setNewsFileName] = useState('');
 
   const [viewingEvent, setViewingEvent] = useState(null);
   const [viewingNews, setViewingNews] = useState(null);
@@ -66,7 +69,6 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
     totalUsers: 340
   });
 
-
   const handleCreateNews = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -85,6 +87,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
     
     setPendingNews([...pendingNews, newNews]);
     setIsNewsModalOpen(false);
+    setNewsFileName('');
     alert('Новость отправлена на модерацию!');
   };
 
@@ -105,8 +108,8 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
       }
       return item;
     }));
-
     setEditingNews(null);
+    setNewsFileName('');
     alert('Заявка на новость обновлена!');
   };
 
@@ -135,6 +138,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
 
     setPendingEvents([...pendingEvents, newEvent]);
     setIsEventModalOpen(false);
+    setEventFileName('');
     alert('Мероприятие отправлено на модерацию!');
   };
 
@@ -156,8 +160,8 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
       }
       return item;
     }));
-
     setEditingEvent(null);
+    setEventFileName('');
     alert('Заявка на мероприятие обновлена!');
   };
 
@@ -193,7 +197,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
 
   const handleApplyForActivist = (e) => {
     e.preventDefault();
-    alert('Ваша заявка на вступление в актив успешно отправлена. Ожидайте решения администратора.');
+    alert('Ваша заявка на вступление в актив успешно отправлена. Ожидайте решения администратора МКД СПб.');
     e.target.reset();
   };
 
@@ -223,7 +227,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
 
   const approveActivist = (id) => {
     setActivistRequests(activistRequests.filter(req => req.id !== id));
-    alert('Заявка в актив одобрена! Права пользователя повышены.');
+    alert('Заявка в актив МКД СПб одобрена! Права пользователя повышены.');
   };
 
   const rejectActivist = (id) => {
@@ -252,99 +256,99 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
 
   const getRoleName = (role) => {
     if (role === 'admin') return 'Администратор';
-    if (role === 'activist') return 'Активист';
-    return 'Пользователь';
+    if (role === 'activist') return 'Активист МКД СПб';
+    return 'Участник МКД СПб';
   };
 
   const getStatusBadge = (status) => {
     switch(status) {
-      case 'pending': return <span className="text-yellow-700 bg-yellow-100 text-xs font-bold px-3 py-1 rounded-full">На модерации</span>;
-      case 'approved': return <span className="text-green-700 bg-green-100 text-xs font-bold px-3 py-1 rounded-full">Одобрено</span>;
-      case 'cancelled': return <span className="text-red-700 bg-red-100 text-xs font-bold px-3 py-1 rounded-full">Отменено</span>;
-      case 'archived': return <span className="text-gray-700 bg-gray-200 text-xs font-bold px-3 py-1 rounded-full">В архиве</span>;
+      case 'pending': return <span className="text-white bg-[#FBBA00] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">На модерации</span>;
+      case 'approved': return <span className="text-white bg-[#00A552] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">Одобрено</span>;
+      case 'cancelled': return <span className="text-white bg-[#EB5893] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">Отменено</span>;
+      case 'archived': return <span className="text-white bg-[#6856BC] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">В архиве</span>;
       default: return null;
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-[1400px] flex flex-col lg:flex-row gap-8">
+    <div className="container mx-auto px-4 py-12 max-w-[1400px] flex flex-col lg:flex-row gap-10 font-['Onest',sans-serif]">
       
-      <aside className="w-full lg:w-1/4 flex flex-col gap-6">
-        <div className="bg-white rounded-[30px] p-8 shadow-sm flex flex-col items-center text-center">
-          <div className="w-32 h-32 rounded-full border-4 border-[#0FA958] flex items-center justify-center mb-4 bg-gray-100 overflow-hidden text-5xl">
+      <aside className="w-full lg:w-1/4 flex flex-col gap-8">
+        <div className="bg-[#F0D8C2] rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl p-10 shadow-xl flex flex-col items-center text-center border-4 border-white">
+          <div className="w-32 h-32 rounded-full border-4 border-[#00A552] flex items-center justify-center mb-6 bg-white overflow-hidden text-5xl shadow-inner">
             🧑‍💻
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-1">{currentUser.fullName}</h2>
-          <p className="text-[#0FA958] font-bold uppercase text-sm mb-6">
+          <h2 className="text-2xl font-black text-[#2E1D67] mb-2 uppercase tracking-wide leading-tight">{currentUser.fullName}</h2>
+          <p className="text-[#EB5893] font-black uppercase tracking-widest text-sm mb-8">
             {getRoleName(currentUser.role)}
           </p>
           
-          <div className="w-full bg-gray-50 rounded-2xl p-5 flex flex-col gap-3 text-left mb-4">
-            <div className="flex items-center gap-3 text-gray-700">
-              <span>📧</span> <span className="truncate">{currentUser.email}</span>
+          <div className="w-full bg-white rounded-xl p-6 flex flex-col gap-4 text-left mb-6 shadow-sm">
+            <div className="flex items-center gap-3 text-[#2E1D67] font-medium">
+              <span className="text-xl">📧</span> <span className="truncate">{currentUser.email}</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-700">
-              <span>📅</span> <span>{currentUser.birthDate || 'Не указана'}</span>
+            <div className="flex items-center gap-3 text-[#2E1D67] font-medium">
+              <span className="text-xl">📅</span> <span>{currentUser.birthDate || 'Не указана'}</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-700">
-              <span>🌍</span> <span>{currentUser.country || 'Не указана'}</span>
+            <div className="flex items-center gap-3 text-[#2E1D67] font-medium">
+              <span className="text-xl">🌍</span> <span>{currentUser.country || 'Не указана'}</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-700">
-              <span>🎓</span> <span>{currentUser.jobField || 'Не указано'}</span>
+            <div className="flex items-center gap-3 text-[#2E1D67] font-medium">
+              <span className="text-xl">🎓</span> <span>{currentUser.jobField || 'Не указано'}</span>
             </div>
             {currentUser.vkLink && (
-              <div className="flex items-center gap-3 text-blue-600 hover:underline truncate">
-                <span>🔗</span> <a href={currentUser.vkLink} target="_blank" rel="noreferrer">ВКонтакте</a>
+              <div className="flex items-center gap-3 text-[#6856BC] font-bold hover:underline truncate">
+                <span className="text-xl">🔗</span> <a href={currentUser.vkLink} target="_blank" rel="noreferrer">ВКонтакте</a>
               </div>
             )}
           </div>
 
           {currentUser.userDescription && (
-            <div className="w-full text-left bg-gray-50 p-4 rounded-2xl text-sm text-gray-600">
-              <span className="font-bold text-gray-800 block mb-1">О себе:</span>
+            <div className="w-full text-left bg-white p-5 rounded-xl text-sm text-gray-700 font-medium shadow-sm">
+              <span className="font-black text-[#2E1D67] uppercase tracking-widest block mb-2">О себе:</span>
               {currentUser.userDescription}
             </div>
           )}
         </div>
 
-        <button onClick={handleLogout} className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-4 rounded-full transition-colors shadow-sm">
+        <button onClick={handleLogout} className="w-full bg-white border-2 border-transparent hover:border-[#EB5893] text-[#EB5893] font-black uppercase tracking-widest py-4 rounded-full transition-colors shadow-lg">
           Выйти из аккаунта
         </button>
       </aside>
 
       <main className="w-full lg:w-3/4 flex flex-col">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-          <h1 className="text-3xl font-bold text-gray-900">
-            {isAdmin ? 'Панель администратора' : isActivist ? 'Личный кабинет активиста' : 'Личный кабинет'}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+          <h1 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-widest leading-tight">
+            {isAdmin ? 'Панель администратора' : isActivist ? 'Кабинет активиста' : 'Личный кабинет'}
           </h1>
           
           {(isAdmin || isActivist) && (
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
               <button 
                 onClick={() => setIsEventModalOpen(true)}
-                className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-2.5 px-6 rounded-full transition-colors shadow-md"
+                className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-8 rounded-full transition-colors shadow-xl w-full sm:w-auto text-center flex items-center justify-center whitespace-nowrap gap-2"
               >
-                + Мероприятие
+                + МЕРОПРИЯТИЕ
               </button>
               <button 
                 onClick={() => setIsNewsModalOpen(true)}
-                className="bg-[#D3C380] hover:bg-[#c2b270] text-white font-bold py-2.5 px-6 rounded-full transition-colors shadow-md"
+                className="bg-[#FBBA00] hover:bg-[#e0a700] text-white font-black uppercase tracking-widest py-3 px-8 rounded-full transition-colors shadow-xl w-full sm:w-auto text-center flex items-center justify-center whitespace-nowrap gap-2"
               >
-                + Новость
+                + НОВОСТЬ
               </button>
             </div>
           )}
         </div>
 
-        <div className="bg-white rounded-[30px] p-6 shadow-sm mb-6 flex flex-wrap gap-2">
+        <div className="bg-white rounded-2xl md:rounded-3xl p-3 md:p-4 shadow-md mb-8 flex flex-wrap justify-center items-center gap-2 md:gap-3 border-2 border-[#F0D8C2]">
           {tabs.map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-5 py-2.5 rounded-full text-sm font-bold transition-colors ${
+              className={`flex-grow md:flex-1 px-4 py-2.5 md:px-6 md:py-3 rounded-full text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-widest transition-all whitespace-nowrap text-center ${
                 activeTab === tab 
-                  ? 'bg-[#0FA958] text-white shadow-md' 
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-[#2E1D67] text-white shadow-md' 
+                  : 'text-[#6856BC] hover:bg-[#F4F5F8]'
               }`}
             >
               {tab}
@@ -352,53 +356,54 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           ))}
         </div>
 
-        <div className="bg-white rounded-[30px] p-8 shadow-sm flex-grow min-h-[400px]">
-          <h3 className="text-xl font-bold mb-6 text-gray-800">{activeTab}</h3>
+        <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-10 md:p-14 shadow-xl flex-grow min-h-[500px] border-t-8 border-[#2E1D67]">
+          <h3 className="text-2xl font-black mb-8 text-[#2E1D67] uppercase tracking-widest border-b-2 border-[#F0D8C2] pb-4">{activeTab}</h3>
           
-
           {activeTab === 'Настройки профиля' && (
-            <form onSubmit={handleUpdateProfile} className="flex flex-col gap-4 max-w-xl">
+            <form onSubmit={handleUpdateProfile} className="flex flex-col gap-6 max-w-2xl">
               <div>
-                <label className="block text-gray-700 font-bold mb-1">ФИО</label>
-                <input type="text" name="fullName" defaultValue={currentUser.fullName} required className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958]" />
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">ФИО</label>
+                <input type="text" name="fullName" defaultValue={currentUser.fullName} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Дата рождения</label>
+                  <input type="date" name="birthDate" defaultValue={currentUser.birthDate} className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67]" />
+                </div>
+                <div>
+                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Страна / Гражданство</label>
+                  <input type="text" name="country" defaultValue={currentUser.country} className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67]" />
+                </div>
               </div>
               <div>
-                <label className="block text-gray-700 font-bold mb-1">Дата рождения</label>
-                <input type="date" name="birthDate" defaultValue={currentUser.birthDate} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958]" />
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Место работы / учебы</label>
+                <input type="text" name="jobField" defaultValue={currentUser.jobField} className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]" />
               </div>
               <div>
-                <label className="block text-gray-700 font-bold mb-1">Гражданство / Страна</label>
-                <input type="text" name="country" defaultValue={currentUser.country} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958]" />
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Ссылка на VK</label>
+                <input type="url" name="vkLink" defaultValue={currentUser.vkLink} className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]" />
               </div>
               <div>
-                <label className="block text-gray-700 font-bold mb-1">Место работы / учебы</label>
-                <input type="text" name="jobField" defaultValue={currentUser.jobField} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958]" />
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">О себе</label>
+                <textarea name="userDescription" defaultValue={currentUser.userDescription} rows="4" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] resize-none"></textarea>
               </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-1">Ссылка на VK</label>
-                <input type="url" name="vkLink" defaultValue={currentUser.vkLink} className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958]" />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-1">О себе</label>
-                <textarea name="userDescription" defaultValue={currentUser.userDescription} rows="3" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958] resize-none"></textarea>
-              </div>
-              <button type="submit" className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition-colors shadow-md mt-2 self-start">
+              <button type="submit" className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-4 px-10 rounded-full transition-colors shadow-xl mt-4 self-start text-lg">
                 Сохранить изменения
               </button>
             </form>
           )}
 
           {activeTab === 'Стать активистом' && (
-            <div className="max-w-xl">
-               <p className="text-gray-600 mb-6 leading-relaxed">
-                 Активисты имеют возможность предлагать свои мероприятия, публиковать новости и участвовать в организации жизни Клуба Дружбы. Опишите вашу мотивацию, чтобы администратор рассмотрел заявку.
-               </p>
-               <form onSubmit={handleApplyForActivist} className="flex flex-col gap-4">
+            <div className="max-w-2xl">
+               <p className="text-gray-700 text-lg mb-8 font-medium leading-relaxed bg-[#F0D8C2]/40 p-6 rounded-2xl border border-[#F0D8C2]">
+                  Опишите вашу мотивацию, чтобы администратор рассмотрел заявку.
+                </p>
+               <form onSubmit={handleApplyForActivist} className="flex flex-col gap-6">
                   <div>
-                    <label className="block text-gray-700 font-bold mb-1">Почему вы хотите стать активистом?</label>
-                    <textarea name="reason" required rows="5" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958] resize-none" placeholder="Расскажите о своем опыте и идеях..."></textarea>
+                    <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Почему вы хотите стать активистом МКД СПб?</label>
+                    <textarea name="reason" required rows="6" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] resize-none" placeholder="Расскажите о своем опыте и идеях..."></textarea>
                   </div>
-                  <button type="submit" className="bg-[#D3C380] hover:bg-[#c2b270] text-white font-bold py-3 px-6 rounded-full transition-colors shadow-md self-start">
+                  <button type="submit" className="bg-[#FBBA00] hover:bg-[#e0a700] text-white font-black uppercase tracking-widest py-4 px-10 rounded-full transition-colors shadow-xl self-start text-lg">
                     Подать заявку
                   </button>
                </form>
@@ -406,22 +411,22 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           )}
 
           {activeTab === 'Мои мероприятия' && (
-            <div className="flex flex-col gap-4">
-              <p className="text-sm text-gray-500 mb-2">Здесь отображаются мероприятия, на которые вы зарегистрировались в качестве участника.</p>
+            <div className="flex flex-col gap-6">
+              <p className="text-sm font-bold text-[#6856BC] uppercase tracking-widest mb-4 bg-[#F4F5F8] inline-block py-2 px-4 rounded-full self-start">Мероприятия, на которые вы зарегистрированы</p>
               {myEvents.length === 0 ? (
-                <p className="text-gray-500">Вы пока не зарегистрированы ни на одно мероприятие.</p>
+                <p className="text-gray-500 font-medium text-lg">Вы пока не зарегистрированы ни на одно мероприятие.</p>
               ) : (
                 myEvents.map(ev => (
-                  <div key={ev.id} className="border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col justify-between gap-2 cursor-pointer hover:shadow-md transition-shadow" onClick={() => setViewingEvent(ev)}>
-                    <div className="flex justify-between items-start">
-                      <h4 className="font-bold text-lg text-gray-900">{ev.event_name}</h4>
-                      <div className="flex gap-2">
+                  <div key={ev.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 shadow-md flex flex-col gap-4 cursor-pointer hover:border-[#00A552] transition-colors" onClick={() => setViewingEvent(ev)}>
+                    <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                      <h4 className="font-black text-2xl text-[#2E1D67] uppercase leading-tight">{ev.event_name}</h4>
+                      <div className="flex gap-3 flex-wrap">
                         {getStatusBadge(ev.status)}
-                        <span className="bg-green-100 text-[#0FA958] text-xs font-bold px-3 py-1 rounded-full">{ev.event_category}</span>
+                        <span className="bg-[#F4F5F8] text-[#2E1D67] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">{ev.event_category}</span>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-500">Дата: {new Date(ev.event_date_and_time).toLocaleString()}</p>
-                    <p className="text-gray-700 text-sm mt-1">{ev.description}</p>
+                    <p className="text-sm font-bold text-[#6856BC] uppercase tracking-wide">📅 Дата: {new Date(ev.event_date_and_time).toLocaleString()}</p>
+                    <p className="text-gray-700 font-medium text-lg leading-relaxed mt-2">{ev.description}</p>
                   </div>
                 ))
               )}
@@ -429,25 +434,25 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           )}
 
           {activeTab === 'Мои инициативы' && (isActivist || isAdmin) && (
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-12">
               
               <div>
-                <h4 className="font-bold text-gray-700 mb-4 uppercase text-sm flex justify-between items-center">
-                  Мои одобренные мероприятия
+                <h4 className="font-black text-[#2E1D67] mb-6 uppercase tracking-widest text-lg flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-full bg-[#00A552]"></span> Мои одобренные мероприятия
                 </h4>
-                <div className="flex flex-col gap-3">
-                  {myOrganizedEvents.length === 0 ? <p className="text-sm text-gray-500">Одобренных инициатив пока нет.</p> : null}
+                <div className="flex flex-col gap-4">
+                  {myOrganizedEvents.length === 0 ? <p className="text-gray-500 font-medium">Одобренных инициатив пока нет.</p> : null}
                   {myOrganizedEvents.map(ev => (
-                    <div key={ev.id} className="border border-green-100 bg-green-50/30 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer hover:bg-green-50 transition-colors shadow-sm" onClick={() => setViewingEvent(ev)}>
+                    <div key={ev.id} className="bg-white border-2 border-[#00A552]/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 cursor-pointer hover:border-[#00A552] transition-colors shadow-md" onClick={() => setViewingEvent(ev)}>
                       <div>
-                        <span className="font-bold text-gray-900 block text-lg">{ev.event_name}</span>
-                        <span className="text-xs text-gray-500">{ev.event_category} | Дата: {new Date(ev.event_date_and_time).toLocaleString()}</span>
+                        <span className="font-black text-[#2E1D67] uppercase block text-xl mb-2 leading-tight">{ev.event_name}</span>
+                        <span className="text-sm font-bold text-[#6856BC] uppercase tracking-wider">{ev.event_category} | 📅 {new Date(ev.event_date_and_time).toLocaleString()}</span>
                       </div>
-                      <div className="flex items-center gap-3 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                        <span className="text-sm font-bold text-gray-700 bg-white px-3 py-1.5 rounded-full border border-gray-200">
-                          Участников: {ev.participants_count || 0}
+                      <div className="flex items-center gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                        <span className="text-sm font-black text-[#2E1D67] uppercase tracking-widest bg-[#F4F5F8] px-4 py-2 rounded-full">
+                          Участников: <span className="text-[#EB5893]">{ev.participants_count || 0}</span>
                         </span>
-                        <button onClick={() => setViewingEvent(ev)} className="bg-[#0FA958] hover:bg-green-600 text-white font-bold text-sm px-4 py-1.5 rounded-full transition-colors">Управление</button>
+                        <button onClick={() => setViewingEvent(ev)} className="bg-[#2E1D67] hover:bg-[#1a1040] text-white font-black uppercase tracking-widest text-xs px-6 py-3 rounded-full transition-colors shadow-md">Управление</button>
                       </div>
                     </div>
                   ))}
@@ -455,39 +460,41 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
               </div>
 
               <div>
-                <h4 className="font-bold text-gray-700 mb-4 uppercase text-sm">Заявки на модерации</h4>
+                <h4 className="font-black text-[#2E1D67] mb-6 uppercase tracking-widest text-lg flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-full bg-[#FBBA00]"></span> Заявки на модерации
+                </h4>
                 
-                <div className="flex flex-col gap-3 mb-4">
-                  <h5 className="text-xs text-gray-500 font-bold">МЕРОПРИЯТИЯ</h5>
-                  {pendingEvents.filter(e => e.author_id === currentUser.id).length === 0 ? <p className="text-sm text-gray-400">Нет заявок</p> : null}
+                <div className="flex flex-col gap-4 mb-8">
+                  <h5 className="text-sm text-[#6856BC] font-black uppercase tracking-widest mb-2 bg-[#F4F5F8] inline-block py-1 px-4 rounded-full">МЕРОПРИЯТИЯ</h5>
+                  {pendingEvents.filter(e => e.author_id === currentUser.id).length === 0 ? <p className="text-gray-500 font-medium">Нет заявок</p> : null}
                   {pendingEvents.filter(e => e.author_id === currentUser.id).map(ev => (
-                    <div key={ev.id} className="bg-gray-50 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => setViewingEvent(ev)}>
+                    <div key={ev.id} className="bg-white border-2 border-[#F0D8C2] p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 cursor-pointer hover:border-[#FBBA00] transition-colors shadow-sm" onClick={() => setViewingEvent(ev)}>
                       <div>
-                        <span className="font-bold text-gray-900 block">{ev.event_name}</span>
-                        <span className="text-xs text-gray-500">{ev.event_category}</span>
+                        <span className="font-black text-[#2E1D67] uppercase block text-lg mb-1 leading-tight">{ev.event_name}</span>
+                        <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest">{ev.event_category}</span>
                       </div>
-                      <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                      <div className="flex flex-wrap items-center gap-3" onClick={e => e.stopPropagation()}>
                         {getStatusBadge(ev.status)}
-                        <button onClick={() => setEditingEvent(ev)} className="bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-xs px-3 py-1.5 rounded-full transition-colors">Редактировать</button>
-                        <button onClick={() => withdrawEvent(ev.id)} className="bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs px-3 py-1.5 rounded-full transition-colors">Отозвать</button>
+                        <button onClick={() => setEditingEvent(ev)} className="bg-white border-2 border-[#2E1D67] text-[#2E1D67] font-black uppercase tracking-widest text-xs px-5 py-2 rounded-full hover:bg-[#2E1D67] hover:text-white transition-colors">Редактировать</button>
+                        <button onClick={() => withdrawEvent(ev.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] font-black uppercase tracking-widest text-xs px-5 py-2 rounded-full hover:bg-[#EB5893] hover:text-white transition-colors">Отозвать</button>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex flex-col gap-3">
-                  <h5 className="text-xs text-gray-500 font-bold">НОВОСТИ</h5>
-                  {pendingNews.filter(n => n.author_id === currentUser.id).length === 0 ? <p className="text-sm text-gray-400">Нет заявок</p> : null}
+                <div className="flex flex-col gap-4">
+                  <h5 className="text-sm text-[#6856BC] font-black uppercase tracking-widest mb-2 bg-[#F4F5F8] inline-block py-1 px-4 rounded-full">НОВОСТИ</h5>
+                  {pendingNews.filter(n => n.author_id === currentUser.id).length === 0 ? <p className="text-gray-500 font-medium">Нет заявок</p> : null}
                   {pendingNews.filter(n => n.author_id === currentUser.id).map(nw => (
-                    <div key={nw.id} className="bg-gray-50 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => setViewingNews(nw)}>
+                    <div key={nw.id} className="bg-white border-2 border-[#F0D8C2] p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 cursor-pointer hover:border-[#FBBA00] transition-colors shadow-sm" onClick={() => setViewingNews(nw)}>
                       <div>
-                        <span className="font-bold text-gray-900 block">{nw.title}</span>
-                        <span className="text-xs text-gray-500">{nw.news_block_category}</span>
+                        <span className="font-black text-[#2E1D67] uppercase block text-lg mb-1 leading-tight">{nw.title}</span>
+                        <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest">{nw.news_block_category}</span>
                       </div>
-                      <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                      <div className="flex flex-wrap items-center gap-3" onClick={e => e.stopPropagation()}>
                         {getStatusBadge(nw.status)}
-                        <button onClick={() => setEditingNews(nw)} className="bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-xs px-3 py-1.5 rounded-full transition-colors">Редактировать</button>
-                        <button onClick={() => withdrawNews(nw.id)} className="bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs px-3 py-1.5 rounded-full transition-colors">Отозвать</button>
+                        <button onClick={() => setEditingNews(nw)} className="bg-white border-2 border-[#2E1D67] text-[#2E1D67] font-black uppercase tracking-widest text-xs px-5 py-2 rounded-full hover:bg-[#2E1D67] hover:text-white transition-colors">Редактировать</button>
+                        <button onClick={() => withdrawNews(nw.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] font-black uppercase tracking-widest text-xs px-5 py-2 rounded-full hover:bg-[#EB5893] hover:text-white transition-colors">Отозвать</button>
                       </div>
                     </div>
                   ))}
@@ -498,18 +505,18 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           )}
 
           {activeTab === 'Модерация новостей' && isAdmin && (
-            <div className="flex flex-col gap-4">
-              {pendingNews.length === 0 ? <p className="text-gray-500">Нет новостей на модерации.</p> : null}
+            <div className="flex flex-col gap-6">
+              {pendingNews.length === 0 ? <p className="text-gray-500 font-medium text-lg">Нет новостей на модерации.</p> : null}
               {pendingNews.map(news => (
-                <div key={news.id} className="border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => setViewingNews(news)}>
-                  <div>
-                    <h4 className="font-bold text-lg text-gray-900">{news.title}</h4>
-                    <p className="text-sm text-gray-500 mb-2">Автор: {news.author} | Сектор: {news.news_block_category}</p>
-                    <p className="text-gray-700 text-sm line-clamp-2">{news.description}</p>
+                <div key={news.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-md hover:border-[#FBBA00] transition-colors cursor-pointer" onClick={() => setViewingNews(news)}>
+                  <div className="flex-1">
+                    <h4 className="font-black text-xl text-[#2E1D67] uppercase leading-tight mb-2">{news.title}</h4>
+                    <p className="text-xs font-bold text-[#6856BC] uppercase tracking-widest mb-4">Автор: {news.author} | Сектор: {news.news_block_category}</p>
+                    <p className="text-gray-700 font-medium line-clamp-2">{news.description}</p>
                   </div>
-                  <div className="flex gap-3 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                    <button onClick={() => approveNews(news.id)} className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full transition-colors">Принять</button>
-                    <button onClick={() => rejectNews(news.id)} className="bg-red-100 hover:bg-red-200 text-red-600 font-bold py-2 px-6 rounded-full transition-colors">Отклонить</button>
+                  <div className="flex gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                    <button onClick={() => approveNews(news.id)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
+                    <button onClick={() => rejectNews(news.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
                   </div>
                 </div>
               ))}
@@ -517,18 +524,18 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           )}
 
           {activeTab === 'Модерация мероприятий' && isAdmin && (
-            <div className="flex flex-col gap-4">
-              {pendingEvents.length === 0 ? <p className="text-gray-500">Нет мероприятий на модерации.</p> : null}
+            <div className="flex flex-col gap-6">
+              {pendingEvents.length === 0 ? <p className="text-gray-500 font-medium text-lg">Нет мероприятий на модерации.</p> : null}
               {pendingEvents.map(event => (
-                <div key={event.id} className="border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => setViewingEvent(event)}>
-                  <div>
-                    <h4 className="font-bold text-lg text-gray-900">{event.event_name}</h4>
-                    <p className="text-sm text-gray-500 mb-2">Автор: {event.author} | Сектор: {event.event_category} | Дата: {new Date(event.event_date_and_time).toLocaleString()}</p>
-                    <p className="text-gray-700 text-sm line-clamp-2">{event.description}</p>
+                <div key={event.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-md hover:border-[#FBBA00] transition-colors cursor-pointer" onClick={() => setViewingEvent(event)}>
+                  <div className="flex-1">
+                    <h4 className="font-black text-xl text-[#2E1D67] uppercase leading-tight mb-2">{event.event_name}</h4>
+                    <p className="text-xs font-bold text-[#6856BC] uppercase tracking-widest mb-4">Автор: {event.author} | Сектор: {event.event_category} | 📅 {new Date(event.event_date_and_time).toLocaleString()}</p>
+                    <p className="text-gray-700 font-medium line-clamp-2">{event.description}</p>
                   </div>
-                  <div className="flex gap-3 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                    <button onClick={() => approveEvent(event.id)} className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full transition-colors">Принять</button>
-                    <button onClick={() => rejectEvent(event.id)} className="bg-red-100 hover:bg-red-200 text-red-600 font-bold py-2 px-6 rounded-full transition-colors">Отклонить</button>
+                  <div className="flex gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                    <button onClick={() => approveEvent(event.id)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
+                    <button onClick={() => rejectEvent(event.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
                   </div>
                 </div>
               ))}
@@ -536,17 +543,17 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           )}
 
           {activeTab === 'Заявки в актив' && isAdmin && (
-            <div className="flex flex-col gap-4">
-              {activistRequests.length === 0 ? <p className="text-gray-500">Нет новых заявок.</p> : null}
+            <div className="flex flex-col gap-6">
+              {activistRequests.length === 0 ? <p className="text-gray-500 font-medium text-lg">Нет новых заявок.</p> : null}
               {activistRequests.map(req => (
-                <div key={req.id} className="border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => setViewingActivistRequest(req)}>
-                  <div>
-                    <h4 className="font-bold text-lg text-gray-900">{req.fullName}</h4>
-                    <p className="text-sm text-gray-500">{req.email}</p>
+                <div key={req.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-md hover:border-[#FBBA00] transition-colors cursor-pointer" onClick={() => setViewingActivistRequest(req)}>
+                  <div className="flex-1">
+                    <h4 className="font-black text-2xl text-[#2E1D67] uppercase tracking-wide leading-tight mb-2">{req.fullName}</h4>
+                    <p className="text-sm font-bold text-[#6856BC] uppercase tracking-widest mb-4">{req.email}</p>
                   </div>
-                  <div className="flex gap-3 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                    <button onClick={() => approveActivist(req.id)} className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full transition-colors">Принять</button>
-                    <button onClick={() => rejectActivist(req.id)} className="bg-red-100 hover:bg-red-200 text-red-600 font-bold py-2 px-6 rounded-full transition-colors">Отклонить</button>
+                  <div className="flex gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                    <button onClick={() => approveActivist(req.id)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
+                    <button onClick={() => rejectActivist(req.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
                   </div>
                 </div>
               ))}
@@ -554,19 +561,19 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           )}
 
           {activeTab === 'База пользователей' && isAdmin && (
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-end mb-2">
-                 <button onClick={() => downloadList('Список_Всех_Пользователей')} className="bg-blue-50 text-blue-600 font-bold py-2 px-4 rounded-full text-sm hover:bg-blue-100 transition-colors">
+            <div className="flex flex-col gap-6">
+              <div className="flex justify-end mb-4">
+                 <button onClick={() => downloadList('Список_Всех_Пользователей')} className="bg-white border-2 border-[#2E1D67] text-[#2E1D67] font-black uppercase tracking-widest py-3 px-6 rounded-full text-sm hover:bg-[#2E1D67] hover:text-white transition-colors shadow-md">
                     ⬇ Скачать список (CSV)
                  </button>
               </div>
               {usersList.map(user => (
-                <div key={user.id} className="border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => setViewingUser(user)}>
-                  <div>
-                    <h4 className="font-bold text-lg text-gray-900">{user.fullName}</h4>
-                    <p className="text-sm text-gray-500">{user.email} | Роль: <span className="font-bold text-gray-700">{getRoleName(user.role)}</span></p>
+                <div key={user.id} className="bg-[#F4F5F8] rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-[#6856BC]" onClick={() => setViewingUser(user)}>
+                  <div className="flex-1 text-center sm:text-left">
+                    <h4 className="font-black text-xl text-[#2E1D67] uppercase mb-1">{user.fullName}</h4>
+                    <p className="text-sm font-bold text-gray-600">{user.email} | Роль: <span className="text-[#EB5893] uppercase tracking-wider">{getRoleName(user.role)}</span></p>
                   </div>
-                  <button onClick={(e) => { e.stopPropagation(); setViewingUser(user); }} className="text-[#0FA958] font-bold text-sm bg-green-50 px-4 py-2 rounded-full hover:bg-green-100">Управление</button>
+                  <button onClick={(e) => { e.stopPropagation(); setViewingUser(user); }} className="bg-white text-[#2E1D67] font-black uppercase tracking-widest text-xs px-6 py-3 rounded-full hover:bg-[#F0D8C2] shadow-sm">Управление</button>
                 </div>
               ))}
             </div>
@@ -575,36 +582,36 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
           {activeTab === 'Архив' && (
             <div className="flex flex-col gap-4">
               {archiveItems.map(item => (
-                <div key={item.id} className="border border-gray-100 rounded-2xl p-5 flex justify-between items-center shadow-sm hover:shadow-md transition-shadow cursor-pointer opacity-70" onClick={() => item.type === 'event' ? setViewingEvent(item) : setViewingNews(item)}>
+                <div key={item.id} className="bg-white border-2 border-gray-200 rounded-2xl p-6 flex justify-between items-center shadow-sm hover:border-gray-400 transition-colors cursor-pointer opacity-75" onClick={() => item.type === 'event' ? setViewingEvent(item) : setViewingNews(item)}>
                   <div>
-                    <h4 className="font-bold text-lg text-gray-900 line-through decoration-gray-300">{item.event_name || item.title}</h4>
-                    <span className="text-xs bg-gray-200 px-2 py-1 rounded-full text-gray-600 mt-2 inline-block">
+                    <h4 className="font-black text-lg text-gray-500 uppercase tracking-wide line-through decoration-gray-400 leading-tight">{item.event_name || item.title}</h4>
+                    <span className="text-xs font-bold bg-gray-200 px-4 py-1.5 rounded-full text-gray-600 mt-3 inline-block uppercase tracking-widest">
                       {item.type === 'event' ? 'Архивное Мероприятие' : 'Архивная Новость'}
                     </span>
                   </div>
-                  <button className="text-gray-600 font-bold text-sm">Просмотр</button>
+                  <button className="text-[#6856BC] font-black uppercase tracking-widest text-sm hover:underline">Просмотр</button>
                 </div>
               ))}
             </div>
           )}
 
           {activeTab === 'Статистика' && (isAdmin || isActivist) && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-               <div className="bg-gray-50 p-6 rounded-2xl text-center shadow-sm">
-                 <span className="block text-4xl font-bold text-[#0FA958] mb-2">{statistics.totalEvents}</span>
-                 <span className="text-sm font-bold text-gray-600 uppercase">Мероприятий</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+               <div className="bg-[#F0D8C2]/50 p-8 rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl text-center shadow-md border border-[#F0D8C2]">
+                 <span className="block text-5xl font-black text-[#2E1D67] mb-3">{statistics.totalEvents}</span>
+                 <span className="text-xs font-black text-[#6856BC] uppercase tracking-widest">Мероприятий</span>
                </div>
-               <div className="bg-gray-50 p-6 rounded-2xl text-center shadow-sm">
-                 <span className="block text-4xl font-bold text-[#0FA958] mb-2">{statistics.totalNews}</span>
-                 <span className="text-sm font-bold text-gray-600 uppercase">Новостей</span>
+               <div className="bg-[#F0D8C2]/50 p-8 rounded-tl-[40px] rounded-br-[40px] rounded-tr-xl rounded-bl-xl text-center shadow-md border border-[#F0D8C2]">
+                 <span className="block text-5xl font-black text-[#2E1D67] mb-3">{statistics.totalNews}</span>
+                 <span className="text-xs font-black text-[#6856BC] uppercase tracking-widest">Новостей</span>
                </div>
-               <div className="bg-gray-50 p-6 rounded-2xl text-center shadow-sm">
-                 <span className="block text-4xl font-bold text-[#0FA958] mb-2">{statistics.totalActivists}</span>
-                 <span className="text-sm font-bold text-gray-600 uppercase">Активистов</span>
+               <div className="bg-[#F0D8C2]/50 p-8 rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl text-center shadow-md border border-[#F0D8C2]">
+                 <span className="block text-5xl font-black text-[#2E1D67] mb-3">{statistics.totalActivists}</span>
+                 <span className="text-xs font-black text-[#6856BC] uppercase tracking-widest">Активистов</span>
                </div>
-               <div className="bg-gray-50 p-6 rounded-2xl text-center shadow-sm">
-                 <span className="block text-4xl font-bold text-[#0FA958] mb-2">{statistics.totalUsers}</span>
-                 <span className="text-sm font-bold text-gray-600 uppercase">Пользователей</span>
+               <div className="bg-[#F0D8C2]/50 p-8 rounded-tl-[40px] rounded-br-[40px] rounded-tr-xl rounded-bl-xl text-center shadow-md border border-[#F0D8C2]">
+                 <span className="block text-5xl font-black text-[#2E1D67] mb-3">{statistics.totalUsers}</span>
+                 <span className="text-xs font-black text-[#6856BC] uppercase tracking-widest">Участников</span>
                </div>
             </div>
           )}
@@ -612,36 +619,36 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
         </div>
       </main>
 
-
+      {/* Модалки просмотра */}
       {viewingEvent && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingEvent(null)}>
-          <div className="bg-[#FBF9F6] rounded-[30px] p-8 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setViewingEvent(null)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingEvent(null)}>
+          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setViewingEvent(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+              ×
             </button>
             
-            <div className="flex gap-2 mb-4">
+            <div className="flex flex-wrap gap-4 mb-8 mt-4">
               {getStatusBadge(viewingEvent.status)}
-              <span className="bg-green-100 text-[#0FA958] text-xs font-bold px-3 py-1 rounded-full">{viewingEvent.event_category}</span>
+              <span className="bg-[#F4F5F8] text-[#2E1D67] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">{viewingEvent.event_category}</span>
             </div>
 
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">{viewingEvent.event_name}</h3>
-            <p className="text-sm text-gray-500 mb-6">
+            <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-4">{viewingEvent.event_name}</h3>
+            <p className="text-sm font-bold text-[#6856BC] uppercase tracking-widest mb-8">
               📅 {new Date(viewingEvent.event_date_and_time).toLocaleString()} {viewingEvent.author ? `| ✍️ Организатор: ${viewingEvent.author}` : ''}
             </p>
-            {viewingEvent.event_picture && <img src={viewingEvent.event_picture} alt="Обложка" className="w-full h-64 object-cover rounded-2xl mb-6" />}
+            {viewingEvent.event_picture && <img src={viewingEvent.event_picture} alt="Обложка" className="w-full h-72 object-cover rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl mb-8 shadow-md" />}
             
-            <div className="text-gray-800 whitespace-pre-wrap leading-relaxed mb-8">{viewingEvent.description}</div>
+            <div className="text-gray-700 font-medium text-lg whitespace-pre-wrap leading-relaxed mb-10">{viewingEvent.description}</div>
 
             {(viewingEvent.author_id === currentUser.id || isAdmin) && viewingEvent.status === 'approved' && activeTab === 'Мои инициативы' && (
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mt-4">
-                <h4 className="font-bold text-gray-800 mb-4 uppercase text-sm">Управление мероприятием</h4>
-                <p className="text-sm text-gray-600 mb-4">Всего записалось: <strong>{viewingEvent.participants_count || 0} чел.</strong></p>
-                <div className="flex flex-wrap gap-3">
-                   <button onClick={() => downloadList(`Участники_${viewingEvent.event_name}`)} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-full text-sm transition-colors shadow-sm">
-                     ⬇ Скачать список участников
+              <div className="bg-[#F4F5F8] border-2 border-[#F0D8C2] rounded-tl-[40px] rounded-br-[40px] rounded-tr-xl rounded-bl-xl p-8 mt-6 shadow-inner">
+                <h4 className="font-black text-[#2E1D67] mb-6 uppercase tracking-widest">Управление мероприятием</h4>
+                <p className="text-sm font-bold text-[#6856BC] uppercase tracking-widest mb-6 bg-white py-2 px-4 inline-block rounded-full shadow-sm">Участников: {viewingEvent.participants_count || 0}</p>
+                <div className="flex flex-wrap gap-4">
+                   <button onClick={() => downloadList(`Участники_${viewingEvent.event_name}`)} className="bg-[#2E1D67] hover:bg-[#1a1040] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">
+                     ⬇ Скачать список
                    </button>
-                   <button onClick={() => cancelApprovedEvent(viewingEvent.id)} className="bg-red-100 hover:bg-red-200 text-red-600 font-bold py-2 px-5 rounded-full text-sm transition-colors shadow-sm">
+                   <button onClick={() => cancelApprovedEvent(viewingEvent.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">
                      Отменить мероприятие
                    </button>
                 </div>
@@ -649,7 +656,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
             )}
             
             {viewingEvent.status === 'approved' && viewingEvent.author_id !== currentUser.id && (
-               <button onClick={() => alert('Чат с организаторами пока в разработке.')} className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-5 rounded-full text-sm transition-colors mt-4">
+               <button onClick={() => alert('Чат с организаторами МКД СПб пока в разработке.')} className="bg-white border-2 border-[#2E1D67] text-[#2E1D67] hover:bg-[#2E1D67] hover:text-white font-black uppercase tracking-widest py-4 px-8 rounded-full text-sm transition-colors mt-6 shadow-md w-full md:w-auto">
                  💬 Задать вопрос организатору
                </button>
             )}
@@ -658,49 +665,49 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
       )}
 
       {viewingNews && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingNews(null)}>
-          <div className="bg-[#FBF9F6] rounded-[30px] p-8 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setViewingNews(null)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingNews(null)}>
+          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setViewingNews(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+              ×
             </button>
-            <div className="flex gap-2 mb-4">
+            <div className="flex flex-wrap gap-4 mb-8 mt-4">
                {getStatusBadge(viewingNews.status)}
-               <span className="bg-[#D3C380] text-white text-xs font-bold px-3 py-1 rounded-full inline-block">{viewingNews.news_block_category}</span>
+               <span className="bg-[#F4F5F8] text-[#2E1D67] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">{viewingNews.news_block_category}</span>
             </div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">{viewingNews.title}</h3>
-            <p className="text-sm text-gray-500 mb-6">{viewingNews.author ? `✍️ Автор: ${viewingNews.author}` : ''}</p>
-            {viewingNews.news_block_picture && <img src={viewingNews.news_block_picture} alt="Изображение новости" className="w-full h-64 object-cover rounded-2xl mb-6" />}
-            <div className="text-gray-800 whitespace-pre-wrap leading-relaxed">{viewingNews.description}</div>
+            <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-4">{viewingNews.title}</h3>
+            <p className="text-sm font-bold text-[#6856BC] uppercase tracking-widest mb-8">{viewingNews.author ? `✍️ Автор: ${viewingNews.author}` : ''}</p>
+            {viewingNews.news_block_picture && <img src={viewingNews.news_block_picture} alt="Изображение новости" className="w-full h-72 object-cover rounded-tl-[40px] rounded-br-[40px] rounded-tr-xl rounded-bl-xl mb-8 shadow-md" />}
+            <div className="text-gray-700 font-medium text-lg whitespace-pre-wrap leading-relaxed">{viewingNews.description}</div>
           </div>
         </div>
       )}
 
       {viewingUser && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingUser(null)}>
-          <div className="bg-[#FBF9F6] rounded-[30px] p-8 w-full max-w-lg relative shadow-2xl" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setViewingUser(null)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingUser(null)}>
+          <div className="bg-white rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl p-10 w-full max-w-xl relative shadow-2xl" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setViewingUser(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-10 h-10 rounded-full flex items-center justify-center text-[#2E1D67] text-xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+              ×
             </button>
-            <div className="flex flex-col items-center text-center mb-6">
-              <div className="w-24 h-24 rounded-full border-4 border-[#0FA958] flex items-center justify-center mb-4 bg-gray-100 text-4xl">🧑‍💻</div>
-              <h3 className="text-2xl font-bold text-gray-900">{viewingUser.fullName}</h3>
-              <p className="text-[#0FA958] font-bold uppercase text-xs mt-1">{getRoleName(viewingUser.role)}</p>
+            <div className="flex flex-col items-center text-center mb-8 mt-4">
+              <div className="w-24 h-24 rounded-full border-4 border-[#00A552] flex items-center justify-center mb-6 bg-white shadow-inner text-4xl">🧑‍💻</div>
+              <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight">{viewingUser.fullName}</h3>
+              <p className="text-[#EB5893] font-black uppercase tracking-widest text-sm mt-3">{getRoleName(viewingUser.role)}</p>
             </div>
-            <div className="bg-white p-5 rounded-2xl flex flex-col gap-3 shadow-sm border border-gray-50 mb-6">
-               <p><strong>Email:</strong> {viewingUser.email}</p>
-               <p><strong>Дата рождения:</strong> {viewingUser.birthDate || 'Не указана'}</p>
-               <p><strong>Учеба / Работа:</strong> {viewingUser.jobField || 'Не указано'}</p>
-               <p><strong>Страна:</strong> {viewingUser.country || 'Не указана'}</p>
-               {viewingUser.vkLink && <p><strong>VK:</strong> <a href={viewingUser.vkLink} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">{viewingUser.vkLink}</a></p>}
+            <div className="bg-[#F4F5F8] p-8 rounded-tl-[40px] rounded-br-[40px] rounded-tr-xl rounded-bl-xl flex flex-col gap-4 shadow-inner mb-8">
+               <p className="text-[#2E1D67] font-medium"><span className="font-black uppercase tracking-wider text-xs mr-2">Email:</span> {viewingUser.email}</p>
+               <p className="text-[#2E1D67] font-medium"><span className="font-black uppercase tracking-wider text-xs mr-2">Дата рождения:</span> {viewingUser.birthDate || 'Не указана'}</p>
+               <p className="text-[#2E1D67] font-medium"><span className="font-black uppercase tracking-wider text-xs mr-2">Учеба / Работа:</span> {viewingUser.jobField || 'Не указано'}</p>
+               <p className="text-[#2E1D67] font-medium"><span className="font-black uppercase tracking-wider text-xs mr-2">Страна:</span> {viewingUser.country || 'Не указана'}</p>
+               {viewingUser.vkLink && <p className="text-[#2E1D67] font-medium"><span className="font-black uppercase tracking-wider text-xs mr-2">VK:</span> <a href={viewingUser.vkLink} target="_blank" rel="noreferrer" className="text-[#6856BC] hover:underline font-bold">{viewingUser.vkLink}</a></p>}
             </div>
             
             {isAdmin && viewingUser.id !== currentUser.id && (
-              <div className="bg-gray-100 p-4 rounded-2xl">
-                 <p className="text-xs font-bold text-gray-500 mb-3 uppercase text-center">Изменить роль пользователя</p>
-                 <div className="flex justify-center gap-2 flex-wrap">
-                   {viewingUser.role !== 'user' && <button onClick={() => changeUserRole(viewingUser.id, 'user')} className="bg-white hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full text-xs shadow-sm">Сделать Пользователем</button>}
-                   {viewingUser.role !== 'activist' && <button onClick={() => changeUserRole(viewingUser.id, 'activist')} className="bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold py-2 px-4 rounded-full text-xs shadow-sm">Назначить Активистом</button>}
-                   {viewingUser.role !== 'admin' && <button onClick={() => changeUserRole(viewingUser.id, 'admin')} className="bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2 px-4 rounded-full text-xs shadow-sm">Сделать Администратором</button>}
+              <div className="bg-white border-2 border-[#F0D8C2] p-6 rounded-2xl">
+                 <p className="text-xs font-black text-[#2E1D67] mb-4 uppercase tracking-widest text-center">Изменить роль пользователя</p>
+                 <div className="flex justify-center gap-3 flex-wrap">
+                   {viewingUser.role !== 'user' && <button onClick={() => changeUserRole(viewingUser.id, 'user')} className="bg-[#F4F5F8] hover:bg-white border-2 border-transparent hover:border-[#2E1D67] text-[#2E1D67] font-black uppercase tracking-widest py-2.5 px-5 rounded-full text-xs transition-colors shadow-sm">Сделать Участником</button>}
+                   {viewingUser.role !== 'activist' && <button onClick={() => changeUserRole(viewingUser.id, 'activist')} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-2.5 px-5 rounded-full text-xs transition-colors shadow-sm">Назначить Активистом</button>}
+                   {viewingUser.role !== 'admin' && <button onClick={() => changeUserRole(viewingUser.id, 'admin')} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-2.5 px-5 rounded-full text-xs transition-colors shadow-sm">Сделать Админом</button>}
                  </div>
               </div>
             )}
@@ -709,102 +716,133 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
       )}
 
       {viewingActivistRequest && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingActivistRequest(null)}>
-          <div className="bg-[#FBF9F6] rounded-[30px] p-8 w-full max-w-lg relative shadow-2xl" onClick={e => e.stopPropagation()}>
-             <button onClick={() => setViewingActivistRequest(null)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingActivistRequest(null)}>
+          <div className="bg-white rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl p-10 w-full max-w-xl relative shadow-2xl" onClick={e => e.stopPropagation()}>
+             <button onClick={() => setViewingActivistRequest(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-10 h-10 rounded-full flex items-center justify-center text-[#2E1D67] text-xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+               ×
              </button>
-             <h3 className="text-2xl font-bold text-gray-900 mb-2">Заявка в актив</h3>
-             <h4 className="text-lg font-bold text-gray-700">{viewingActivistRequest.fullName}</h4>
-             <p className="text-sm text-gray-500 mb-4">{viewingActivistRequest.email}</p>
-             <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 mb-6">
-               <p className="font-bold mb-2">Причина / Мотивация:</p>
-               <p className="text-gray-800 leading-relaxed">{viewingActivistRequest.reason}</p>
+             <h3 className="text-sm font-black text-[#6856BC] uppercase tracking-widest mb-4 bg-[#F4F5F8] inline-block py-2 px-5 rounded-full mt-4">Заявка в актив МКД СПб</h3>
+             <h4 className="text-3xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-2 mt-4">{viewingActivistRequest.fullName}</h4>
+             <p className="text-sm font-bold text-gray-500 mb-8">{viewingActivistRequest.email}</p>
+             <div className="bg-[#F0D8C2]/40 p-8 rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl shadow-inner border border-[#F0D8C2] mb-10">
+               <p className="font-black text-[#2E1D67] uppercase tracking-widest text-xs mb-3">Причина / Мотивация:</p>
+               <p className="text-gray-800 font-medium text-lg leading-relaxed">{viewingActivistRequest.reason}</p>
              </div>
-             <div className="flex gap-4 justify-end">
-                <button onClick={() => { approveActivist(viewingActivistRequest.id); setViewingActivistRequest(null); }} className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition-colors">Сделать активистом</button>
-                <button onClick={() => { rejectActivist(viewingActivistRequest.id); setViewingActivistRequest(null); }} className="bg-red-100 hover:bg-red-200 text-red-600 font-bold py-3 px-6 rounded-full transition-colors">Отклонить</button>
+             <div className="flex gap-4 justify-end flex-wrap">
+                <button onClick={() => { approveActivist(viewingActivistRequest.id); setViewingActivistRequest(null); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-full transition-colors shadow-md">Одобрить</button>
+                <button onClick={() => { rejectActivist(viewingActivistRequest.id); setViewingActivistRequest(null); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
              </div>
           </div>
         </div>
       )}
 
-      {(isNewsModalOpen || editingNews) && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#FBF9F6] rounded-[30px] p-8 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]">
-            <button onClick={() => { setIsNewsModalOpen(false); setEditingNews(null); }} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      {/* Окна Создания / Редактирования Мероприятия и Новости (развернутые) */}
+      {(isEventModalOpen || editingEvent) && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex justify-center p-4 overflow-y-auto" onClick={() => {setIsEventModalOpen(false); setEditingEvent(null); setEventFileName('');}}>
+          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl m-auto" onClick={e => e.stopPropagation()}>
+            <button onClick={() => {setIsEventModalOpen(false); setEditingEvent(null); setEventFileName('');}} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+              ×
             </button>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">{editingNews ? 'Редактировать новость' : 'Предложить новость'}</h2>
-            <form onSubmit={editingNews ? handleUpdateNews : handleCreateNews} className="flex flex-col gap-5">
+            <h2 className="text-3xl font-black text-[#2E1D67] mb-8 uppercase tracking-widest">{editingEvent ? 'Редактировать мероприятие' : 'Создать мероприятие'}</h2>
+            
+            <form onSubmit={editingEvent ? handleUpdateEvent : handleCreateEvent} className="flex flex-col gap-6">
               <div>
-                <label className="block text-gray-700 font-bold mb-2">Заголовок</label>
-                <input type="text" name="title" defaultValue={editingNews?.title} required className="w-full bg-white border border-gray-200 rounded-xl p-4 outline-none focus:border-[#0FA958] transition-colors" placeholder="Введите заголовок..." />
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Название мероприятия *</label>
+                <input type="text" name="event_name" defaultValue={editingEvent?.event_name} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]" placeholder="Например: Городской форум" />
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Категория (Сектор) *</label>
+                  <select name="event_category" defaultValue={editingEvent?.event_category || SECTORS[0]} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67] cursor-pointer">
+                    {SECTORS.map(sec => <option key={sec} value={sec}>{sec}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Дата и время *</label>
+                  <input type="datetime-local" name="event_date_and_time" defaultValue={editingEvent?.event_date_and_time} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67]" />
+                </div>
+              </div>
+              
               <div>
-                <label className="block text-gray-700 font-bold mb-2">Категория / Сектор</label>
-                <select name="news_block_category" defaultValue={editingNews?.news_block_category || (SECTORS && SECTORS[0]?.title)} className="w-full bg-white border border-gray-200 rounded-xl p-4 outline-none focus:border-[#0FA958] transition-colors">
-                  {SECTORS ? SECTORS.map((sector, idx) => (
-                    <option key={sector.id || idx} value={sector.title || sector}>{sector.title || sector}</option>
-                  )) : (
-                    <option value="Общество">Общество</option>
-                  )}
-                </select>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Обложка мероприятия</label>
+                <div className="relative w-full bg-[#F4F5F8] border-2 border-dashed border-[#F0D8C2] rounded-xl outline-none focus-within:border-[#6856BC] overflow-hidden flex items-center transition-colors hover:border-[#6856BC]">
+                  <input 
+                    type="file" 
+                    name="event_picture" 
+                    accept="image/*" 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                    onChange={(e) => setEventFileName(e.target.files[0]?.name || '')}
+                  />
+                  <div className="p-4 flex items-center gap-4 pointer-events-none w-full">
+                    <span className="bg-[#2E1D67] text-white text-xs font-black uppercase tracking-widest py-2 px-6 rounded-full shadow-md">
+                      Выбрать файл
+                    </span>
+                    <span className="text-[#2E1D67] font-medium truncate">
+                      {eventFileName || 'Файл не выбран'}
+                    </span>
+                  </div>
+                </div>
               </div>
+
               <div>
-                <label className="block text-gray-700 font-bold mb-2">Текст новости</label>
-                <textarea name="description" defaultValue={editingNews?.description} required rows="6" className="w-full bg-white border border-gray-200 rounded-xl p-4 outline-none focus:border-[#0FA958] transition-colors resize-none" placeholder="Содержание новости..."></textarea>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Описание *</label>
+                <textarea name="description" defaultValue={editingEvent?.description} required rows="5" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] resize-none" placeholder="Подробное описание мероприятия..."></textarea>
               </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">Обложка</label>
-                <input type="file" name="news_block_picture" accept="image/*" className="w-full bg-white border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#0FA958]/10 file:text-[#0FA958] hover:file:bg-[#0FA958]/20" />
-              </div>
-              <button type="submit" className="bg-[#D3C380] hover:bg-[#c2b270] text-white font-bold py-4 rounded-full transition-colors shadow-md mt-2 text-lg">
-                {editingNews ? 'Сохранить изменения' : 'Отправить на модерацию'}
+              <button type="submit" className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-4 px-10 rounded-full transition-colors shadow-xl mt-4 self-start text-lg">
+                {editingEvent ? 'Сохранить изменения' : 'Отправить на модерацию'}
               </button>
             </form>
           </div>
         </div>
       )}
 
-      {(isEventModalOpen || editingEvent) && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#FBF9F6] rounded-[30px] p-8 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]">
-            <button onClick={() => { setIsEventModalOpen(false); setEditingEvent(null); }} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      {(isNewsModalOpen || editingNews) && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex justify-center p-4 overflow-y-auto" onClick={() => {setIsNewsModalOpen(false); setEditingNews(null); setNewsFileName('');}}>
+          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl m-auto" onClick={e => e.stopPropagation()}>
+            <button onClick={() => {setIsNewsModalOpen(false); setEditingNews(null); setNewsFileName('');}} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+              ×
             </button>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">{editingEvent ? 'Редактировать мероприятие' : 'Создать мероприятие'}</h2>
-            <form onSubmit={editingEvent ? handleUpdateEvent : handleCreateEvent} className="flex flex-col gap-5">
+            <h2 className="text-3xl font-black text-[#2E1D67] mb-8 uppercase tracking-widest">{editingNews ? 'Редактировать новость' : 'Предложить новость'}</h2>
+            
+            <form onSubmit={editingNews ? handleUpdateNews : handleCreateNews} className="flex flex-col gap-6">
               <div>
-                <label className="block text-gray-700 font-bold mb-2">Название мероприятия</label>
-                <input type="text" name="event_name" defaultValue={editingEvent?.event_name} required className="w-full bg-white border border-gray-200 rounded-xl p-4 outline-none focus:border-[#0FA958] transition-colors" placeholder="Введите название..." />
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Заголовок новости *</label>
+                <input type="text" name="title" defaultValue={editingNews?.title} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]" placeholder="О чем вы хотите рассказать?" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-gray-700 font-bold mb-2">Категория</label>
-                  <select name="event_category" defaultValue={editingEvent?.event_category || (SECTORS && SECTORS[0]?.title)} className="w-full bg-white border border-gray-200 rounded-xl p-4 outline-none focus:border-[#0FA958] transition-colors">
-                    {SECTORS ? SECTORS.map((sector, idx) => (
-                      <option key={sector.id || idx} value={sector.title || sector}>{sector.title || sector}</option>
-                    )) : (
-                      <option value="Спорт">Спорт</option>
-                    )}
-                  </select>
+              <div>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Сектор новости *</label>
+                <select name="news_block_category" defaultValue={editingNews?.news_block_category || SECTORS[0]} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67] cursor-pointer">
+                  {SECTORS.map(sec => <option key={sec} value={sec}>{sec}</option>)}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Прикрепить изображение</label>
+                <div className="relative w-full bg-[#F4F5F8] border-2 border-dashed border-[#F0D8C2] rounded-xl outline-none focus-within:border-[#6856BC] overflow-hidden flex items-center transition-colors hover:border-[#6856BC]">
+                  <input 
+                    type="file" 
+                    name="news_block_picture" 
+                    accept="image/*" 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                    onChange={(e) => setNewsFileName(e.target.files[0]?.name || '')}
+                  />
+                  <div className="p-4 flex items-center gap-4 pointer-events-none w-full">
+                    <span className="bg-[#2E1D67] text-white text-xs font-black uppercase tracking-widest py-2 px-6 rounded-full shadow-md">
+                      Выбрать файл
+                    </span>
+                    <span className="text-[#2E1D67] font-medium truncate">
+                      {newsFileName || 'Файл не выбран'}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-gray-700 font-bold mb-2">Дата и время</label>
-                  <input type="datetime-local" name="event_date_and_time" defaultValue={editingEvent?.event_date_and_time} required className="w-full bg-white border border-gray-200 rounded-xl p-4 outline-none focus:border-[#0FA958] transition-colors" />
-                </div>
               </div>
+
               <div>
-                <label className="block text-gray-700 font-bold mb-2">Описание</label>
-                <textarea name="description" defaultValue={editingEvent?.description} required rows="5" className="w-full bg-white border border-gray-200 rounded-xl p-4 outline-none focus:border-[#0FA958] transition-colors resize-none" placeholder="Опишите программу, цели и аудиторию..."></textarea>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Текст новости *</label>
+                <textarea name="description" defaultValue={editingNews?.description} required rows="6" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] resize-none" placeholder="Содержание новости..."></textarea>
               </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">Обложка</label>
-                <input type="file" name="event_picture" accept="image/*" className="w-full bg-white border border-gray-200 rounded-xl p-3 outline-none focus:border-[#0FA958] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#0FA958]/10 file:text-[#0FA958] hover:file:bg-[#0FA958]/20" />
-              </div>
-              <button type="submit" className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-4 rounded-full transition-colors shadow-md mt-2 text-lg">
-                {editingEvent ? 'Сохранить изменения' : 'Отправить на модерацию'}
+              <button type="submit" className="bg-[#FBBA00] hover:bg-[#e0a700] text-white font-black uppercase tracking-widest py-4 px-10 rounded-full transition-colors shadow-xl mt-4 self-start text-lg">
+                {editingNews ? 'Сохранить изменения' : 'Отправить на модерацию'}
               </button>
             </form>
           </div>

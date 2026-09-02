@@ -11,19 +11,20 @@ const Sidebar = ({ selectedCategories, setSelectedCategories }) => {
   };
 
   return (
-    <aside className="md:w-1/4 bg-[#FCEB9C] rounded-[30px] p-6 min-h-[500px]">
-      <h3 className="text-xl font-bold text-gray-800 mb-6">Сектора:</h3>
-      <div className="flex flex-col gap-3">
+    <aside className="w-full md:w-[30%] lg:w-1/4 flex-shrink-0 bg-[#FBBA00] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl p-8 min-h-[500px] shadow-xl font-['Onest',sans-serif] relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-20 rounded-bl-full pointer-events-none"></div>
+      <h3 className="text-2xl font-black text-[#2E1D67] uppercase tracking-widest mb-8 relative z-10">Сектора:</h3>
+      <div className="flex flex-col gap-3 relative z-10">
         {SECTORS.map(sector => {
           const isSelected = selectedCategories.includes(sector);
           return (
             <button 
               key={sector} 
               onClick={() => toggleCategory(sector)}
-              className={`text-left px-4 py-3 rounded-xl text-sm font-medium transition-all shadow-sm hover:shadow-md ${
+              className={`text-left px-5 py-3.5 rounded-2xl text-xs md:text-sm font-bold transition-all shadow-md uppercase tracking-wide whitespace-normal leading-snug break-words ${
                 isSelected 
-                  ? 'bg-[#0FA958] text-white' 
-                  : 'bg-white/60 hover:bg-white text-gray-800'
+                  ? 'bg-[#2E1D67] text-white scale-105' 
+                  : 'bg-white hover:bg-[#F0D8C2] text-[#2E1D67]'
               }`}
             >
               {sector}

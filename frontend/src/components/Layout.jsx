@@ -9,8 +9,8 @@ const Layout = ({ children, currentUser }) => {
   const isProfilePage = location.pathname === '/profile';
 
   const linkClass = (path) => 
-    `font-bold text-lg hover:text-[#0FA958] transition-colors ${
-      location.pathname === path && !location.hash ? 'text-[#0FA958]' : 'text-gray-800'
+    `font-black text-sm uppercase tracking-widest hover:text-[#EB5893] transition-colors duration-200 ${
+      location.pathname === path && !location.hash ? 'text-[#EB5893]' : 'text-[#2E1D67]'
     }`;
 
   const handleLogoClick = (e) => {
@@ -32,37 +32,38 @@ const Layout = ({ children, currentUser }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF9F6] flex flex-col font-sans">
-      <header className="bg-white py-4 px-8 flex items-center shadow-md sticky top-0 z-50">
+    <div className="min-h-screen bg-[#F4F5F8] flex flex-col font-['Onest',sans-serif]">
+      
+      <header className="bg-white py-4 px-8 flex items-center shadow-md sticky top-0 z-50 border-b-4 border-[#FBBA00]">
         <div className="flex-1 flex justify-start">
           <a href="/" onClick={handleLogoClick} className="flex items-center cursor-pointer">
-            <img src="/МКД_логотип.jpg" alt="МКД Логотип" className="h-16 w-16 object-contain" />
+            <img src="/МКД_логотип.jpg" alt="МКД Логотип" className="h-14 w-14 object-contain" />
           </a>
         </div>
 
         {!isAuthPage && (
           <>
             <nav className="hidden md:flex gap-8 items-center justify-center">
-              <a href="/#about" onClick={handleAboutClick} className={`font-bold text-lg hover:text-[#0FA958] transition-colors ${location.hash === '#about' ? 'text-[#0FA958]' : 'text-gray-800'}`}>О нас</a>
-              <Link to="/city" className={linkClass('/city')}>О нашем городе</Link>
+              <a href="/#about" onClick={handleAboutClick} className={`font-black text-sm uppercase tracking-widest hover:text-[#EB5893] transition-colors ${location.hash === '#about' ? 'text-[#EB5893]' : 'text-[#2E1D67]'}`}>О нас</a>
+              <Link to="/city" className={linkClass('/city')}>О городе</Link>
               <Link to="/news" className={linkClass('/news')}>Новости</Link>
               <Link to="/events" className={linkClass('/events')}>Мероприятия</Link>
             </nav>
 
             <div className="flex-1 flex gap-4 items-center justify-end">
-              <button className="border-2 border-[#0FA958] text-[#0FA958] bg-white font-bold rounded-full px-4 py-1 hover:bg-[#0FA958] hover:text-white transition-colors">RU</button>
+              <button className="border-2 border-[#2E1D67] text-[#2E1D67] bg-white font-black uppercase tracking-widest rounded-full px-4 py-1 hover:bg-[#2E1D67] hover:text-white transition-colors">RU</button>
               
               {currentUser ? (
                 <button 
                   onClick={() => navigate('/profile')} 
-                  className="bg-[#0FA958] text-white font-bold rounded-full px-6 py-2 hover:bg-green-600 transition-colors shadow-sm"
+                  className="bg-[#00A552] text-white font-black uppercase tracking-widest text-sm rounded-full px-6 py-2.5 hover:bg-[#328D2E] transition-colors shadow-md"
                 >
                   Личный кабинет
                 </button>
               ) : (
                 <>
-                  <button onClick={() => navigate('/login')} className="bg-[#0FA958] text-[#ffffff] font-bold rounded-full px-6 py-2 hover:bg-green-600 transition-colors shadow-sm">Войти</button>
-                  <button onClick={() => navigate('/register')} className="bg-[#C5E1A5] text-green-900 font-bold rounded-full px-6 py-2 hover:bg-[#aed884] transition-colors shadow-sm">Регистрация</button>
+                  <button onClick={() => navigate('/login')} className="bg-[#00A552] text-white font-black uppercase tracking-widest text-sm rounded-full px-6 py-2.5 hover:bg-[#328D2E] transition-colors">Войти</button>
+                  <button onClick={() => navigate('/register')} className="bg-[#F0D8C2] text-[#2E1D67] font-black uppercase tracking-widest text-sm rounded-full px-6 py-2.5 hover:bg-[#FBBA00] transition-colors">Регистрация</button>
                 </>
               )}
             </div>
@@ -75,13 +76,20 @@ const Layout = ({ children, currentUser }) => {
       </main>
 
       {!isAuthPage && !isProfilePage && (
-        <footer className="bg-[#E4D596] py-10 px-8 mt-auto border-t-[12px] border-[#D3C380]">
-          <div className="container mx-auto max-w-[1200px]">
-            <h4 className="font-bold text-xl mb-4 text-gray-800">Доп инфа. (Контакты и т.д.)</h4>
-            <ul className="list-disc pl-5 font-medium space-y-2 text-gray-800">
-              <li>Почта</li>
-              <li>Ссылки на соц. сети</li>
-            </ul>
+        <footer className="bg-[#2E1D67] text-white py-12 px-8 mt-auto border-t-8 border-[#EB5893] relative overflow-hidden rounded-tl-[80px]">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#FBBA00] rounded-bl-full opacity-20 pointer-events-none"></div>
+          <div className="container mx-auto max-w-[1200px] flex flex-col md:flex-row justify-between relative z-10">
+            <div>
+              <h4 className="font-black uppercase tracking-widest text-2xl mb-4 text-[#FBBA00]">МКД СПб</h4>
+              <p className="text-[#F0D8C2] mb-4 max-w-sm font-medium">Международный клуб дружбы Санкт-Петербурга — площадка для реализации молодёжных инициатив.</p>
+            </div>
+            <div>
+              <h4 className="font-black uppercase tracking-widest text-lg mb-4 text-white">Контакты</h4>
+              <ul className="space-y-2 text-[#F0D8C2] font-medium">
+                <li className="hover:text-white cursor-pointer transition-colors">info@mkd-spb.ru</li>
+                <li className="hover:text-white cursor-pointer transition-colors mt-2">ВКонтакте | Telegram</li>
+              </ul>
+            </div>
           </div>
         </footer>
       )}

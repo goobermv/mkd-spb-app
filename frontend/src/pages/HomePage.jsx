@@ -60,12 +60,7 @@ const HomePage = ({ newsList, currentUser }) => {
       alert("Пожалуйста, опишите вашу мотивацию подробнее.");
       return;
     }
-
-    const requestData = {
-      user_id: currentUser?.id, 
-      user_motivation_description: motivation
-    };
-    
+    const requestData = { user_id: currentUser?.id, user_motivation_description: motivation };
     console.log("Отправка на бэкенд:", requestData);
     alert("Ваша заявка успешно отправлена на рассмотрение!");
     setIsApplicationModalOpen(false);
@@ -73,106 +68,109 @@ const HomePage = ({ newsList, currentUser }) => {
   };
 
   return (
-    <div className="flex flex-col">
-      <section className="bg-gray-200 w-full h-[400px] relative overflow-hidden flex items-center justify-between px-10" onMouseEnter={() => setIsHeroPaused(true)} onMouseLeave={() => setIsHeroPaused(false)}>
-        <div className="absolute inset-0 flex items-center justify-center text-gray-500 font-bold text-2xl">{heroSlides[heroSlide]}</div>
-        <button onClick={prevHeroSlide} className="bg-white/90 p-3 rounded-full hover:bg-white transition-all z-10 shadow-md"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
-        <button onClick={nextHeroSlide} className="bg-white/90 p-3 rounded-full hover:bg-white transition-all z-10 shadow-md"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+    <div className="flex flex-col font-['Onest',sans-serif]">
+      <section className="bg-[#2E1D67] w-full h-[400px] relative overflow-hidden flex items-center justify-between px-10" onMouseEnter={() => setIsHeroPaused(true)} onMouseLeave={() => setIsHeroPaused(false)}>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB5893] rounded-bl-full opacity-20"></div>
+        <div className="absolute inset-0 flex items-center justify-center text-white/50 font-black tracking-widest uppercase text-3xl">{heroSlides[heroSlide]}</div>
+        <button onClick={prevHeroSlide} className="bg-white p-3 rounded-full hover:bg-[#EB5893] hover:text-white text-[#2E1D67] transition-all z-10 shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
+        <button onClick={nextHeroSlide} className="bg-white p-3 rounded-full hover:bg-[#EB5893] hover:text-white text-[#2E1D67] transition-all z-10 shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
       </section>
 
-      <section className="container mx-auto px-4 py-12">
-        <div className="bg-[#E4D596] rounded-[40px] p-8 pb-12">
-          <h2 className="text-3xl text-white font-bold text-center mb-8 bg-[#D3C380] rounded-full py-2 w-1/2 mx-auto shadow-sm">Новости</h2>
-          <div className="bg-[#EEE6C4] rounded-[30px] p-8 flex items-center gap-4 relative min-h-[300px]" onMouseEnter={() => setIsNewsPaused(true)} onMouseLeave={() => setIsNewsPaused(false)}>
+      <section className="container mx-auto px-4 py-12 max-w-[1400px]">
+        <div className="bg-[#F0D8C2] rounded-tl-[80px] rounded-br-[80px] rounded-tr-xl rounded-bl-xl p-8 pb-12 shadow-xl border-t-8 border-[#FBBA00]">
+          <h2 className="text-3xl md:text-4xl text-[#2E1D67] font-black text-center mb-10 bg-white rounded-full py-3 w-fit px-12 mx-auto shadow-sm uppercase tracking-widest border-2 border-dashed border-[#EB5893]">Новости</h2>
+          <div className="bg-white/40 backdrop-blur-sm rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl p-8 flex items-center gap-4 relative min-h-[300px]" onMouseEnter={() => setIsNewsPaused(true)} onMouseLeave={() => setIsNewsPaused(false)}>
             {top5News.length > 0 ? (
               <>
-                <button onClick={prevNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
+                <button onClick={prevNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0 text-[#2E1D67] hover:bg-[#2E1D67] hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                   {visibleNews.map(item => (
-                    <div key={item.id} onClick={() => setSelectedNews(item)} className="cursor-pointer transition-transform hover:scale-[1.02] h-full">
+                    <div key={item.id} onClick={() => setSelectedNews(item)} className="cursor-pointer transition-transform hover:-translate-y-2 h-full">
                       <NewsCard title={item.title} date={item.date} description={item.description} />
                     </div>
                   ))}
                 </div>
-                <button onClick={nextNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+                <button onClick={nextNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0 text-[#2E1D67] hover:bg-[#2E1D67] hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
               </>
             ) : (
-              <p className="text-center text-gray-700 text-lg w-full py-10">Новостей пока нет.</p>
+              <p className="text-center text-[#2E1D67] font-bold uppercase tracking-widest w-full py-10">Новостей пока нет.</p>
             )}
           </div>
         </div>
       </section>
 
-      {selectedNews && (
-        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedNews(null)}>
-          <div className="bg-[#F6EFE6] rounded-[30px] p-8 md:p-10 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setSelectedNews(null)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            <div className="flex-1 flex flex-col justify-between">
-              <div>
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 pr-6">{selectedNews.title}</h3>
-                <p className="text-gray-700 text-lg leading-relaxed mb-6 whitespace-pre-line">{selectedNews.description}</p>
-              </div>
-              <div>
-                <p className="text-gray-900 text-lg mb-6">Дата: {selectedNews.date}</p>
-                <button onClick={() => navigate('/news')} className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-3.5 px-8 rounded-full transition-colors shadow-md text-lg">Перейти ко всем новостям</button>
-              </div>
+      <section id="about" className="container mx-auto px-4 py-16 scroll-mt-24 max-w-[1400px]">
+        <div className="bg-[#2E1D67] rounded-tl-[80px] rounded-br-[80px] rounded-tr-xl rounded-bl-xl p-10 md:p-16 shadow-2xl relative overflow-hidden border-t-8 border-[#00A552]">
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#FBBA00] rounded-tr-full opacity-20"></div>
+          
+          <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-white uppercase tracking-widest relative z-10">О нас</h2>
+          
+          <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10 relative z-10">
+            <div className="md:w-1/2">
+              <h3 className="text-3xl font-black mb-4 text-[#FBBA00] uppercase tracking-wider">Наша история</h3>
+              <p className="text-xl font-bold mb-4 text-[#F0D8C2]">Открыт - 3 ноября 2024 г.</p>
+              <p className="text-white/90 leading-relaxed text-justify text-lg font-medium">Молодёжный Консультационный Дом Санкт-Петербурга был создан как единая площадка для поддержки молодёжных инициатив, объединения городских сообществ и взаимодействия с органами власти.</p>
             </div>
-            <div className="md:w-[350px] md:h-[450px] h-[300px] bg-white rounded-3xl shadow-inner flex items-center justify-center text-gray-800 font-medium flex-shrink-0">Афиша</div>
+            <div className="md:w-1/3 h-[300px] w-full bg-[#F0D8C2] rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl flex justify-center items-center text-[#2E1D67] shadow-inner font-black uppercase tracking-widest border-4 border-white">Место для фото "История"</div>
           </div>
-        </div>
-      )}
-
-      <section id="about" className="container mx-auto px-4 py-16 scroll-mt-24">
-        <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">О нас</h2>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10">
-          <div className="md:w-1/2">
-            <h3 className="text-2xl font-bold mb-4 text-[#0FA958]">Наша история</h3>
-            <p className="text-lg font-medium mb-4">Открыт - 3 ноября 2024 г.</p>
-            <p className="text-gray-700 leading-relaxed text-justify">Молодёжный Консультационный Дом Санкт-Петербурга был создан как единая площадка для поддержки молодёжных инициатив, объединения городских сообществ и взаимодействия с органами власти.</p>
-          </div>
-          <div className="md:w-1/3 h-[300px] w-full bg-gray-200 rounded-3xl flex justify-center items-center text-gray-500 shadow-inner">Место для фото "История"</div>
-        </div>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10">
-          <div className="md:w-1/3 h-[300px] w-full bg-gray-200 rounded-3xl flex justify-center items-center text-gray-500 shadow-inner order-2 md:order-1">Место для фото "Миссия"</div>
-          <div className="md:w-1/2 order-1 md:order-2">
-            <h3 className="text-2xl font-bold mb-4 text-[#0FA958]">Наша миссия</h3>
-            <p className="text-lg text-gray-800 font-medium mb-4">Формирование глобального сообщества лидеров.</p>
-            <p className="text-gray-700 leading-relaxed text-justify">Развитие потенциала молодых людей, создание возможностей для профессионального роста, гражданской активности и реализации социокультурных проектов.</p>
+          
+          <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
+            <div className="md:w-1/3 h-[300px] w-full bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl flex justify-center items-center text-[#2E1D67] shadow-inner font-black uppercase tracking-widest border-4 border-white order-2 md:order-1">Место для фото "Миссия"</div>
+            <div className="md:w-1/2 order-1 md:order-2">
+              <h3 className="text-3xl font-black mb-4 text-[#FBBA00] uppercase tracking-wider">Наша миссия</h3>
+              <p className="text-xl text-[#F0D8C2] font-bold mb-4">Формирование глобального сообщества лидеров.</p>
+              <p className="text-white/90 leading-relaxed text-justify text-lg font-medium">Развитие потенциала молодых людей, создание возможностей для профессионального роста, гражданской активности и реализации социокультурных проектов.</p>
+            </div>
           </div>
         </div>
       </section>
 
       {canApply && (
-        <section className="container mx-auto px-4 py-16 text-center bg-[#FCEB9C] rounded-[40px] mb-12 shadow-sm max-w-4xl">
-          <h3 className="text-3xl font-bold mb-6 text-gray-800">Как стать активистом?</h3>
-          <p className="text-lg mb-4 text-gray-700">Мы ищем активных людей, готовых развивать город вместе с нами!</p>
-          <button 
-            onClick={handleApplyClick}
-            className="bg-[#0FA958] mt-4 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full transition-colors text-lg shadow-md hover:shadow-lg"
-          >
-            Подать заявку
-          </button>
+        <section className="container mx-auto px-4 py-16 mb-12 max-w-[1400px]">
+          <div className="text-center bg-[#FBBA00] rounded-tl-[60px] rounded-br-[60px] rounded-tr-xl rounded-bl-xl p-12 shadow-xl border-t-8 border-[#EB5893] relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-bl-full opacity-30"></div>
+            <h3 className="text-4xl font-black mb-6 text-[#2E1D67] uppercase tracking-widest relative z-10">Как стать активистом?</h3>
+            <p className="text-xl mb-8 text-[#2E1D67] font-bold relative z-10">Мы ищем активных людей, готовых развивать город вместе с нами!</p>
+            <button onClick={handleApplyClick} className="bg-[#2E1D67] hover:bg-[#EB5893] text-white font-black py-4 px-12 rounded-full transition-colors text-lg shadow-xl uppercase tracking-widest relative z-10">
+              Подать заявку
+            </button>
+          </div>
         </section>
       )}
 
+      {selectedNews && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedNews(null)}>
+          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setSelectedNews(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
+            <div className="flex-1 flex flex-col justify-between mt-4 md:mt-0">
+              <div>
+                <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-widest mb-6 pr-6 leading-tight">{selectedNews.title}</h3>
+                <p className="text-gray-700 text-lg font-medium leading-relaxed mb-6 whitespace-pre-line">{selectedNews.description}</p>
+              </div>
+              <div>
+                <p className="text-[#6856BC] font-black text-xl mb-6"> Дата: {selectedNews.date}</p>
+                <button onClick={() => navigate('/news')} className="bg-[#FBBA00] hover:bg-[#e0a600] text-[#2E1D67] font-black py-4 px-8 rounded-full transition-colors shadow-xl text-lg uppercase tracking-widest">Все новости</button>
+              </div>
+            </div>
+            <div className="md:w-[350px] md:h-[450px] h-[300px] bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl shadow-inner flex items-center justify-center text-[#2E1D67] font-black uppercase tracking-widest text-xl flex-shrink-0 border-4 border-white">Афиша</div>
+          </div>
+        </div>
+      )}
+
       {isApplicationModalOpen && (
-        <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setIsApplicationModalOpen(false)}>
-          <div className="bg-[#FBF9F6] rounded-[30px] p-8 md:p-10 w-full max-w-2xl relative shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setIsApplicationModalOpen(false)} className="absolute top-5 right-5 text-gray-500 hover:text-gray-900 transition-colors">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setIsApplicationModalOpen(false)}>
+           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setIsApplicationModalOpen(false)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
             
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">Заявка в актив</h3>
-            <p className="text-gray-600 mb-6 font-medium">Расскажите нам о себе и почему вы хотите присоединиться.</p>
+            <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-2">Заявка в актив</h3>
+            <p className="text-gray-500 mb-8 font-medium">Расскажите нам о себе и почему вы хотите присоединиться.</p>
             
             <div className="mb-8">
-              <label className="block text-gray-800 text-lg font-bold mb-3">
+              <label className="block text-[#2E1D67] text-lg font-black uppercase tracking-wider mb-3">
                 Ваша мотивация (почему мы?):
               </label>
               <textarea 
-                className="w-full bg-white border-2 border-gray-200 rounded-2xl p-4 text-gray-800 shadow-sm focus:outline-none focus:border-[#0FA958] focus:ring-1 focus:ring-[#0FA958] resize-none h-40 transition-all text-lg"
+                className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-2xl p-4 text-gray-800 shadow-inner focus:outline-none focus:border-[#EB5893] resize-none h-40 transition-all text-lg font-medium"
                 placeholder="Я хочу стать активистом, потому что..."
                 value={motivation}
                 onChange={(e) => setMotivation(e.target.value)}
@@ -180,17 +178,11 @@ const HomePage = ({ newsList, currentUser }) => {
             </div>
             
             <div className="flex flex-col-reverse md:flex-row justify-end gap-4 mt-auto">
-              <button 
-                onClick={() => setIsApplicationModalOpen(false)} 
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3.5 px-8 rounded-full transition-colors text-lg"
-              >
+              <button onClick={() => setIsApplicationModalOpen(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 px-8 rounded-full transition-colors text-lg uppercase tracking-widest">
                 Отмена
               </button>
-              <button 
-                onClick={submitApplication} 
-                className="bg-[#0FA958] hover:bg-green-600 text-white font-bold py-3.5 px-8 rounded-full transition-colors shadow-md text-lg"
-              >
-                Отправить заявку
+              <button onClick={submitApplication} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black py-4 px-8 rounded-full transition-colors shadow-xl text-lg uppercase tracking-widest">
+                Отправить
               </button>
             </div>
           </div>
