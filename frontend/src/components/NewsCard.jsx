@@ -7,7 +7,7 @@ const NewsCard = ({ title, date, description }) => (
     </div>
     <h4 className="font-black mb-3 text-xl text-[#2E1D67] uppercase leading-tight">{title}</h4>
     <p className="text-base font-medium text-gray-700 mb-6 flex-grow">{description || "Краткая информация..."}</p>
-    <p className="text-sm font-bold text-[#6856BC]">📅 {date}</p>
+    <p className="text-sm font-bold text-[#6856BC]"> {date}</p>
   </div>
 );
 

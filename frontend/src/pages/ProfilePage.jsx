@@ -24,6 +24,9 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
+  
+  const [eventFileName, setEventFileName] = useState('');
+  const [newsFileName, setNewsFileName] = useState('');
 
   const [viewingEvent, setViewingEvent] = useState(null);
   const [viewingNews, setViewingNews] = useState(null);
@@ -84,6 +87,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
     
     setPendingNews([...pendingNews, newNews]);
     setIsNewsModalOpen(false);
+    setNewsFileName('');
     alert('Новость отправлена на модерацию!');
   };
 
@@ -105,6 +109,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
       return item;
     }));
     setEditingNews(null);
+    setNewsFileName('');
     alert('Заявка на новость обновлена!');
   };
 
@@ -133,6 +138,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
 
     setPendingEvents([...pendingEvents, newEvent]);
     setIsEventModalOpen(false);
+    setEventFileName('');
     alert('Мероприятие отправлено на модерацию!');
   };
 
@@ -155,6 +161,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
       return item;
     }));
     setEditingEvent(null);
+    setEventFileName('');
     alert('Заявка на мероприятие обновлена!');
   };
 
@@ -319,26 +326,26 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
             <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
               <button 
                 onClick={() => setIsEventModalOpen(true)}
-                className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-8 rounded-full transition-colors shadow-xl w-full sm:w-auto"
+                className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-8 rounded-full transition-colors shadow-xl w-full sm:w-auto text-center flex items-center justify-center whitespace-nowrap gap-2"
               >
-                + Мероприятие
+                + МЕРОПРИЯТИЕ
               </button>
               <button 
                 onClick={() => setIsNewsModalOpen(true)}
-                className="bg-[#FBBA00] hover:bg-[#e0a700] text-white font-black uppercase tracking-widest py-3 px-8 rounded-full transition-colors shadow-xl w-full sm:w-auto"
+                className="bg-[#FBBA00] hover:bg-[#e0a700] text-white font-black uppercase tracking-widest py-3 px-8 rounded-full transition-colors shadow-xl w-full sm:w-auto text-center flex items-center justify-center whitespace-nowrap gap-2"
               >
-                + Новость
+                + НОВОСТЬ
               </button>
             </div>
           )}
         </div>
 
-        <div className="bg-white rounded-full p-2 shadow-md mb-8 flex flex-wrap gap-2 border-2 border-[#F0D8C2]">
+        <div className="bg-white rounded-2xl md:rounded-3xl p-3 md:p-4 shadow-md mb-8 flex flex-wrap justify-center items-center gap-2 md:gap-3 border-2 border-[#F0D8C2]">
           {tabs.map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest transition-all ${
+              className={`flex-grow md:flex-1 px-4 py-2.5 md:px-6 md:py-3 rounded-full text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-widest transition-all whitespace-nowrap text-center ${
                 activeTab === tab 
                   ? 'bg-[#2E1D67] text-white shadow-md' 
                   : 'text-[#6856BC] hover:bg-[#F4F5F8]'
@@ -612,6 +619,7 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
         </div>
       </main>
 
+      {/* Модалки просмотра */}
       {viewingEvent && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingEvent(null)}>
           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
@@ -721,44 +729,119 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
                <p className="text-gray-800 font-medium text-lg leading-relaxed">{viewingActivistRequest.reason}</p>
              </div>
              <div className="flex gap-4 justify-end flex-wrap">
-                <button onClick={() => { approveActivist(viewingActivistRequest.id); setViewingActivistRequest(null); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3.5 px-8 rounded-full transition-colors shadow-xl text-sm flex-1 md:flex-none">Сделать активистом</button>
-                <button onClick={() => { rejectActivist(viewingActivistRequest.id); setViewingActivistRequest(null); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3.5 px-8 rounded-full transition-colors shadow-xl text-sm flex-1 md:flex-none">Отклонить</button>
+                <button onClick={() => { approveActivist(viewingActivistRequest.id); setViewingActivistRequest(null); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-full transition-colors shadow-md">Одобрить</button>
+                <button onClick={() => { rejectActivist(viewingActivistRequest.id); setViewingActivistRequest(null); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-4 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
              </div>
           </div>
         </div>
       )}
 
-      {(isNewsModalOpen || editingNews) && (
-        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-10 md:p-14 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]">
-            <button onClick={() => { setIsNewsModalOpen(false); setEditingNews(null); }} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+      {/* Окна Создания / Редактирования Мероприятия и Новости (развернутые) */}
+      {(isEventModalOpen || editingEvent) && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex justify-center p-4 overflow-y-auto" onClick={() => {setIsEventModalOpen(false); setEditingEvent(null); setEventFileName('');}}>
+          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl m-auto" onClick={e => e.stopPropagation()}>
+            <button onClick={() => {setIsEventModalOpen(false); setEditingEvent(null); setEventFileName('');}} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
               ×
             </button>
-            <h2 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-10 mt-4 leading-tight">{editingNews ? 'Редактировать новость' : 'Предложить новость'}</h2>
+            <h2 className="text-3xl font-black text-[#2E1D67] mb-8 uppercase tracking-widest">{editingEvent ? 'Редактировать мероприятие' : 'Создать мероприятие'}</h2>
+            
+            <form onSubmit={editingEvent ? handleUpdateEvent : handleCreateEvent} className="flex flex-col gap-6">
+              <div>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Название мероприятия *</label>
+                <input type="text" name="event_name" defaultValue={editingEvent?.event_name} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]" placeholder="Например: Городской форум" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Категория (Сектор) *</label>
+                  <select name="event_category" defaultValue={editingEvent?.event_category || SECTORS[0]} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67] cursor-pointer">
+                    {SECTORS.map(sec => <option key={sec} value={sec}>{sec}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Дата и время *</label>
+                  <input type="datetime-local" name="event_date_and_time" defaultValue={editingEvent?.event_date_and_time} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67]" />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Обложка мероприятия</label>
+                <div className="relative w-full bg-[#F4F5F8] border-2 border-dashed border-[#F0D8C2] rounded-xl outline-none focus-within:border-[#6856BC] overflow-hidden flex items-center transition-colors hover:border-[#6856BC]">
+                  <input 
+                    type="file" 
+                    name="event_picture" 
+                    accept="image/*" 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                    onChange={(e) => setEventFileName(e.target.files[0]?.name || '')}
+                  />
+                  <div className="p-4 flex items-center gap-4 pointer-events-none w-full">
+                    <span className="bg-[#2E1D67] text-white text-xs font-black uppercase tracking-widest py-2 px-6 rounded-full shadow-md">
+                      Выбрать файл
+                    </span>
+                    <span className="text-[#2E1D67] font-medium truncate">
+                      {eventFileName || 'Файл не выбран'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Описание *</label>
+                <textarea name="description" defaultValue={editingEvent?.description} required rows="5" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] resize-none" placeholder="Подробное описание мероприятия..."></textarea>
+              </div>
+              <button type="submit" className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-4 px-10 rounded-full transition-colors shadow-xl mt-4 self-start text-lg">
+                {editingEvent ? 'Сохранить изменения' : 'Отправить на модерацию'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {(isNewsModalOpen || editingNews) && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex justify-center p-4 overflow-y-auto" onClick={() => {setIsNewsModalOpen(false); setEditingNews(null); setNewsFileName('');}}>
+          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl m-auto" onClick={e => e.stopPropagation()}>
+            <button onClick={() => {setIsNewsModalOpen(false); setEditingNews(null); setNewsFileName('');}} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
+              ×
+            </button>
+            <h2 className="text-3xl font-black text-[#2E1D67] mb-8 uppercase tracking-widest">{editingNews ? 'Редактировать новость' : 'Предложить новость'}</h2>
+            
             <form onSubmit={editingNews ? handleUpdateNews : handleCreateNews} className="flex flex-col gap-6">
               <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Заголовок</label>
-                <input type="text" name="title" defaultValue={editingNews?.title} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors" placeholder="Введите заголовок..." />
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Заголовок новости *</label>
+                <input type="text" name="title" defaultValue={editingNews?.title} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]" placeholder="О чем вы хотите рассказать?" />
               </div>
               <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Категория / Сектор</label>
-                <select name="news_block_category" defaultValue={editingNews?.news_block_category || (SECTORS && SECTORS[0])} className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors appearance-none cursor-pointer">
-                  {SECTORS ? SECTORS.map((sector, idx) => (
-                    <option key={idx} value={sector}>{sector}</option>
-                  )) : (
-                    <option value="Общество">Общество</option>
-                  )}
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Сектор новости *</label>
+                <select name="news_block_category" defaultValue={editingNews?.news_block_category || SECTORS[0]} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-[#2E1D67] cursor-pointer">
+                  {SECTORS.map(sec => <option key={sec} value={sec}>{sec}</option>)}
                 </select>
               </div>
+              
               <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Текст новости</label>
-                <textarea name="description" defaultValue={editingNews?.description} required rows="8" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors resize-none" placeholder="Содержание новости..."></textarea>
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Прикрепить изображение</label>
+                <div className="relative w-full bg-[#F4F5F8] border-2 border-dashed border-[#F0D8C2] rounded-xl outline-none focus-within:border-[#6856BC] overflow-hidden flex items-center transition-colors hover:border-[#6856BC]">
+                  <input 
+                    type="file" 
+                    name="news_block_picture" 
+                    accept="image/*" 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                    onChange={(e) => setNewsFileName(e.target.files[0]?.name || '')}
+                  />
+                  <div className="p-4 flex items-center gap-4 pointer-events-none w-full">
+                    <span className="bg-[#2E1D67] text-white text-xs font-black uppercase tracking-widest py-2 px-6 rounded-full shadow-md">
+                      Выбрать файл
+                    </span>
+                    <span className="text-[#2E1D67] font-medium truncate">
+                      {newsFileName || 'Файл не выбран'}
+                    </span>
+                  </div>
+                </div>
               </div>
+
               <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Обложка</label>
-                <input type="file" name="news_block_picture" accept="image/*" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-3 outline-none focus:border-[#6856BC] transition-colors file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:uppercase file:tracking-widest file:bg-[#2E1D67] file:text-white hover:file:bg-[#1a1040] cursor-pointer" />
+                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Текст новости *</label>
+                <textarea name="description" defaultValue={editingNews?.description} required rows="6" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] resize-none" placeholder="Содержание новости..."></textarea>
               </div>
-              <button type="submit" className="bg-[#FBBA00] hover:bg-[#e0a700] text-white font-black uppercase tracking-widest py-4 rounded-full transition-colors shadow-xl mt-6 text-lg">
+              <button type="submit" className="bg-[#FBBA00] hover:bg-[#e0a700] text-white font-black uppercase tracking-widest py-4 px-10 rounded-full transition-colors shadow-xl mt-4 self-start text-lg">
                 {editingNews ? 'Сохранить изменения' : 'Отправить на модерацию'}
               </button>
             </form>
@@ -766,49 +849,6 @@ const ProfilePage = ({ currentUser, setCurrentUser }) => {
         </div>
       )}
 
-      {(isEventModalOpen || editingEvent) && (
-        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-10 md:p-14 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]">
-            <button onClick={() => { setIsEventModalOpen(false); setEditingEvent(null); }} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">
-              ×
-            </button>
-            <h2 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-10 mt-4 leading-tight">{editingEvent ? 'Редактировать мероприятие' : 'Создать мероприятие МКД СПб'}</h2>
-            <form onSubmit={editingEvent ? handleUpdateEvent : handleCreateEvent} className="flex flex-col gap-6">
-              <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Название мероприятия</label>
-                <input type="text" name="event_name" defaultValue={editingEvent?.event_name} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors" placeholder="Введите название..." />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Категория</label>
-                  <select name="event_category" defaultValue={editingEvent?.event_category || (SECTORS && SECTORS[0])} className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors appearance-none cursor-pointer">
-                    {SECTORS ? SECTORS.map((sector, idx) => (
-                      <option key={idx} value={sector}>{sector}</option>
-                    )) : (
-                      <option value="Спорт">Спорт</option>
-                    )}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Дата и время</label>
-                  <input type="datetime-local" name="event_date_and_time" defaultValue={editingEvent?.event_date_and_time} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Описание мероприятия</label>
-                <textarea name="description" defaultValue={editingEvent?.description} required rows="8" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67] transition-colors resize-none" placeholder="Подробное описание..."></textarea>
-              </div>
-              <div>
-                <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-3">Афиша / Обложка</label>
-                <input type="file" name="event_picture" accept="image/*" className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-3 outline-none focus:border-[#6856BC] transition-colors file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-black file:uppercase file:tracking-widest file:bg-[#2E1D67] file:text-white hover:file:bg-[#1a1040] cursor-pointer" />
-              </div>
-              <button type="submit" className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-4 rounded-full transition-colors shadow-xl mt-6 text-lg">
-                {editingEvent ? 'Сохранить изменения' : 'Отправить на модерацию'}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

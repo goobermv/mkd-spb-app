@@ -8,7 +8,7 @@ const EventCard = ({ title, date, description }) => (
         <p className="text-gray-700 font-medium">{description || "Текст с информацией..."}</p>
       </div>
       <div className="mt-8">
-        <p className="mb-4 font-bold text-[#6856BC]">📅 {date}</p>
+        <p className="mb-4 font-bold text-[#6856BC]"> {date}</p>
         <button className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black py-3 px-8 rounded-full transition-colors uppercase tracking-widest text-sm shadow-md group-hover:scale-105">
           Зарегистрироваться
         </button>
