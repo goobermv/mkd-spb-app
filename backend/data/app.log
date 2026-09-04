@@ -19,3 +19,73 @@
 2026/09/02 21:08:47 Server starting on port 8080...
 2026/09/02 22:54:24 Successfully connected to the database!
 2026/09/02 22:54:24 Server starting on port 8080...
+2026/09/04 11:30:08 Successfully connected to the database!
+2026/09/04 11:30:08 Server starting on port 8080...
+[API]	2026/09/04 11:30:12 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 11:30:12 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 11:30:12 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/09/04 11:30:12 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/09/04 11:30:12 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:12 logger.go:86: [WARN]	No events found
+[API]	2026/09/04 11:30:12 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 11:30:12 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 11:30:12 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:12 logger.go:86: [WARN]	No events found
+[API]	2026/09/04 11:30:12 logger.go:63: [ERROR]	Failed to find news blocks: ERROR: relation "news_blocks" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:12 logger.go:86: [WARN]	No news blocks found
+[API]	2026/09/04 11:30:12 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/09/04 11:30:12 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/09/04 11:30:12 logger.go:63: [ERROR]	Failed to find news blocks: ERROR: relation "news_blocks" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:12 logger.go:86: [WARN]	No news blocks found
+[API]	2026/09/04 11:30:34 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 11:30:34 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 11:30:34 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/09/04 11:30:34 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/09/04 11:30:34 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:34 logger.go:86: [WARN]	No events found
+[API]	2026/09/04 11:30:34 logger.go:63: [ERROR]	Failed to find news blocks: ERROR: relation "news_blocks" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:34 logger.go:86: [WARN]	No news blocks found
+[API]	2026/09/04 11:30:34 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 11:30:34 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 11:30:34 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/09/04 11:30:34 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/09/04 11:30:34 logger.go:63: [ERROR]	Failed to find news blocks: ERROR: relation "news_blocks" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:34 logger.go:86: [WARN]	No news blocks found
+[API]	2026/09/04 11:30:34 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:34 logger.go:86: [WARN]	No events found
+[API]	2026/09/04 11:30:40 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 11:30:40 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 11:30:40 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/09/04 11:30:40 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/09/04 11:30:40 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:40 logger.go:86: [WARN]	No events found
+[API]	2026/09/04 11:30:40 logger.go:63: [ERROR]	Failed to find news blocks: ERROR: relation "news_blocks" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:40 logger.go:86: [WARN]	No news blocks found
+[API]	2026/09/04 11:30:40 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 11:30:40 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 11:30:40 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/09/04 11:30:40 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/09/04 11:30:40 logger.go:63: [ERROR]	Failed to find news blocks: ERROR: relation "news_blocks" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:40 logger.go:86: [WARN]	No news blocks found
+[API]	2026/09/04 11:30:40 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 11:30:40 logger.go:86: [WARN]	No events found
+2026/09/04 19:49:38 Successfully connected to the database!
+2026/09/04 19:49:38 Server starting on port 8080...
+[API]	2026/09/04 19:49:54 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 19:49:54 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 19:49:54 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 19:49:54 logger.go:86: [WARN]	No events found
+[API]	2026/09/04 19:49:54 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 19:49:54 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 19:49:54 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 19:49:54 logger.go:86: [WARN]	No events found
+2026/09/04 20:01:22 Successfully connected to the database!
+2026/09/04 20:01:22 Server starting on port 8080...
+[API]	2026/09/04 20:01:30 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 20:01:30 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 20:01:30 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 20:01:30 logger.go:86: [WARN]	No events found
+[API]	2026/09/04 20:01:30 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/09/04 20:01:30 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/09/04 20:01:30 logger.go:63: [ERROR]	Failed to find events: ERROR: relation "events" does not exist (SQLSTATE 42P01)
+[API]	2026/09/04 20:01:30 logger.go:86: [WARN]	No events found
