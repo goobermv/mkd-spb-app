@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../api/client';
 import NewsCard from '../components/NewsCard';
 
 const HomePage = ({ newsList, currentUser }) => {
@@ -18,7 +19,7 @@ const HomePage = ({ newsList, currentUser }) => {
   const nextHeroSlide = () => setHeroSlide((prev) => (prev + 1) % heroSlides.length);
   const prevHeroSlide = () => setHeroSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
-  const approvedNews = newsList.filter(news => news.approved);
+  const approvedNews = newsList.filter(news => news.publication_status === 'Published');
   const top5News = approvedNews.slice(0, 5);
   const [newsIndex, setNewsIndex] = useState(0);
   const [isNewsPaused, setIsNewsPaused] = useState(false);
@@ -37,7 +38,7 @@ const HomePage = ({ newsList, currentUser }) => {
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [motivation, setMotivation] = useState("");
 
-  const canApply = !currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'activist');
+  const canApply = !currentUser || (currentUser.role !== 'Admin' && currentUser.role !== 'Activist');
 
   useEffect(() => {
     if (currentUser && sessionStorage.getItem('pendingApplication') === 'true') {
@@ -55,16 +56,22 @@ const HomePage = ({ newsList, currentUser }) => {
     }
   };
 
-  const submitApplication = () => {
+  const submitApplication = async () => {
     if (motivation.trim().length < 10) {
       alert("Пожалуйста, опишите вашу мотивацию подробнее.");
       return;
     }
-    const requestData = { user_id: currentUser?.id, user_motivation_description: motivation };
-    console.log("Отправка на бэкенд:", requestData);
-    alert("Ваша заявка успешно отправлена на рассмотрение!");
-    setIsApplicationModalOpen(false);
-    setMotivation(""); 
+    try {
+      await apiClient.post('/applications', {
+        user_id: currentUser?.id,
+        user_motivation_description: motivation
+      });
+      alert("Ваша заявка успешно отправлена на рассмотрение!");
+      setIsApplicationModalOpen(false);
+      setMotivation(""); 
+    } catch(err) {
+      alert("Ошибка при отправке заявки");
+    }
   };
 
   return (
@@ -86,7 +93,7 @@ const HomePage = ({ newsList, currentUser }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                   {visibleNews.map(item => (
                     <div key={item.id} onClick={() => setSelectedNews(item)} className="cursor-pointer transition-transform hover:-translate-y-2 h-full">
-                      <NewsCard title={item.title} date={item.date} description={item.description} />
+                      <NewsCard title={item.title} date={new Date(item.publication_date).toLocaleDateString()} description={item.description} />
                     </div>
                   ))}
                 </div>
@@ -102,7 +109,6 @@ const HomePage = ({ newsList, currentUser }) => {
       <section id="about" className="container mx-auto px-4 py-16 scroll-mt-24 max-w-[1400px]">
         <div className="bg-[#2E1D67] rounded-tl-[80px] rounded-br-[80px] rounded-tr-xl rounded-bl-xl p-10 md:p-16 shadow-2xl relative overflow-hidden border-t-8 border-[#00A552]">
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#FBBA00] rounded-tr-full opacity-20"></div>
-          
           <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-white uppercase tracking-widest relative z-10">О нас</h2>
           
           <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-10 relative z-10">
@@ -148,7 +154,7 @@ const HomePage = ({ newsList, currentUser }) => {
                 <p className="text-gray-700 text-lg font-medium leading-relaxed mb-6 whitespace-pre-line">{selectedNews.description}</p>
               </div>
               <div>
-                <p className="text-[#6856BC] font-black text-xl mb-6"> Дата: {selectedNews.date}</p>
+                <p className="text-[#6856BC] font-black text-xl mb-6"> Дата: {new Date(selectedNews.publication_date).toLocaleDateString()}</p>
                 <button onClick={() => navigate('/news')} className="bg-[#FBBA00] hover:bg-[#e0a600] text-[#2E1D67] font-black py-4 px-8 rounded-full transition-colors shadow-xl text-lg uppercase tracking-widest">Все новости</button>
               </div>
             </div>
@@ -161,14 +167,10 @@ const HomePage = ({ newsList, currentUser }) => {
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setIsApplicationModalOpen(false)}>
            <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setIsApplicationModalOpen(false)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
-            
             <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-2">Заявка в актив</h3>
             <p className="text-gray-500 mb-8 font-medium">Расскажите нам о себе и почему вы хотите присоединиться.</p>
-            
             <div className="mb-8">
-              <label className="block text-[#2E1D67] text-lg font-black uppercase tracking-wider mb-3">
-                Ваша мотивация (почему мы?):
-              </label>
+              <label className="block text-[#2E1D67] text-lg font-black uppercase tracking-wider mb-3">Ваша мотивация (почему мы?):</label>
               <textarea 
                 className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-2xl p-4 text-gray-800 shadow-inner focus:outline-none focus:border-[#EB5893] resize-none h-40 transition-all text-lg font-medium"
                 placeholder="Я хочу стать активистом, потому что..."
@@ -176,14 +178,9 @@ const HomePage = ({ newsList, currentUser }) => {
                 onChange={(e) => setMotivation(e.target.value)}
               ></textarea>
             </div>
-            
             <div className="flex flex-col-reverse md:flex-row justify-end gap-4 mt-auto">
-              <button onClick={() => setIsApplicationModalOpen(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 px-8 rounded-full transition-colors text-lg uppercase tracking-widest">
-                Отмена
-              </button>
-              <button onClick={submitApplication} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black py-4 px-8 rounded-full transition-colors shadow-xl text-lg uppercase tracking-widest">
-                Отправить
-              </button>
+              <button onClick={() => setIsApplicationModalOpen(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 px-8 rounded-full transition-colors text-lg uppercase tracking-widest">Отмена</button>
+              <button onClick={submitApplication} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black py-4 px-8 rounded-full transition-colors shadow-xl text-lg uppercase tracking-widest">Отправить</button>
             </div>
           </div>
         </div>

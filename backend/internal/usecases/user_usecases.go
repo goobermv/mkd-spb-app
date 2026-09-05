@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/goobermv/mkd-spb-app/internal/domain"
@@ -52,13 +54,14 @@ func (u *userUsecase) Register(ctx context.Context, input dtos.RegisterInput) (*
 	u.logger.Infof("Attempting to register user with email: %s", input.Email)
 
 	existingUser, err := u.userRepo.FindByEmail(ctx, input.Email)
-	if existingUser != nil {
+	if err == nil && existingUser != nil {
 		u.logger.Warnf("Registration failed: email already exists - %s", input.Email)
 		return nil, domain.ErrUserAlreadyExists
 	}
-	if err != nil {
-		u.logger.Errorf(err, "Error when attempting to find user by email: %s", input.Email)
-		return nil, domain.ErrUserNotFound
+
+	if err != nil && !errors.Is(err, domain.ErrUserNotFound) && !errors.Is(err, sql.ErrNoRows) {
+		u.logger.Errorf(err, "Database error when checking email: %s", input.Email)
+		return nil, err
 	}
 
 	hashedPassword, err := u.hasher.Hash(input.Password)

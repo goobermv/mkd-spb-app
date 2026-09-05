@@ -1,22 +1,31 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { COUNTRIES } from '../data/constants';
+import apiClient from '../api/client';
 
-const RegisterPage = ({ setCurrentUser }) => {
+const RegisterPage = () => {
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     
-    data.role = 'user';
-    setCurrentUser(data);
-    
-    if (sessionStorage.getItem('pendingApplication') === 'true') {
-      navigate('/');
-    } else {
-      navigate('/profile');
+    try {
+      await apiClient.post('/users/register', {
+        email: data.email,
+        password: data.passwordHash,
+        full_name: data.fullName,
+        birth_date: new Date(data.birthDate).toISOString(),
+        country: data.country,
+        job_field: data.jobField,
+        vk_link: data.vkLink,
+        user_description: data.userDescription
+      });
+      alert('Аккаунт успешно создан! Пожалуйста, авторизуйтесь.');
+      navigate('/login');
+    } catch (err) {
+      alert('Ошибка при регистрации. Возможно, почта уже занята.');
     }
   };
 
@@ -34,7 +43,7 @@ const RegisterPage = ({ setCurrentUser }) => {
         <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
           <div className="flex flex-col col-span-1 md:col-span-2">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">ФИО</label>
-            <input name="full_name" type="text" required placeholder="Введите ваше полное имя" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+            <input name="fullName" type="text" required placeholder="Введите ваше полное имя" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
           </div>
 
           <div className="flex flex-col">
@@ -44,12 +53,12 @@ const RegisterPage = ({ setCurrentUser }) => {
 
           <div className="flex flex-col">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Пароль</label>
-            <input name="password" type="password" required placeholder="••••••••" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+            <input name="passwordHash" type="password" required placeholder="••••••••" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
           </div>
 
           <div className="flex flex-col">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Дата рождения</label>
-            <input name="birth_date" type="date" required className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors cursor-pointer" />
+            <input name="birthDate" type="date" required className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors cursor-pointer" />
           </div>
 
           <div className="flex flex-col">
@@ -64,17 +73,17 @@ const RegisterPage = ({ setCurrentUser }) => {
           
           <div className="flex flex-col">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Место учебы / работы</label>
-            <input name="job_field" type="text" required placeholder="Университет или организация" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+            <input name="jobField" type="text" required placeholder="Университет или организация" className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
           </div>
 
           <div className="flex flex-col">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">Ссылка на ВК</label>
-            <input name="vk_link" type="url" placeholder="https://vk.com/id..." className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
+            <input name="vkLink" type="url" placeholder="https://vk.com/id..." className="w-full h-14 rounded-full px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors" />
           </div>
 
           <div className="flex flex-col col-span-1 md:col-span-2">
             <label className="text-xs font-black mb-2 text-[#2E1D67] uppercase tracking-widest">О себе</label>
-            <textarea name="user_description" rows="3" placeholder="Расскажите немного о себе, своих навыках и интересах..." className="w-full rounded-[28px] py-4 px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors resize-none"></textarea>
+            <textarea name="userDescription" rows="3" placeholder="Расскажите немного о себе, своих навыках и интересах..." className="w-full rounded-[28px] py-4 px-6 bg-[#F4F5F8] outline-none focus:border-[#6856BC] border-2 border-transparent shadow-inner font-medium text-lg text-[#2E1D67] transition-colors resize-none"></textarea>
           </div>
 
           <div className="col-span-1 md:col-span-2 mt-4">
@@ -85,7 +94,8 @@ const RegisterPage = ({ setCurrentUser }) => {
           
           <div className="text-center mt-2 col-span-1 md:col-span-2">
             <p className="text-sm font-bold text-[#2E1D67] uppercase tracking-wide">
-              Уже есть аккаунт? <Link to="/login" className="text-[#00A552] hover:text-[#2E1D67] transition-colors underline underline-offset-4">Войти</Link>
+              Уже есть аккаунт?
+              <Link to="/login" className="text-[#00A552] hover:text-[#2E1D67] transition-colors underline underline-offset-4 ml-1">Войти</Link>
             </p>
           </div>
         </form>

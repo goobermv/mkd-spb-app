@@ -12,38 +12,41 @@ import CityPage from './pages/CityPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import NotificationsDropdown from './components/NotificationsDropdown';
 
 export default function App() {
   const [news, setNews] = useState([]);
   const [events, setEvents] = useState([]);
-  const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const loadPublicData = async () => {
+  const fetchData = async () => {
     try {
-      const eventsRes = await apiClient.get('/events');
-      setEvents(eventsRes.data || []);
       const newsRes = await apiClient.get('/news_blocks');
       setNews(newsRes.data || []);
-    } catch (error) {
-      console.error("Ошибка загрузки данных:", error);
+    } catch (e) {
+      console.error("Ошибка загрузки новостей", e);
+    }
+    
+    try {
+      const evRes = await apiClient.get('/events');
+      setEvents(evRes.data || []);
+    } catch (e) {
+      console.error("Ошибка загрузки мероприятий", e);
     }
   };
 
   useEffect(() => {
-    loadPublicData();
-  }, []);
-
-  useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem('user', JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+    fetchData();
+    const token = localStorage.getItem('token');
+    if (token) {
+      apiClient.get('/users/me')
+        .then(res => setCurrentUser(res.data))
+        .catch(() => {
+          localStorage.removeItem('token');
+          setCurrentUser(null);
+        });
     }
-  }, [currentUser]);
+  }, []);
 
   return (
     <BrowserRouter>
@@ -56,7 +59,7 @@ export default function App() {
           <Route path="/city" element={<CityPage />} />
           <Route path="/login" element={<LoginPage setCurrentUser={setCurrentUser} />} />
           <Route path="/register" element={<RegisterPage setCurrentUser={setCurrentUser} />} />
-          <Route path="/profile" element={<ProfilePage currentUser={currentUser} setCurrentUser={setCurrentUser} reloadData={loadPublicData} />} />
+          <Route path="/profile" element={<ProfilePage currentUser={currentUser} setCurrentUser={setCurrentUser} eventsList={events} newsList={news} refreshData={fetchData} />} />
         </Routes>
       </Layout>
     </BrowserRouter>
