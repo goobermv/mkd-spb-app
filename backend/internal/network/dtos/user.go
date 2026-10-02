@@ -14,7 +14,7 @@ type RegisterInput struct {
 	Country         string    `json:"country" validate:"required"`
 	JobField        string    `json:"job_field" validate:"required"`
 	UserDescription string    `json:"user_description"`
-	VKLink          string    `json:"vk_link" validate:"omitempty,url"`
+	VKLink          string    `json:"vk_link" validate:"omitempty"`
 }
 
 type LoginInput struct {

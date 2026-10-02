@@ -9,6 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/goobermv/mkd-spb-app/internal/domain"
 	"github.com/goobermv/mkd-spb-app/internal/network/dtos"
+	"github.com/goobermv/mkd-spb-app/internal/network/middleware"
 	usecase "github.com/goobermv/mkd-spb-app/internal/usecases"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
@@ -328,4 +329,43 @@ func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	h.logger.Successf("HTTP response 200 OK: retrieved %d users", len(users))
 	respondJSON(w, http.StatusOK, response)
+}
+
+func (h *UserHandler) GetMe(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
+
+	userIDVal := r.Context().Value(middleware.UserIDKey)
+	if userIDVal == nil {
+		respondError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	var userID uuid.UUID
+	var err error
+
+	switch v := userIDVal.(type) {
+	case string:
+		userID, err = uuid.Parse(v)
+		if err != nil {
+			respondError(w, http.StatusUnauthorized, "Invalid token claims")
+			return
+		}
+	case uuid.UUID:
+		userID = v
+	default:
+		respondError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	user, err := h.userUsecase.GetUser(r.Context(), userID)
+	if err != nil {
+		if errors.Is(err, domain.ErrUserNotFound) {
+			respondError(w, http.StatusNotFound, err.Error())
+			return
+		}
+		respondError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	respondJSON(w, http.StatusOK, mapToUserResponse(user))
 }
