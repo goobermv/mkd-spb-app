@@ -782,3 +782,117 @@
 2026/10/03 22:33:22 Server starting on port 8080...
 2026/10/03 22:34:19 Successfully connected to the database!
 2026/10/03 22:34:19 Server starting on port 8080...
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: POST /api/v1/users/login
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Login attempt for email: maxim.vitinsh@mail.ru
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	User successfully logged in - ID: b3e177c4-e438-4dae-b62d-bee986405ac7, Email: maxim.vitinsh@mail.ru
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	HTTP response 200 OK for login, user ID: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/event_registrations/user/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Attempting to get registrations by ID: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	Registrations not found: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	No event registrations found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/event_registrations/user/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Attempting to get registrations by ID: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	Registrations not found: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	No event registrations found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events/author/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Attempting to get events by author id: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	Events not found: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	No events found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events/author/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Attempting to get events by author id: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	Events not found: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	No events found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks/author/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Attempting to get news blocks by author id: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	News block not found: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:63: [ERROR]	Internal error when retrieving all news blocks from author: b3e177c4-e438-4dae-b62d-bee986405ac7: news block not found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks/author/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Attempting to get news blocks by author id: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	News block not found: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:35:47 logger.go:63: [ERROR]	Internal error when retrieving all news blocks from author: b3e177c4-e438-4dae-b62d-bee986405ac7: news block not found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	Events not found
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	No events found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	Events not found
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	No events found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/03 22:35:47 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/users
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Retrieving all users...
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	Users retrieved successfully
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 4 users
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/users
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Retrieving all users...
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	Users retrieved successfully
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 4 users
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/applications
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Retrieving all applications...
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	Applications retrieved successfully
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 applications
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/applications
+[API]	2026/10/03 22:35:47 logger.go:55: [INFO]	Retrieving all applications...
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	Applications retrieved successfully
+[API]	2026/10/03 22:35:47 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 applications
+[API]	2026/10/03 22:36:15 logger.go:55: [INFO]	Incoming HTTP request: POST /api/v1/news_blocks
+[API]	2026/10/03 22:36:15 logger.go:55: [INFO]	Attempting to create news block by user: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:15 logger.go:71: [SUCCESS]	News block created successfully - ID: d4b8df74-f985-46bc-8a75-9fc8a3e755ed, user ID: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:15 logger.go:71: [SUCCESS]	HTTP response 201 Created for news block: d4b8df74-f985-46bc-8a75-9fc8a3e755ed
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	News blocks retrieved successfully
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 news blocks
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/03 22:36:17 logger.go:86: [WARN]	Events not found
+[API]	2026/10/03 22:36:17 logger.go:86: [WARN]	No events found
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/event_registrations/user/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Attempting to get registrations by ID: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:86: [WARN]	Registrations not found: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:86: [WARN]	No event registrations found
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events/author/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Attempting to get events by author id: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:86: [WARN]	Events not found: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:86: [WARN]	No events found
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks/author/b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Attempting to get news blocks by author id: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	News block by author retrieved successfully: b3e177c4-e438-4dae-b62d-bee986405ac7
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 news blocks
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/03 22:36:17 logger.go:86: [WARN]	Events not found
+[API]	2026/10/03 22:36:17 logger.go:86: [WARN]	No events found
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	News blocks retrieved successfully
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 news blocks
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/users
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Retrieving all users...
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	Users retrieved successfully
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 4 users
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/applications
+[API]	2026/10/03 22:36:17 logger.go:55: [INFO]	Retrieving all applications...
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	Applications retrieved successfully
+[API]	2026/10/03 22:36:17 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 applications
+[API]	2026/10/03 22:36:24 logger.go:55: [INFO]	Incoming HTTP request: PATCH /api/v1/news_blocks/d4b8df74-f985-46bc-8a75-9fc8a3e755ed
+[API]	2026/10/03 22:36:24 logger.go:55: [INFO]	Updating news block info for ID: d4b8df74-f985-46bc-8a75-9fc8a3e755ed
+[API]	2026/10/03 22:36:24 logger.go:63: [ERROR]	Failed to update news block in database: d4b8df74-f985-46bc-8a75-9fc8a3e755ed: mismatched param and argument count
+[API]	2026/10/03 22:36:24 logger.go:63: [ERROR]	Internal error during update for news block ID: d4b8df74-f985-46bc-8a75-9fc8a3e755ed: failed to update news block
+[API]	2026/10/03 22:36:26 logger.go:55: [INFO]	Incoming HTTP request: PATCH /api/v1/news_blocks/d4b8df74-f985-46bc-8a75-9fc8a3e755ed
+[API]	2026/10/03 22:36:26 logger.go:55: [INFO]	Updating news block info for ID: d4b8df74-f985-46bc-8a75-9fc8a3e755ed
+[API]	2026/10/03 22:36:26 logger.go:63: [ERROR]	Failed to update news block in database: d4b8df74-f985-46bc-8a75-9fc8a3e755ed: mismatched param and argument count
+[API]	2026/10/03 22:36:26 logger.go:63: [ERROR]	Internal error during update for news block ID: d4b8df74-f985-46bc-8a75-9fc8a3e755ed: failed to update news block
+[API]	2026/10/03 22:38:12 logger.go:55: [INFO]	Incoming HTTP request: PATCH /api/v1/news_blocks/d4b8df74-f985-46bc-8a75-9fc8a3e755ed
+[API]	2026/10/03 22:38:12 logger.go:55: [INFO]	Updating news block info for ID: d4b8df74-f985-46bc-8a75-9fc8a3e755ed
+[API]	2026/10/03 22:38:12 logger.go:63: [ERROR]	Failed to update news block in database: d4b8df74-f985-46bc-8a75-9fc8a3e755ed: mismatched param and argument count
+[API]	2026/10/03 22:38:12 logger.go:63: [ERROR]	Internal error during update for news block ID: d4b8df74-f985-46bc-8a75-9fc8a3e755ed: failed to update news block
+2026/10/03 22:39:38 Successfully connected to the database!
+2026/10/03 22:39:38 Server starting on port 8080...

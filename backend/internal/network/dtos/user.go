@@ -43,7 +43,7 @@ type AuthResponse struct {
 type UpdateUserInfoRequest struct {
 	Email           *string    `json:"email,omitempty" validate:"omitempty,email"`
 	FullName        *string    `json:"full_name,omitempty" validate:"omitempty,min=2"`
-	Role            string     `json:"role,omitempty"`
+	Role            *string    `json:"role,omitempty"`
 	BirthDate       *time.Time `json:"birth_date,omitempty"`
 	Country         *string    `json:"country,omitempty"`
 	JobField        *string    `json:"job_field,omitempty"`
