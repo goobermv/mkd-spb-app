@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -329,6 +330,58 @@ func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	h.logger.Successf("HTTP response 200 OK: retrieved %d users", len(users))
 	respondJSON(w, http.StatusOK, response)
+}
+
+func (h *UserHandler) ExportUsers(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
+
+	users, err := h.userUsecase.GetAllUsers(r.Context())
+	if err != nil {
+		h.logger.Errorf(err, "Internal error when retrieving users for CSV export")
+		respondError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/csv; charset=utf-8")
+	w.Header().Set("Content-Disposition", "attachment; filename=users_base.csv")
+
+	// Записываем BOM (Byte Order Mark) для корректного распознавания UTF-8 в Microsoft Excel
+	w.Write([]byte{0xEF, 0xBB, 0xBF})
+
+	writer := csv.NewWriter(w)
+	defer writer.Flush()
+
+	header := []string{"ID", "Email", "Full Name", "Role", "Birth Date", "Country", "Job Field", "VK Link", "Created At"}
+	if err := writer.Write(header); err != nil {
+		h.logger.Errorf(err, "Failed to write CSV header")
+		return
+	}
+
+	for _, user := range users {
+		birthDateStr := ""
+		if !user.BirthDate.IsZero() {
+			birthDateStr = user.BirthDate.Format("2006-01-02")
+		}
+		createdAtStr := user.CreatedAt.Format("2006-01-02 15:04:05")
+
+		record := []string{
+			user.ID.String(),
+			user.Email,
+			user.FullName,
+			string(user.UserRole),
+			birthDateStr,
+			user.Country,
+			user.JobField,
+			user.VKLink,
+			createdAtStr,
+		}
+		if err := writer.Write(record); err != nil {
+			h.logger.Errorf(err, "Failed to write CSV record for user ID: %s", user.ID)
+			return
+		}
+	}
+
+	h.logger.Successf("HTTP response 200 OK: exported %d users to CSV", len(users))
 }
 
 func (h *UserHandler) GetMe(w http.ResponseWriter, r *http.Request) {

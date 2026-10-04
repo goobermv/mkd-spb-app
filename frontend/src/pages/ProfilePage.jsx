@@ -117,6 +117,24 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
      reader.onerror = error => reject(error);
   });
 
+  const handleExportCSV = async () => {
+    try {
+      const response = await apiClient.get('/users/export', {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'users_base.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('Ошибка при выгрузке CSV');
+    }
+  };
+
   const handleCreateNews = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -617,7 +635,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
           {activeTab === 'База пользователей' && isAdmin && (
             <div className="flex flex-col gap-6">
               <div className="flex justify-end mb-4">
-                 <button onClick={() => alert("Началась загрузка CSV")} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black py-2 px-6 rounded-full transition-colors shadow-md">
+                 <button onClick={handleExportCSV} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black py-2 px-6 rounded-full transition-colors shadow-md">
                     Выгрузить CSV
                  </button>
               </div>
