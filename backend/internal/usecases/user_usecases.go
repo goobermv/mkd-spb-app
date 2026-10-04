@@ -29,6 +29,7 @@ type UserUsecase interface {
 	GetUserByName(ctx context.Context, name string) (*domain.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*domain.User, error)
 	UpdateUser(ctx context.Context, id uuid.UUID, input dtos.UpdateUserInfoRequest) (*domain.User, error)
+	UpdateRole(ctx context.Context, id uuid.UUID, newRole string) (*domain.User, error)
 	UpdatePassword(ctx context.Context, id uuid.UUID, input dtos.UpdateUserPasswordRequest) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	GetAllUsers(ctx context.Context) ([]*domain.User, error)
@@ -216,7 +217,6 @@ func (u *userUsecase) UpdateUser(ctx context.Context, id uuid.UUID, input dtos.U
 		}
 
 		user.Email = *input.Email
-
 		u.logger.Infof("Email updated to: %s for user: %s", *input.Email, id)
 	}
 
@@ -260,6 +260,34 @@ func (u *userUsecase) UpdateUser(ctx context.Context, id uuid.UUID, input dtos.U
 	user.PasswordHash = ""
 
 	u.logger.Successf("User info updated successfully for user: %s", id)
+
+	return user, nil
+}
+
+func (u *userUsecase) UpdateRole(ctx context.Context, id uuid.UUID, newRole string) (*domain.User, error) {
+	u.logger.Infof("Updating role to '%s' for user ID: %s", newRole, id)
+
+	if newRole != domain.UserRoleRegular && newRole != domain.UserRoleActivist && newRole != domain.UserRoleAdmin {
+		u.logger.Warnf("Invalid role provided: %s", newRole)
+		return nil, errors.New("invalid role")
+	}
+
+	user, err := u.userRepo.FindByID(ctx, id)
+	if err != nil || user == nil {
+		u.logger.Warnf("User not found for role update: %s", id)
+		return nil, domain.ErrUserNotFound
+	}
+
+	user.UserRole = newRole
+	user.UpdatedAt = time.Now()
+
+	if err := u.userRepo.Update(ctx, user); err != nil {
+		u.logger.Errorf(err, "Failed to update user role in database: %s", id)
+		return nil, domain.ErrFailedToUpdateUser
+	}
+
+	user.PasswordHash = ""
+	u.logger.Successf("User role updated successfully for user: %s to %s", id, newRole)
 
 	return user, nil
 }

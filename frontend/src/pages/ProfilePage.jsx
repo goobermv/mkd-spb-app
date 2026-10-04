@@ -24,6 +24,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
   const [viewingEvent, setViewingEvent] = useState(null);
   const [viewingNews, setViewingNews] = useState(null);
   const [viewingUser, setViewingUser] = useState(null);
+  const [selectedRole, setSelectedRole] = useState('Regular');
   const [viewingActivistRequest, setViewingActivistRequest] = useState(null);
 
   const [pendingNews, setPendingNews] = useState([]);
@@ -110,6 +111,12 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     loadProfileData();
   }, [currentUser, eventsList, newsList, navigate]);
 
+  useEffect(() => {
+    if (viewingUser) {
+      setSelectedRole(viewingUser.role || 'Regular');
+    }
+  }, [viewingUser]);
+
   const getBase64 = (file) => new Promise((resolve, reject) => {
      const reader = new FileReader();
      reader.readAsDataURL(file);
@@ -132,6 +139,20 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
       window.URL.revokeObjectURL(url);
     } catch (error) {
       alert('Ошибка при выгрузке CSV');
+    }
+  };
+
+  const handleUpdateUserRole = async (e) => {
+    e.preventDefault();
+    if (!viewingUser) return;
+    try {
+      await apiClient.patch(`/users/${viewingUser.id}/role`, { role: selectedRole });
+      alert('Роль пользователя успешно обновлена!');
+      setUsersList(prev => prev.map(u => u.id === viewingUser.id ? { ...u, role: selectedRole } : u));
+      setViewingUser(null);
+      refreshData();
+    } catch (err) {
+      alert('Ошибка при обновлении роли пользователя');
     }
   };
 
@@ -300,7 +321,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
   const approveActivist = async (id) => {
     try {
        await apiClient.patch(`/applications/${id}`, { status: 'Approved' });
-       alert('Заявка в актив одобрена! Администратор должен вручную изменить роль через БД.');
+       alert('Заявка в актив одобрена! Теперь вы можете изменить роль пользователя в разделе "База пользователей".');
        refreshData();
     } catch(e) { alert('Ошибка'); }
   };
@@ -690,6 +711,81 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
 
         </div>
       </main>
+
+      {viewingUser && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingUser(null)}>
+          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setViewingUser(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
+            <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-6">Управление пользователем</h3>
+            
+            <div className="flex flex-col gap-6">
+              <div className="bg-[#F4F5F8] p-6 rounded-2xl flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">ФИО</span>
+                  <span className="text-xl font-black text-[#2E1D67]">{viewingUser.full_name}</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Email</span>
+                    <span className="font-medium text-[#2E1D67]">{viewingUser.email}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Текущая роль</span>
+                    <span className="font-black text-[#EB5893] uppercase tracking-wider">{getRoleName(viewingUser.role)}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Дата рождения</span>
+                    <span className="font-medium text-[#2E1D67]">{viewingUser.birth_date ? new Date(viewingUser.birth_date).toLocaleDateString() : 'Не указана'}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Страна</span>
+                    <span className="font-medium text-[#2E1D67]">{viewingUser.country || 'Не указана'}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Деятельность</span>
+                    <span className="font-medium text-[#2E1D67]">{viewingUser.job_field || 'Не указано'}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">VK</span>
+                    {viewingUser.vk_link ? (
+                      <a href={viewingUser.vk_link} target="_blank" rel="noreferrer" className="text-[#6856BC] font-bold hover:underline truncate block">Ссылка</a>
+                    ) : (
+                      <span className="font-medium text-gray-500">Не указана</span>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">О себе</span>
+                  <span className="font-medium text-gray-700">{viewingUser.user_description || 'Нет описания'}</span>
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Дата регистрации</span>
+                  <span className="font-medium text-gray-500 text-sm">{viewingUser.created_at ? new Date(viewingUser.created_at).toLocaleString() : 'Н/Д'}</span>
+                </div>
+              </div>
+
+              <form onSubmit={handleUpdateUserRole} className="flex flex-col gap-4 border-t-2 border-[#F0D8C2] pt-6">
+                <div>
+                  <label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Изменить роль пользователя</label>
+                  <select 
+                    value={selectedRole} 
+                    onChange={(e) => setSelectedRole(e.target.value)} 
+                    className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]"
+                  >
+                    <option value="Regular">Участник МКД СПб</option>
+                    <option value="Activist">Активист МКД СПб</option>
+                    <option value="Admin">Администратор</option>
+                  </select>
+                </div>
+                <div className="flex justify-end gap-4 mt-2">
+                   <button type="button" onClick={() => setViewingUser(null)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Закрыть</button>
+                   <button type="submit" className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Сохранить роль</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isNewsModalOpen && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setIsNewsModalOpen(false)}>

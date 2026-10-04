@@ -238,6 +238,40 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, mapToUserResponse(user))
 }
 
+func (h *UserHandler) UpdateUserRole(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
+
+	idStr := chi.URLParam(r, "id")
+	userID, err := uuid.Parse(idStr)
+	if err != nil {
+		h.logger.Errorf(err, "Invalid user ID format in URL for role update: %s", idStr)
+		respondError(w, http.StatusBadRequest, "Invalid ID format")
+		return
+	}
+
+	var input struct {
+		Role string `json:"role" validate:"required"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		h.logger.Errorf(err, "Failed to decode role update input for ID: %s", userID)
+		respondError(w, http.StatusBadRequest, "Invalid request format")
+		return
+	}
+
+	updatedUser, err := h.userUsecase.UpdateRole(r.Context(), userID, input.Role)
+	if err != nil {
+		if errors.Is(err, domain.ErrUserNotFound) {
+			respondError(w, http.StatusNotFound, err.Error())
+			return
+		}
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	h.logger.Successf("HTTP response 200 OK: role updated for user ID: %s", userID)
+	respondJSON(w, http.StatusOK, mapToUserResponse(updatedUser))
+}
+
 func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
 
@@ -345,7 +379,6 @@ func (h *UserHandler) ExportUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/csv; charset=utf-8")
 	w.Header().Set("Content-Disposition", "attachment; filename=users_base.csv")
 
-	// Записываем BOM (Byte Order Mark) для корректного распознавания UTF-8 в Microsoft Excel
 	w.Write([]byte{0xEF, 0xBB, 0xBF})
 
 	writer := csv.NewWriter(w)

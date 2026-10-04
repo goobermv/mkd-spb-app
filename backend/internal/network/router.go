@@ -108,8 +108,8 @@ func NewRouter(
 				r.Get("/users/name/{name}", userHandler.GetUserByName)
 				r.Get("/users/email/{email}", userHandler.GetUserByEmail)
 				r.Get("/users", userHandler.GetAllUsers)
-
 				r.Get("/users/export", userHandler.ExportUsers)
+				r.Patch("/users/{id}/role", userHandler.UpdateUserRole)
 
 				r.Get("/applications/date/{date}", applicationHandler.GetApplicationByDate)
 				r.Get("/applications", applicationHandler.GetAllApplications)
