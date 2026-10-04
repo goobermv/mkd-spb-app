@@ -318,20 +318,23 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     } catch(e) { alert('Ошибка'); }
   };
 
-  const approveActivist = async (id) => {
+  const approveActivist = async (req) => {
     try {
-       await apiClient.patch(`/applications/${id}`, { status: 'Approved' });
-       alert('Заявка в актив одобрена! Теперь вы можете изменить роль пользователя в разделе "База пользователей".');
+       await apiClient.patch(`/applications/${req.id}`, { status: 'Approved' });
+       await apiClient.patch(`/users/${req.user_id}/role`, { role: 'Activist' });
+       alert('Заявка в актив одобрена, и роль пользователя автоматически повышена до "Активист"!');
+       setViewingActivistRequest(null);
        refreshData();
-    } catch(e) { alert('Ошибка'); }
+    } catch(e) { alert('Ошибка при одобрении заявки'); }
   };
 
   const rejectActivist = async (id) => {
     try {
        await apiClient.patch(`/applications/${id}`, { status: 'Rejected' });
        alert('Заявка в актив отклонена.');
+       setViewingActivistRequest(null);
        refreshData();
-    } catch(e) { alert('Ошибка'); }
+    } catch(e) { alert('Ошибка при отклонении заявки'); }
   };
 
   const handleLogout = () => {
@@ -642,10 +645,14 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
                 <div key={req.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-md hover:border-[#FBBA00] transition-colors cursor-pointer" onClick={() => setViewingActivistRequest(req)}>
                   <div className="flex-1">
                     <h4 className="font-black text-2xl text-[#2E1D67] uppercase tracking-wide leading-tight mb-2">{req.fullName}</h4>
-                    <p className="text-sm font-bold text-[#6856BC] uppercase tracking-widest mb-4">{req.email}</p>
+                    <p className="text-sm font-bold text-[#6856BC] uppercase tracking-widest mb-3">{req.email}</p>
+                    <div className="bg-[#F4F5F8] p-4 rounded-xl">
+                      <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block mb-1">Мотивация:</span>
+                      <p className="text-gray-700 font-medium line-clamp-2 text-sm">{req.reason || 'Нет описания'}</p>
+                    </div>
                   </div>
                   <div className="flex gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                    <button onClick={() => approveActivist(req.id)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
+                    <button onClick={() => approveActivist(req)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
                     <button onClick={() => rejectActivist(req.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
                   </div>
                 </div>
@@ -711,6 +718,40 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
 
         </div>
       </main>
+
+      {viewingActivistRequest && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingActivistRequest(null)}>
+          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setViewingActivistRequest(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
+            <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-6">Заявка в актив</h3>
+            
+            <div className="flex flex-col gap-6">
+              <div className="bg-[#F4F5F8] p-6 rounded-2xl flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">ФИО заявителя</span>
+                  <span className="text-xl font-black text-[#2E1D67]">{viewingActivistRequest.fullName}</span>
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Email</span>
+                  <span className="font-medium text-[#2E1D67]">{viewingActivistRequest.email}</span>
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block mb-2">Текст заявки (мотивация)</span>
+                  <div className="bg-white p-5 rounded-xl border border-gray-200 text-gray-700 font-medium whitespace-pre-wrap leading-relaxed">
+                    {viewingActivistRequest.reason || 'Описание отсутствует'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-4 mt-2">
+                 <button type="button" onClick={() => setViewingActivistRequest(null)} className="bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-100 font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Закрыть</button>
+                 <button type="button" onClick={() => rejectActivist(viewingActivistRequest.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Отклонить</button>
+                 <button type="button" onClick={() => approveActivist(viewingActivistRequest)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Принять и повысить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {viewingUser && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingUser(null)}>
