@@ -622,19 +622,23 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
           {activeTab === 'Модерация мероприятий' && isAdmin && (
             <div className="flex flex-col gap-6">
               {pendingEvents.length === 0 ? <p className="text-gray-500 font-medium text-lg">Нет мероприятий на модерации.</p> : null}
-              {pendingEvents.map(event => (
-                <div key={event.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-md hover:border-[#FBBA00] transition-colors cursor-pointer" onClick={() => setViewingEvent(event)}>
-                  <div className="flex-1">
-                    <h4 className="font-black text-xl text-[#2E1D67] uppercase leading-tight mb-2">{event.event_name}</h4>
-                    <p className="text-xs font-bold text-[#6856BC] uppercase tracking-widest mb-4">Автор ID: {event.author_id} | Сектор: {event.event_category} | Дата: {new Date(event.event_date_and_time).toLocaleString()}</p>
-                    <p className="text-gray-700 font-medium line-clamp-2">{event.description}</p>
+              {pendingEvents.map(event => {
+                const author = usersList.find(u => u.id === event.author_id);
+                const authorName = author ? author.full_name : event.author_id;
+                return (
+                  <div key={event.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-md hover:border-[#FBBA00] transition-colors cursor-pointer" onClick={() => setViewingEvent(event)}>
+                    <div className="flex-1">
+                      <h4 className="font-black text-xl text-[#2E1D67] uppercase leading-tight mb-2">{event.event_name}</h4>
+                      <p className="text-xs font-bold text-[#6856BC] uppercase tracking-widest mb-4">Автор: {authorName} | Сектор: {event.event_category} | Дата: {new Date(event.event_date_and_time).toLocaleString()}</p>
+                      <p className="text-gray-700 font-medium line-clamp-2">{event.description}</p>
+                    </div>
+                    <div className="flex gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                      <button onClick={() => approveEvent(event.id)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
+                      <button onClick={() => rejectEvent(event.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
+                    </div>
                   </div>
-                  <div className="flex gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                    <button onClick={() => approveEvent(event.id)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
-                    <button onClick={() => rejectEvent(event.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -719,6 +723,61 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
         </div>
       </main>
 
+      {viewingEvent && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingEvent(null)}>
+          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setViewingEvent(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
+            <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-6">Детали мероприятия</h3>
+            
+            <div className="flex flex-col gap-6">
+              {viewingEvent.event_picture && (
+                <div className="w-full h-72 rounded-2xl overflow-hidden shadow-md border-2 border-[#F0D8C2] bg-[#F4F5F8]">
+                  <img src={viewingEvent.event_picture} alt={viewingEvent.event_name} className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              <div className="bg-[#F4F5F8] p-6 rounded-2xl flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Название</span>
+                  <span className="text-2xl font-black text-[#2E1D67]">{viewingEvent.event_name}</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Автор (Заявитель)</span>
+                    <span className="font-bold text-[#2E1D67]">
+                      {usersList.find(u => u.id === viewingEvent.author_id)?.full_name || currentUser.full_name || viewingEvent.author_id}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Категория (Сектор)</span>
+                    <span className="font-medium text-[#2E1D67]">{viewingEvent.event_category}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Дата и время</span>
+                    <span className="font-medium text-[#2E1D67]">{new Date(viewingEvent.event_date_and_time).toLocaleString()}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Статус</span>
+                    <div className="mt-1">{getStatusBadge(viewingEvent.status)}</div>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block mb-2">Описание</span>
+                  <p className="text-gray-700 font-medium whitespace-pre-wrap leading-relaxed bg-white p-4 rounded-xl border border-gray-200">{viewingEvent.description}</p>
+                </div>
+              </div>
+
+              {isAdmin && viewingEvent.status === 'In moderation' && (
+                <div className="flex justify-end gap-4 mt-2" onClick={e => e.stopPropagation()}>
+                   <button type="button" onClick={() => { rejectEvent(viewingEvent.id); setViewingEvent(null); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Отклонить</button>
+                   <button type="button" onClick={() => { approveEvent(viewingEvent.id); setViewingEvent(null); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Принять</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {viewingActivistRequest && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingActivistRequest(null)}>
           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
@@ -753,6 +812,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
         </div>
       )}
 
+      {/* Модальное окно управления пользователем */}
       {viewingUser && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingUser(null)}>
           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
