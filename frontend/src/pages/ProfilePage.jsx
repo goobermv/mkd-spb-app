@@ -201,6 +201,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     if (!window.confirm('Вы уверены, что хотите отозвать эту заявку?')) return;
     try {
        await apiClient.delete(`/news_blocks/${id}`);
+       setPendingNews(prev => prev.filter(n => n.id !== id));
        refreshData();
     } catch(e) { alert('Ошибка'); }
   };
@@ -252,6 +253,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     if (!window.confirm('Вы уверены, что хотите отозвать эту заявку?')) return;
     try {
        await apiClient.delete(`/events/${id}`);
+       setPendingEvents(prev => prev.filter(e => e.id !== id));
        refreshData();
     } catch(e) { alert('Ошибка'); }
   };
@@ -290,6 +292,8 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     try {
        await apiClient.patch(`/news_blocks/${id}`, { publication_status: 'Published' });
        alert('Новость одобрена и опубликована!');
+       setPendingNews(prev => prev.filter(n => n.id !== id));
+       setViewingNews(null);
        refreshData();
     } catch(e) { alert('Ошибка'); }
   };
@@ -298,6 +302,8 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     try {
        await apiClient.patch(`/news_blocks/${id}`, { publication_status: 'Declined' });
        alert('Новость отклонена.');
+       setPendingNews(prev => prev.filter(n => n.id !== id));
+       setViewingNews(null);
        refreshData();
     } catch(e) { alert('Ошибка'); }
   };
@@ -306,6 +312,8 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     try {
        await apiClient.patch(`/events/${id}`, { status: 'Published' });
        alert('Мероприятие одобрено и опубликовано!');
+       setPendingEvents(prev => prev.filter(e => e.id !== id));
+       setViewingEvent(null);
        refreshData();
     } catch(e) { alert('Ошибка'); }
   };
@@ -314,6 +322,8 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     try {
        await apiClient.patch(`/events/${id}`, { status: 'Archived' });
        alert('Мероприятие отклонено.');
+       setPendingEvents(prev => prev.filter(e => e.id !== id));
+       setViewingEvent(null);
        refreshData();
     } catch(e) { alert('Ошибка'); }
   };
@@ -323,6 +333,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
        await apiClient.patch(`/applications/${req.id}`, { status: 'Approved' });
        await apiClient.patch(`/users/${req.user_id}/role`, { role: 'Activist' });
        alert('Заявка в актив одобрена, и роль пользователя автоматически повышена до "Активист"!');
+       setActivistRequests(prev => prev.filter(a => a.id !== req.id));
        setViewingActivistRequest(null);
        refreshData();
     } catch(e) { alert('Ошибка при одобрении заявки'); }
@@ -332,6 +343,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     try {
        await apiClient.patch(`/applications/${id}`, { status: 'Rejected' });
        alert('Заявка в актив отклонена.');
+       setActivistRequests(prev => prev.filter(a => a.id !== id));
        setViewingActivistRequest(null);
        refreshData();
     } catch(e) { alert('Ошибка при отклонении заявки'); }
@@ -603,19 +615,23 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
           {activeTab === 'Модерация новостей' && isAdmin && (
             <div className="flex flex-col gap-6">
               {pendingNews.length === 0 ? <p className="text-gray-500 font-medium text-lg">Нет новостей на модерации.</p> : null}
-              {pendingNews.map(news => (
-                <div key={news.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-md hover:border-[#FBBA00] transition-colors cursor-pointer" onClick={() => setViewingNews(news)}>
-                  <div className="flex-1">
-                    <h4 className="font-black text-xl text-[#2E1D67] uppercase leading-tight mb-2">{news.title}</h4>
-                    <p className="text-xs font-bold text-[#6856BC] uppercase tracking-widest mb-4">Автор ID: {news.author_id} | Сектор: {news.news_block_category}</p>
-                    <p className="text-gray-700 font-medium line-clamp-2">{news.description}</p>
+              {pendingNews.map(news => {
+                const author = usersList.find(u => u.id === news.author_id);
+                const authorName = author ? author.full_name : news.author_id;
+                return (
+                  <div key={news.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-md hover:border-[#FBBA00] transition-colors cursor-pointer" onClick={() => setViewingNews(news)}>
+                    <div className="flex-1">
+                      <h4 className="font-black text-xl text-[#2E1D67] uppercase leading-tight mb-2">{news.title}</h4>
+                      <p className="text-xs font-bold text-[#6856BC] uppercase tracking-widest mb-4">Автор: {authorName} | Сектор: {news.news_block_category}</p>
+                      <p className="text-gray-700 font-medium line-clamp-2">{news.description}</p>
+                    </div>
+                    <div className="flex gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                      <button onClick={() => approveNews(news.id)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
+                      <button onClick={() => rejectNews(news.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
+                    </div>
                   </div>
-                  <div className="flex gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                    <button onClick={() => approveNews(news.id)} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Принять</button>
-                    <button onClick={() => rejectNews(news.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-sm py-3 px-8 rounded-full transition-colors shadow-md">Отклонить</button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -769,8 +785,60 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
 
               {isAdmin && viewingEvent.status === 'In moderation' && (
                 <div className="flex justify-end gap-4 mt-2" onClick={e => e.stopPropagation()}>
-                   <button type="button" onClick={() => { rejectEvent(viewingEvent.id); setViewingEvent(null); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Отклонить</button>
-                   <button type="button" onClick={() => { approveEvent(viewingEvent.id); setViewingEvent(null); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Принять</button>
+                   <button type="button" onClick={() => { rejectEvent(viewingEvent.id); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Отклонить</button>
+                   <button type="button" onClick={() => { approveEvent(viewingEvent.id); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Принять</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно просмотра деталей новости */}
+      {viewingNews && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingNews(null)}>
+          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setViewingNews(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
+            <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-6">Детали новости</h3>
+            
+            <div className="flex flex-col gap-6">
+              {viewingNews.news_block_picture && (
+                <div className="w-full h-72 rounded-2xl overflow-hidden shadow-md border-2 border-[#F0D8C2] bg-[#F4F5F8]">
+                  <img src={viewingNews.news_block_picture} alt={viewingNews.title} className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              <div className="bg-[#F4F5F8] p-6 rounded-2xl flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Заголовок</span>
+                  <span className="text-2xl font-black text-[#2E1D67]">{viewingNews.title}</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Автор (Заявитель)</span>
+                    <span className="font-bold text-[#2E1D67]">
+                      {usersList.find(u => u.id === viewingNews.author_id)?.full_name || currentUser.full_name || viewingNews.author_id}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Категория (Сектор)</span>
+                    <span className="font-medium text-[#2E1D67]">{viewingNews.news_block_category}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Статус</span>
+                    <div className="mt-1">{getStatusBadge(viewingNews.publication_status)}</div>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block mb-2">Описание</span>
+                  <p className="text-gray-700 font-medium whitespace-pre-wrap leading-relaxed bg-white p-4 rounded-xl border border-gray-200">{viewingNews.description}</p>
+                </div>
+              </div>
+
+              {isAdmin && viewingNews.publication_status === 'Undergoing moderation' && (
+                <div className="flex justify-end gap-4 mt-2" onClick={e => e.stopPropagation()}>
+                   <button type="button" onClick={() => { rejectNews(viewingNews.id); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Отклонить</button>
+                   <button type="button" onClick={() => { approveNews(viewingNews.id); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Принять</button>
                 </div>
               )}
             </div>
@@ -812,7 +880,6 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
         </div>
       )}
 
-      {/* Модальное окно управления пользователем */}
       {viewingUser && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingUser(null)}>
           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
