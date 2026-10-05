@@ -26,6 +26,9 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
   const [viewingUser, setViewingUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState('Regular');
   const [viewingActivistRequest, setViewingActivistRequest] = useState(null);
+  
+  const [managingEvent, setManagingEvent] = useState(null);
+  const [eventAttendees, setEventAttendees] = useState([]);
 
   const [pendingNews, setPendingNews] = useState([]);
   const [pendingEvents, setPendingEvents] = useState([]);
@@ -120,6 +123,28 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
   }, [currentUser, eventsList, newsList, navigate]);
 
   useEffect(() => {
+    const fetchAttendees = async () => {
+      if (!managingEvent) {
+        setEventAttendees([]);
+        return;
+      }
+      try {
+        const res = await apiClient.get(`/event_registrations`);
+        const allRegs = res.data || [];
+        const eventRegs = allRegs.filter(r => r.event_id === managingEvent.id);
+        const attendees = eventRegs.map(reg => {
+          const u = usersList.find(user => user.id === reg.user_id) || {};
+          return { ...reg, user: u };
+        });
+        setEventAttendees(attendees);
+      } catch (e) {
+        setEventAttendees([]);
+      }
+    };
+    fetchAttendees();
+  }, [managingEvent, usersList]);
+
+  useEffect(() => {
     if (viewingUser) {
       setSelectedRole(viewingUser.role || 'Regular');
     }
@@ -174,6 +199,19 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
       refreshData();
     } catch (e) {
       alert('Ошибка при отмене регистрации');
+    }
+  };
+
+  const handleCancelEventOrganizer = async (eventId) => {
+    if (!window.confirm('Вы уверены, что хотите отменить (удалить) это мероприятие?')) return;
+    try {
+      await apiClient.delete(`/events/${eventId}`);
+      alert('Мероприятие успешно отменено.');
+      setMyOrganizedEvents(prev => prev.filter(e => e.id !== eventId));
+      setManagingEvent(null);
+      refreshData();
+    } catch (e) {
+      alert('Ошибка при отмене мероприятия');
     }
   };
 
@@ -264,8 +302,9 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
 
     try {
        await apiClient.patch(`/events/${editingEvent.id}`, updateData);
-       alert('Заявка на мероприятие обновлена!');
+       alert('Мероприятие успешно обновлено!');
        setEditingEvent(null);
+       setManagingEvent(null);
        refreshData();
     } catch(err) { alert('Ошибка при обновлении'); }
   };
@@ -586,13 +625,13 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
                 <div className="flex flex-col gap-4">
                   {myOrganizedEvents.length === 0 ? <p className="text-gray-500 font-medium">Одобренных инициатив пока нет.</p> : null}
                   {myOrganizedEvents.map(ev => (
-                    <div key={ev.id} className="bg-white border-2 border-[#00A552]/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 cursor-pointer hover:border-[#00A552] transition-colors shadow-md" onClick={() => setViewingEvent(ev)}>
+                    <div key={ev.id} className="bg-white border-2 border-[#00A552]/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 cursor-pointer hover:border-[#00A552] transition-colors shadow-md" onClick={() => setManagingEvent(ev)}>
                       <div>
                         <span className="font-black text-[#2E1D67] uppercase block text-xl mb-2 leading-tight">{ev.event_name}</span>
                         <span className="text-sm font-bold text-[#6856BC] uppercase tracking-wider">{ev.event_category} | Дата: {new Date(ev.event_date_and_time).toLocaleString()}</span>
                       </div>
                       <div className="flex items-center gap-4 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => setViewingEvent(ev)} className="bg-[#2E1D67] hover:bg-[#1a1040] text-white font-black uppercase tracking-widest text-xs px-6 py-3 rounded-full transition-colors shadow-md">Управление</button>
+                        <button onClick={() => setManagingEvent(ev)} className="bg-[#2E1D67] hover:bg-[#1a1040] text-white font-black uppercase tracking-widest text-xs px-6 py-3 rounded-full transition-colors shadow-md">Управление</button>
                       </div>
                     </div>
                   ))}
@@ -753,7 +792,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
                  <span className="block text-5xl font-black text-[#2E1D67] mb-3">{statistics.totalEvents}</span>
                  <span className="text-xs font-black text-[#6856BC] uppercase tracking-widest">Мероприятий</span>
                </div>
-               <div className="bg-[#F0D8C2]/50 p-8 rounded-tl-[40px] rounded-br-[40px] rounded-tr-xl rounded-bl-xl text-center shadow-md border border-[#F0D8C2]">
+               <div className="bg-[#F0D8C2]/50 p-8 rounded-tl-[40px] rounded-br-xl rounded-tr-xl rounded-bl-xl text-center shadow-md border border-[#F0D8C2]">
                  <span className="block text-5xl font-black text-[#2E1D67] mb-3">{statistics.totalNews}</span>
                  <span className="text-xs font-black text-[#6856BC] uppercase tracking-widest">Новостей</span>
                </div>
@@ -761,7 +800,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
                  <span className="block text-5xl font-black text-[#2E1D67] mb-3">{statistics.totalActivists}</span>
                  <span className="text-xs font-black text-[#6856BC] uppercase tracking-widest">Активистов</span>
                </div>
-               <div className="bg-[#F0D8C2]/50 p-8 rounded-tl-[40px] rounded-br-[40px] rounded-tr-xl rounded-bl-xl text-center shadow-md border border-[#F0D8C2]">
+               <div className="bg-[#F0D8C2]/50 p-8 rounded-tl-[40px] rounded-br-xl rounded-tr-xl rounded-bl-xl text-center shadow-md border border-[#F0D8C2]">
                  <span className="block text-5xl font-black text-[#2E1D67] mb-3">{statistics.totalUsers}</span>
                  <span className="text-xs font-black text-[#6856BC] uppercase tracking-widest">Пользователей</span>
                </div>
@@ -770,6 +809,74 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
 
         </div>
       </main>
+
+      {managingEvent && (
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setManagingEvent(null)}>
+          <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setManagingEvent(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
+            <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-6">Управление инициативой</h3>
+            
+            <div className="flex flex-col gap-6">
+              {managingEvent.event_picture && (
+                <div className="w-full h-72 rounded-2xl overflow-hidden shadow-md border-2 border-[#F0D8C2] bg-[#F4F5F8]">
+                  <img src={managingEvent.event_picture} alt={managingEvent.event_name} className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              <div className="bg-[#F4F5F8] p-6 rounded-2xl flex flex-col gap-4">
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Название</span>
+                  <span className="text-2xl font-black text-[#2E1D67]">{managingEvent.event_name}</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Категория (Сектор)</span>
+                    <span className="font-medium text-[#2E1D67]">{managingEvent.event_category}</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block">Дата и время</span>
+                    <span className="font-medium text-[#2E1D67]">{new Date(managingEvent.event_date_and_time).toLocaleString()}</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-[#6856BC] uppercase tracking-widest block mb-2">Описание</span>
+                  <p className="text-gray-700 font-medium whitespace-pre-wrap leading-relaxed bg-white p-4 rounded-xl border border-gray-200">{managingEvent.description}</p>
+                </div>
+              </div>
+
+              <div className="bg-[#F4F5F8] p-6 rounded-2xl flex flex-col gap-4">
+                <h4 className="font-black text-lg text-[#2E1D67] uppercase tracking-wide">
+                  Записавшиеся участники ({eventAttendees.length})
+                </h4>
+                {eventAttendees.length === 0 ? (
+                  <p className="text-gray-500 font-medium">Пока никто не записался на это мероприятие.</p>
+                ) : (
+                  <div className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2">
+                    {eventAttendees.map((att, idx) => (
+                      <div key={att.id || idx} className="bg-white p-4 rounded-xl border border-gray-200 flex justify-between items-center shadow-sm">
+                        <div>
+                          <span className="font-black text-[#2E1D67] block">{att.user.full_name || 'Пользователь'}</span>
+                          <span className="text-xs font-bold text-[#6856BC]">{att.user.email || 'Email отсутствует'}</span>
+                        </div>
+                        {getStatusBadge(att.registration_status || 'Registered')}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-wrap justify-between items-center gap-4 mt-2 border-t-2 border-[#F0D8C2] pt-6">
+                <button type="button" onClick={() => handleCancelEventOrganizer(managingEvent.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">
+                  Отменить мероприятие
+                </button>
+                <button type="button" onClick={() => { const ev = managingEvent; setManagingEvent(null); setEditingEvent(ev); }} className="bg-[#2E1D67] hover:bg-[#1a1040] text-white font-black uppercase tracking-widest py-3 px-8 rounded-full text-xs transition-colors shadow-md">
+                  Редактировать
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {viewingEvent && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingEvent(null)}>
@@ -1070,7 +1177,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setEditingEvent(null)}>
           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
             <button onClick={() => setEditingEvent(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
-            <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-6">Редактировать заявку на мероприятие</h3>
+            <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-wide leading-tight mb-6">Редактировать мероприятие</h3>
             <form onSubmit={handleUpdateEvent} className="flex flex-col gap-6">
               <div><label className="block text-[#2E1D67] font-black uppercase tracking-widest text-xs mb-2">Название мероприятия</label><input type="text" name="event_name" defaultValue={editingEvent.event_name} required className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-xl p-4 outline-none focus:border-[#6856BC] font-medium text-lg text-[#2E1D67]" /></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
