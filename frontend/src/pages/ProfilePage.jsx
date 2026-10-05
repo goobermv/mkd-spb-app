@@ -48,7 +48,15 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
         if (myRegsRes.data) {
           const enriched = myRegsRes.data.map(reg => {
             const ev = eventsList.find(e => e.id === reg.event_id) || {};
-            return { ...reg, event_name: ev.event_name, event_category: ev.event_category, event_date_and_time: ev.event_date_and_time, description: ev.description, status: reg.registration_status };
+            return { 
+              ...reg, 
+              event_name: ev.event_name, 
+              event_category: ev.event_category, 
+              event_date_and_time: ev.event_date_and_time, 
+              description: ev.description, 
+              event_picture: ev.event_picture,
+              status: reg.registration_status 
+            };
           });
           setMyEvents(enriched);
         }
@@ -153,6 +161,19 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
       refreshData();
     } catch (err) {
       alert('Ошибка при обновлении роли пользователя');
+    }
+  };
+
+  const handleCancelRegistration = async (regId) => {
+    if (!window.confirm('Вы уверены, что хотите отменить участие в мероприятии?')) return;
+    try {
+      await apiClient.delete(`/event_registrations/${regId}`);
+      alert('Вы успешно отменили регистрацию на мероприятие.');
+      setMyEvents(prev => prev.filter(item => item.id !== regId));
+      setViewingEvent(null);
+      refreshData();
+    } catch (e) {
+      alert('Ошибка при отмене регистрации');
     }
   };
 
@@ -368,7 +389,7 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
       case 'Pending': return <span className="text-white bg-[#FBBA00] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">На модерации</span>;
       case 'Published':
       case 'Approved':
-      case 'Registered': return <span className="text-white bg-[#00A552] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">Одобрено</span>;
+      case 'Registered': return <span className="text-white bg-[#00A552] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">Зарегистрирован</span>;
       case 'Declined':
       case 'Rejected':
       case 'Cancelled': return <span className="text-white bg-[#EB5893] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">Отклонено</span>;
@@ -528,16 +549,27 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
                 <p className="text-gray-500 font-medium text-lg">Вы пока не зарегистрированы ни на одно мероприятие.</p>
               ) : (
                 myEvents.map(ev => (
-                  <div key={ev.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 shadow-md flex flex-col gap-4 cursor-pointer hover:border-[#00A552] transition-colors" onClick={() => setViewingEvent(ev)}>
-                    <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                      <h4 className="font-black text-2xl text-[#2E1D67] uppercase leading-tight">{ev.event_name}</h4>
-                      <div className="flex gap-3 flex-wrap">
-                        {getStatusBadge(ev.status)}
-                        <span className="bg-[#F4F5F8] text-[#2E1D67] text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-sm">{ev.event_category}</span>
+                  <div key={ev.id} className="bg-white border-2 border-[#F0D8C2] rounded-tr-[40px] rounded-bl-[40px] rounded-tl-xl rounded-br-xl p-8 shadow-md flex flex-col md:flex-row gap-6 cursor-pointer hover:border-[#00A552] transition-colors items-center justify-between" onClick={() => setViewingEvent(ev)}>
+                    <div className="flex flex-col md:flex-row gap-6 items-center flex-1 w-full">
+                      {ev.event_picture && (
+                        <div className="w-full md:w-48 h-36 rounded-2xl overflow-hidden flex-shrink-0 bg-[#F4F5F8] border border-[#F0D8C2]">
+                          <img src={ev.event_picture} alt={ev.event_name} className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <div className="flex-1 flex flex-col gap-3 w-full">
+                        <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                          <h4 className="font-black text-2xl text-[#2E1D67] uppercase leading-tight">{ev.event_name}</h4>
+                        </div>
+                        <p className="text-sm font-bold text-[#6856BC] uppercase tracking-wide">Дата: {new Date(ev.event_date_and_time).toLocaleString()}</p>
+                        <p className="text-gray-700 font-medium line-clamp-2">{ev.description}</p>
                       </div>
                     </div>
-                    <p className="text-sm font-bold text-[#6856BC] uppercase tracking-wide">Дата: {new Date(ev.event_date_and_time).toLocaleString()}</p>
-                    <p className="text-gray-700 font-medium text-lg leading-relaxed mt-2">{ev.description}</p>
+                    <div className="flex flex-col gap-3 items-center flex-shrink-0 pl-4 self-center" onClick={e => e.stopPropagation()}>
+                      {getStatusBadge(ev.status)}
+                      <button onClick={() => handleCancelRegistration(ev.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-xs px-6 py-3 rounded-full transition-colors shadow-sm whitespace-nowrap">
+                        Отмена участия
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
@@ -783,18 +815,25 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
                 </div>
               </div>
 
-              {isAdmin && viewingEvent.status === 'In moderation' && (
-                <div className="flex justify-end gap-4 mt-2" onClick={e => e.stopPropagation()}>
-                   <button type="button" onClick={() => { rejectEvent(viewingEvent.id); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Отклонить</button>
-                   <button type="button" onClick={() => { approveEvent(viewingEvent.id); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Принять</button>
-                </div>
-              )}
+              <div className="flex justify-between items-center mt-2">
+                {myEvents.some(item => item.id === viewingEvent.id) && (
+                  <button type="button" onClick={() => handleCancelRegistration(viewingEvent.id)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">
+                    Отмена участия
+                  </button>
+                )}
+
+                {isAdmin && viewingEvent.status === 'In moderation' && (
+                  <div className="flex gap-4 ml-auto" onClick={e => e.stopPropagation()}>
+                     <button type="button" onClick={() => { rejectEvent(viewingEvent.id); }} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Отклонить</button>
+                     <button type="button" onClick={() => { approveEvent(viewingEvent.id); }} className="bg-[#00A552] hover:bg-[#328D2E] text-white font-black uppercase tracking-widest py-3 px-6 rounded-full text-xs transition-colors shadow-md">Принять</button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Модальное окно просмотра деталей новости */}
       {viewingNews && (
         <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setViewingNews(null)}>
           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
