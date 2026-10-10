@@ -6,7 +6,11 @@ import NewsCard from '../components/NewsCard';
 const HomePage = ({ newsList, currentUser }) => {
   const navigate = useNavigate();
   
-  const heroSlides = ["Место для фото 1", "Место для фото 2", "Место для фото 3", "Место для фото 4"];
+  // Слайдер теперь использует только фото 1 и фото 3
+  const heroSlides = [
+    { src: '/МКД_СПб_1.jpg', alt: 'Слайд 1' },
+    { src: '/МКД_СПб_3.jpg', alt: 'Слайд 3' }
+  ];
   const [heroSlide, setHeroSlide] = useState(0);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
 
@@ -76,11 +80,24 @@ const HomePage = ({ newsList, currentUser }) => {
 
   return (
     <div className="flex flex-col font-['Onest',sans-serif]">
-      <section className="bg-[#2E1D67] w-full h-[400px] relative overflow-hidden flex items-center justify-between px-10" onMouseEnter={() => setIsHeroPaused(true)} onMouseLeave={() => setIsHeroPaused(false)}>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB5893] rounded-bl-full opacity-20"></div>
-        <div className="absolute inset-0 flex items-center justify-center text-white/50 font-black tracking-widest uppercase text-3xl">{heroSlides[heroSlide]}</div>
-        <button onClick={prevHeroSlide} className="bg-white p-3 rounded-full hover:bg-[#EB5893] hover:text-white text-[#2E1D67] transition-all z-10 shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
-        <button onClick={nextHeroSlide} className="bg-white p-3 rounded-full hover:bg-[#EB5893] hover:text-white text-[#2E1D67] transition-all z-10 shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+      <section className="bg-[#2E1D67] w-full h-[500px] md:h-[600px] relative overflow-hidden flex items-center justify-between px-6 md:px-12" onMouseEnter={() => setIsHeroPaused(true)} onMouseLeave={() => setIsHeroPaused(false)}>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB5893] rounded-bl-full opacity-20 z-0"></div>
+        
+        {/* Слайдер с фото */}
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden z-0">
+          <img 
+            src={heroSlides[heroSlide].src} 
+            alt={heroSlides[heroSlide].alt} 
+            className="w-full h-full object-cover transition-opacity duration-700" 
+          />
+        </div>
+
+        <button onClick={prevHeroSlide} className="bg-white/90 hover:bg-[#EB5893] hover:text-white text-[#2E1D67] p-4 rounded-full transition-all z-10 shadow-2xl backdrop-blur-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+        </button>
+        <button onClick={nextHeroSlide} className="bg-white/90 hover:bg-[#EB5893] hover:text-white text-[#2E1D67] p-4 rounded-full transition-all z-10 shadow-2xl backdrop-blur-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        </button>
       </section>
 
       <section className="container mx-auto px-4 py-12 max-w-[1400px]">
@@ -117,11 +134,16 @@ const HomePage = ({ newsList, currentUser }) => {
               <p className="text-xl font-bold mb-4 text-[#F0D8C2]">Открыт - 3 ноября 2024 г.</p>
               <p className="text-white/90 leading-relaxed text-justify text-lg font-medium">Молодёжный Консультационный Дом Санкт-Петербурга был создан как единая площадка для поддержки молодёжных инициатив, объединения городских сообществ и взаимодействия с органами власти.</p>
             </div>
-            <div className="md:w-1/3 h-[300px] w-full bg-[#F0D8C2] rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl flex justify-center items-center text-[#2E1D67] shadow-inner font-black uppercase tracking-widest border-4 border-white">Место для фото "История"</div>
+            <div className="md:w-1/3 h-[300px] w-full bg-[#F0D8C2] rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl flex justify-center items-center text-[#2E1D67] shadow-inner font-black uppercase tracking-widest border-4 border-white overflow-hidden">
+              <img src="/МКД_СПб_Миссия.jpg" alt="Наша история" className="w-full h-full object-cover" />
+            </div>
           </div>
           
           <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
-            <div className="md:w-1/3 h-[300px] w-full bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl flex justify-center items-center text-[#2E1D67] shadow-inner font-black uppercase tracking-widest border-4 border-white order-2 md:order-1">Место для фото "Миссия"</div>
+            {/* Теперь здесь установлено фото 2 */}
+            <div className="md:w-1/3 h-[300px] w-full bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl flex justify-center items-center text-[#2E1D67] shadow-inner font-black uppercase tracking-widest border-4 border-white order-2 md:order-1 overflow-hidden">
+              <img src="/МКД_СПб_2.jpg" alt="Наша миссия" className="w-full h-full object-cover" />
+            </div>
             <div className="md:w-1/2 order-1 md:order-2">
               <h3 className="text-3xl font-black mb-4 text-[#FBBA00] uppercase tracking-wider">Наша миссия</h3>
               <p className="text-xl text-[#F0D8C2] font-bold mb-4">Формирование глобального сообщества лидеров.</p>
