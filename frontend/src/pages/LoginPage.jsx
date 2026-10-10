@@ -17,7 +17,11 @@ const LoginPage = ({ setCurrentUser }) => {
       setCurrentUser(res.data.user);
       
       if (sessionStorage.getItem('pendingApplication') === 'true') {
+        sessionStorage.removeItem('pendingApplication');
         navigate('/');
+      } else if (sessionStorage.getItem('redirectAfterLogin') === 'events') {
+        sessionStorage.removeItem('redirectAfterLogin');
+        navigate('/events');
       } else {
         navigate('/profile');
       }

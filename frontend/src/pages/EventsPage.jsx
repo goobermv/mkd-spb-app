@@ -35,6 +35,7 @@ const EventsPage = ({ eventsList, currentUser }) => {
   const handleRegisterEvent = async (eventId, e) => {
     if (e) e.stopPropagation();
     if (!currentUser) {
+      sessionStorage.setItem('redirectAfterLogin', 'events');
       navigate('/login');
       return;
     }
