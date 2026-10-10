@@ -18,6 +18,7 @@ export default function App() {
   const [news, setNews] = useState([]);
   const [events, setEvents] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     try {
@@ -36,17 +37,30 @@ export default function App() {
   };
 
   useEffect(() => {
-    fetchData();
-    const token = localStorage.getItem('token');
-    if (token) {
-      apiClient.get('/users/me')
-        .then(res => setCurrentUser(res.data))
-        .catch(() => {
+    const initApp = async () => {
+      await fetchData();
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const res = await apiClient.get('/users/me');
+          setCurrentUser(res.data);
+        } catch (e) {
           localStorage.removeItem('token');
           setCurrentUser(null);
-        });
-    }
+        }
+      }
+      setIsLoading(false);
+    };
+    initApp();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#F4F5F8] font-['Onest',sans-serif]">
+        <div className="text-[#2E1D67] font-black uppercase tracking-widest text-xl animate-pulse">Загрузка...</div>
+      </div>
+    );
+  }
 
   return (
     <BrowserRouter>
