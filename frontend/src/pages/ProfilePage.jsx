@@ -473,39 +473,44 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
     <div className="container mx-auto px-4 py-12 max-w-[1400px] flex flex-col lg:flex-row gap-10 font-['Onest',sans-serif]">
       
       <aside className="w-full lg:w-1/4 flex flex-col gap-8">
-        <div className="bg-[#F0D8C2] rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl p-10 shadow-xl flex flex-col items-center text-center border-4 border-white min-w-0">
+        <div className="bg-[#F0D8C2] rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl p-6 sm:p-8 shadow-xl flex flex-col items-center text-center border-4 border-white w-full overflow-hidden">
           <div className="w-32 h-32 rounded-full border-4 border-[#00A552] flex items-center justify-center mb-6 bg-white overflow-hidden text-[#2E1D67] shadow-inner flex-shrink-0">
              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16">
                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
              </svg>
           </div>
           <h2 className="text-2xl font-black text-[#2E1D67] mb-2 uppercase tracking-wide leading-tight break-words [overflow-wrap:anywhere] w-full">{currentUser.full_name}</h2>
-          <p className="text-[#EB5893] font-black uppercase tracking-widest text-sm mb-8">
+          <p className="text-[#EB5893] font-black uppercase tracking-widest text-sm mb-6 w-full break-words">
             {getRoleName(currentUser.role)}
           </p>
           
-          <div className="w-full bg-white rounded-xl p-6 flex flex-col gap-4 text-left mb-6 shadow-sm min-w-0">
-            <div className="flex items-center gap-3 text-[#2E1D67] font-medium min-w-0">
-              <span className="font-bold flex-shrink-0">Email:</span> <span className="truncate break-all">{currentUser.email}</span>
+          <div className="w-full bg-white rounded-xl p-5 flex flex-col gap-3 text-left mb-6 shadow-sm overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 text-[#2E1D67] font-medium w-full overflow-hidden">
+              <span className="font-bold flex-shrink-0">Email:</span> 
+              <span className="break-all text-sm">{currentUser.email}</span>
             </div>
-            <div className="flex items-center gap-3 text-[#2E1D67] font-medium min-w-0">
-              <span className="font-bold flex-shrink-0">Дата рождения:</span> <span>{currentUser.birth_date ? new Date(currentUser.birth_date).toLocaleDateString() : 'Не указана'}</span>
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 text-[#2E1D67] font-medium w-full overflow-hidden">
+              <span className="font-bold flex-shrink-0">Дата рождения:</span> 
+              <span className="text-sm">{currentUser.birth_date ? new Date(currentUser.birth_date).toLocaleDateString() : 'Не указана'}</span>
             </div>
-            <div className="flex items-center gap-3 text-[#2E1D67] font-medium min-w-0">
-              <span className="font-bold flex-shrink-0">Страна:</span> <span className="break-words [overflow-wrap:anywhere]">{currentUser.country || 'Не указана'}</span>
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 text-[#2E1D67] font-medium w-full overflow-hidden">
+              <span className="font-bold flex-shrink-0">Страна:</span> 
+              <span className="break-words [overflow-wrap:anywhere] text-sm">{currentUser.country || 'Не указана'}</span>
             </div>
-            <div className="flex items-center gap-3 text-[#2E1D67] font-medium min-w-0">
-              <span className="font-bold flex-shrink-0">Деятельность:</span> <span className="truncate break-all">{currentUser.job_field || 'Не указано'}</span>
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 text-[#2E1D67] font-medium w-full overflow-hidden">
+              <span className="font-bold flex-shrink-0">Деятельность:</span> 
+              <span className="break-words [overflow-wrap:anywhere] text-sm">{currentUser.job_field || 'Не указано'}</span>
             </div>
             {currentUser.vk_link && (
-              <div className="flex items-center gap-3 text-[#6856BC] font-bold hover:underline truncate min-w-0">
-                <span className="font-bold text-[#2E1D67] flex-shrink-0">VK:</span> <a href={currentUser.vk_link} target="_blank" rel="noreferrer" className="truncate">ВКонтакте</a>
+              <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 text-[#6856BC] font-bold w-full overflow-hidden">
+                <span className="font-bold text-[#2E1D67] flex-shrink-0">VK:</span> 
+                <a href={currentUser.vk_link} target="_blank" rel="noreferrer" className="hover:underline break-all text-sm">ВКонтакте</a>
               </div>
             )}
           </div>
 
           {currentUser.user_description && (
-            <div className="w-full text-left bg-white p-5 rounded-xl text-sm text-gray-700 font-medium shadow-sm min-w-0">
+            <div className="w-full text-left bg-white p-5 rounded-xl text-sm text-gray-700 font-medium shadow-sm overflow-hidden">
               <span className="font-black text-[#2E1D67] uppercase tracking-widest block mb-2">О себе:</span>
               <p className="break-words [overflow-wrap:anywhere]">{currentUser.user_description}</p>
             </div>
