@@ -23,7 +23,7 @@ CREATE TABLE events (
     status VARCHAR(50) NOT NULL,
     event_category VARCHAR(100) NOT NULL,
     event_date_and_time TIMESTAMP WITH TIME ZONE NOT NULL,
-    event_picture VARCHAR(255),
+    event_picture TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -36,7 +36,7 @@ CREATE TABLE news_blocks (
     news_block_category VARCHAR(100) NOT NULL,
     publication_date TIMESTAMP WITH TIME ZONE NOT NULL,
     publication_status VARCHAR(50) NOT NULL,
-    news_block_picture VARCHAR(255),
+    news_block_picture TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

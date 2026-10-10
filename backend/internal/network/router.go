@@ -7,8 +7,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
+	"github.com/goobermv/mkd-spb-app/internal/domain"
 	"github.com/goobermv/mkd-spb-app/internal/network/handlers"
-
 	customMiddleware "github.com/goobermv/mkd-spb-app/internal/network/middleware"
 )
 
@@ -28,7 +28,6 @@ func NewRouter(
 		AllowedOrigins:   []string{"http://localhost:5173", "http://127.0.0.1:5173"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
@@ -58,20 +57,21 @@ func NewRouter(
 		r.Group(func(r chi.Router) {
 			r.Use(authMiddleware.RequireAuth)
 
-			r.Get("/users/me", userHandler.GetUser)
+			r.Get("/users/me", userHandler.GetMe)
+			r.Get("/users/{id}", userHandler.GetUser)
 			r.Patch("/users/{id}", userHandler.UpdateUser)
 			r.Patch("/users/{id}/password", userHandler.UpdateUserPassword)
 			r.Delete("/users/{id}", userHandler.DeleteUser)
 
 			r.Post("/applications", applicationHandler.CreateApplication)
-			r.Get("/applications/{id}", applicationHandler.GetApplication)
 			r.Get("/applications/my", applicationHandler.GetApplicationByUser)
+			r.Get("/applications/{id}", applicationHandler.GetApplication)
 			r.Patch("/applications/{id}", applicationHandler.UpdateApplication)
-			r.Delete("/application/{id}", applicationHandler.DeleteApplication)
+			r.Delete("/applications/{id}", applicationHandler.DeleteApplication)
 
 			r.Post("/event_registrations", eventRegistrationHandler.CreateEventRegistration)
 			r.Get("/event_registrations/{id}", eventRegistrationHandler.GetEventRegistration)
-			r.Get("/event_registrations/user/{user}", eventRegistrationHandler.GetEventRegistrationsByUser)
+			r.Get("/event_registrations/user/{user_id}", eventRegistrationHandler.GetEventRegistrationsByUser)
 			r.Patch("/event_registrations/{id}", eventRegistrationHandler.UpdateEventRegistration)
 			r.Delete("/event_registrations/{id}", eventRegistrationHandler.DeleteEventRegistration)
 
@@ -81,43 +81,41 @@ func NewRouter(
 			r.Delete("/event_reviews/{id}", eventReviewHandler.DeleteEventReview)
 
 			r.Get("/notifications/{id}", notificationHandler.GetNotification)
-			r.Get("/notifications/user/{user}", notificationHandler.GetNotificationByUser)
+			r.Get("/notifications/user/{user_id}", notificationHandler.GetNotificationByUser)
 
 			r.Group(func(r chi.Router) {
-				r.Use(authMiddleware.RequireRoles("activist", "admin"))
+				r.Use(authMiddleware.RequireRoles(domain.UserRoleActivist, domain.UserRoleAdmin))
 
 				r.Post("/events", eventHandler.CreateEvent)
-				r.Get("/events/author/{author}", eventHandler.GetByAuthor)
+				r.Get("/events/author/{author_id}", eventHandler.GetByAuthor)
 				r.Patch("/events/{id}", eventHandler.UpdateEvent)
 				r.Delete("/events/{id}", eventHandler.DeleteEvent)
 
-				r.Get("/event_registrations", eventRegistrationHandler.GetEventRegistrationsByEvent)
-
-				r.Get("/event_reviews", eventReviewHandler.GetEventReviewsByEvent)
+				r.Get("/event_registrations/event/{event_id}", eventRegistrationHandler.GetEventRegistrationsByEvent)
+				r.Get("/event_reviews/event/{event_id}", eventReviewHandler.GetEventReviewsByEvent)
 
 				r.Post("/news_blocks", newsBlockHandler.CreateNewsBlock)
-
 				r.Patch("/news_blocks/{id}", newsBlockHandler.UpdateNewsBlock)
 
 				r.Post("/notifications", notificationHandler.CreateNotification)
 				r.Patch("/notifications/{id}", notificationHandler.UpdateNotification)
 				r.Delete("/notifications/{id}", notificationHandler.DeleteNotification)
-
 			})
 
 			r.Group(func(r chi.Router) {
-				r.Use(authMiddleware.RequireRoles("admin"))
+				r.Use(authMiddleware.RequireRoles(domain.UserRoleAdmin))
 
 				r.Get("/users/name/{name}", userHandler.GetUserByName)
 				r.Get("/users/email/{email}", userHandler.GetUserByEmail)
 				r.Get("/users", userHandler.GetAllUsers)
+				r.Get("/users/export", userHandler.ExportUsers)
+				r.Patch("/users/{id}/role", userHandler.UpdateUserRole)
 
 				r.Get("/applications/date/{date}", applicationHandler.GetApplicationByDate)
 				r.Get("/applications", applicationHandler.GetAllApplications)
 
-				r.Get("/news_blocks/author/{author}", newsBlockHandler.GetNewsBlocksByAuthor)
+				r.Get("/news_blocks/author/{author_id}", newsBlockHandler.GetNewsBlocksByAuthor)
 				r.Delete("/news_blocks/{id}", newsBlockHandler.DeleteNewsBlock)
-
 			})
 		})
 	})

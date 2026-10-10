@@ -32,5 +32,6 @@ type UpdateNewsBlockRequest struct {
 	Description       *string    `json:"description,omitempty"`
 	NewsBlockCategory *string    `json:"news_block_category,omitempty"`
 	PublicationDate   *time.Time `json:"publication_date,omitempty"`
+	PublicationStatus *string    `json:"publication_status,omitempty"`
 	NewsBlockPicture  *string    `json:"news_block_picture,omitempty"`
 }

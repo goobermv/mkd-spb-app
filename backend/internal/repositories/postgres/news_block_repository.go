@@ -149,7 +149,7 @@ func (r *NewsBlockRepository) Update(ctx context.Context, newsBlock *domain.News
 	`
 	commandTag, err := r.db.Exec(ctx, query, newsBlock.Title, newsBlock.Description,
 		newsBlock.NewsBlockCategory, newsBlock.PublicationDate, newsBlock.PublicationStatus,
-		newsBlock.NewsBlockPicture, newsBlock.UpdatedAt, newsBlock.ID,
+		newsBlock.NewsBlockPicture, newsBlock.ID,
 	)
 
 	if err != nil {

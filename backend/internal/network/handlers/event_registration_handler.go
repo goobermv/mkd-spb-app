@@ -78,7 +78,7 @@ func (h *EventRegistrationHandler) GetEventRegistration(w http.ResponseWriter, r
 
 	eventRegistration, err := h.eventRegistrationUsecase.GetEventRegistration(r.Context(), eventRegistrationID)
 	if err != nil {
-		if errors.Is(err, domain.ErrEventReviewNotFound) {
+		if errors.Is(err, domain.ErrEventRegistrationNotFound) {
 			h.logger.Warnf("Event registration not found by ID: %s", eventRegistrationID)
 			respondError(w, http.StatusNotFound, err.Error())
 			return

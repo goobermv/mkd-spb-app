@@ -68,8 +68,8 @@ const CityPage = () => {
       </div>
 
       <div className="bg-[#F0D8C2] rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 shadow-xl max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 border-4 border-white relative">
-        <div className="md:w-2/5 w-full h-[250px] bg-white rounded-tl-[40px] rounded-br-[40px] flex justify-center items-center text-[#2E1D67] font-black uppercase tracking-widest shadow-inner border-2 border-dashed border-[#EB5893]">
-          [ Фото: МКД СПб ]
+        <div className="md:w-2/5 w-full h-[250px] bg-white rounded-tl-[40px] rounded-br-[40px] overflow-hidden shadow-inner flex justify-center items-center flex-shrink-0">
+          <img src="/МКД_СПБ_Общее.jpg" alt="МКД СПб" className="w-full h-full object-cover" />
         </div>
         <div className="md:w-3/5 text-center md:text-left">
           <h3 className="text-3xl font-black mb-4 text-[#2E1D67] uppercase tracking-widest">Развивай город вместе с МКД СПб!</h3>

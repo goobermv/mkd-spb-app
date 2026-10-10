@@ -167,7 +167,11 @@ func (n *newsBlockUsecase) UpdateNewsBlock(ctx context.Context, id uuid.UUID, in
 	if input.NewsBlockPicture != nil {
 		newsBlock.NewsBlockPicture = *input.NewsBlockPicture
 		n.logger.Infof("News block picture updated to: %s for news block: %s", newsBlock.NewsBlockPicture, id)
+	}
 
+	if input.PublicationStatus != nil {
+		newsBlock.PublicationStatus = *input.PublicationStatus
+		n.logger.Infof("Publication status updated to: %s for news block: %s", newsBlock.PublicationStatus, id)
 	}
 
 	newsBlock.PublicationDate = time.Now()

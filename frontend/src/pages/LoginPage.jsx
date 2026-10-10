@@ -1,18 +1,33 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import apiClient from '../api/client';
 
 const LoginPage = ({ setCurrentUser }) => {
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-    
-    data.role = 'admin';
-    setCurrentUser(data);
-    
-    navigate('/profile');
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    try {
+      const res = await apiClient.post('/users/login', { email, password });
+      localStorage.setItem('token', res.data.token);
+      setCurrentUser(res.data.user);
+      
+      if (sessionStorage.getItem('pendingApplication') === 'true') {
+        sessionStorage.removeItem('pendingApplication');
+        navigate('/');
+      } else if (sessionStorage.getItem('redirectAfterLogin') === 'events') {
+        sessionStorage.removeItem('redirectAfterLogin');
+        navigate('/events');
+      } else {
+        navigate('/profile');
+      }
+    } catch (err) {
+      alert('Неверный логин или пароль');
+    }
   };
 
   return (
@@ -45,7 +60,8 @@ const LoginPage = ({ setCurrentUser }) => {
           
           <div className="text-center mt-2">
             <p className="text-sm font-bold text-[#2E1D67] uppercase tracking-wide">
-              Еще нет аккаунта? <Link to="/register" className="text-[#00A552] hover:text-[#2E1D67] transition-colors underline underline-offset-4">Зарегистрироваться</Link>
+              Еще нет аккаунта?
+              <Link to="/register" className="text-[#00A552] hover:text-[#2E1D67] transition-colors underline underline-offset-4 ml-1">Зарегистрироваться</Link>
             </p>
           </div>
         </form>
