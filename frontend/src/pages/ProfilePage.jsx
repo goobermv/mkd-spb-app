@@ -68,39 +68,37 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
 
       if (isAdmin || isActivist) {
          try {
-            const orgEvRes = await apiClient.get(`/events/author/${currentUser.id}`);
+            const orgEvRes = await apiClient.get(isAdmin ? `/events` : `/events/author/${currentUser.id}`);
             const orgEv = orgEvRes.data || [];
-            setMyOrganizedEvents(orgEv.filter(e => e.status === 'Published'));
-            if (isActivist) setPendingEvents(orgEv.filter(e => e.status === 'In moderation'));
-            setArchiveItems(prev => {
-               const arch = orgEv.filter(e => e.status === 'Archived').map(e => ({...e, type: 'event'}));
-               return [...prev.filter(p => p.type !== 'event'), ...arch];
-            });
+            if (isActivist) {
+              setMyOrganizedEvents(orgEv.filter(e => e.status === 'Published' && e.author_id === currentUser.id));
+              setPendingEvents(orgEv.filter(e => e.status === 'In moderation' && e.author_id === currentUser.id));
+            } else {
+              setMyOrganizedEvents(orgEv.filter(e => e.status === 'Published'));
+              setPendingEvents(orgEv.filter(e => e.status === 'In moderation'));
+            }
+            
+            const archEv = orgEv.filter(e => e.status === 'Archived' || e.status === 'Declined' || e.status === 'Rejected').map(e => ({...e, type: 'event'}));
+            setArchiveItems(prev => [...prev.filter(p => p.type !== 'event'), ...archEv]);
          } catch(e) {}
          
          try {
-            const orgNewsRes = await apiClient.get(`/news_blocks/author/${currentUser.id}`);
+            const orgNewsRes = await apiClient.get(isAdmin ? `/news_blocks` : `/news_blocks/author/${currentUser.id}`);
             const orgNews = orgNewsRes.data || [];
-            setPublishedNews(orgNews.filter(n => n.publication_status === 'Published'));
-            if (isActivist) setPendingNews(orgNews.filter(n => n.publication_status === 'Undergoing moderation'));
-            setArchiveItems(prev => {
-               const arch = orgNews.filter(n => n.publication_status === 'Declined').map(n => ({...n, type: 'news'}));
-               return [...prev.filter(p => p.type !== 'news'), ...arch];
-            });
+            if (isActivist) {
+              setPublishedNews(orgNews.filter(n => n.publication_status === 'Published' && n.author_id === currentUser.id));
+              setPendingNews(orgNews.filter(n => n.publication_status === 'Undergoing moderation' && n.author_id === currentUser.id));
+            } else {
+              setPublishedNews(orgNews.filter(n => n.publication_status === 'Published'));
+              setPendingNews(orgNews.filter(n => n.publication_status === 'Undergoing moderation'));
+            }
+
+            const archNews = orgNews.filter(n => n.publication_status === 'Declined' || n.publication_status === 'Archived').map(n => ({...n, type: 'news'}));
+            setArchiveItems(prev => [...prev.filter(p => p.type !== 'news'), ...archNews]);
          } catch(e) {}
       }
 
       if (isAdmin) {
-         try {
-            const allEvRes = await apiClient.get(`/events`);
-            setPendingEvents((allEvRes.data || []).filter(e => e.status === 'In moderation'));
-         } catch(e) {}
-         try {
-            const allNewsRes = await apiClient.get(`/news_blocks`);
-            const allNews = allNewsRes.data || [];
-            setPendingNews(allNews.filter(n => n.publication_status === 'Undergoing moderation'));
-            setPublishedNews(allNews.filter(n => n.publication_status === 'Published'));
-         } catch(e) {}
          try {
             const usrRes = await apiClient.get(`/users`);
             const usrs = usrRes.data || [];
@@ -228,6 +226,22 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
       refreshData();
     } catch (e) {
       alert('Ошибка при удалении новости');
+    }
+  };
+
+  const handleDeleteArchiveItem = async (item) => {
+    if (!window.confirm(`Вы уверены, что хотите окончательно удалить этот элемент из архива?`)) return;
+    try {
+      if (item.type === 'event') {
+        await apiClient.delete(`/events/${item.id}`);
+      } else {
+        await apiClient.delete(`/news_blocks/${item.id}`);
+      }
+      alert('Элемент успешно удален из архива.');
+      setArchiveItems(prev => prev.filter(p => p.id !== item.id));
+      refreshData();
+    } catch (e) {
+      alert('Ошибка при удалении элемента из архива');
     }
   };
 
@@ -813,15 +827,19 @@ const ProfilePage = ({ currentUser, setCurrentUser, eventsList, newsList, refres
 
           {activeTab === 'Архив' && (isAdmin || isActivist) && (
             <div className="flex flex-col gap-4">
+              {archiveItems.length === 0 ? <p className="text-gray-500 font-medium">Архив пуст.</p> : null}
               {archiveItems.map(item => (
-                <div key={item.id} className="bg-white border-2 border-gray-200 rounded-2xl p-6 flex justify-between items-center shadow-sm hover:border-gray-400 transition-colors cursor-pointer opacity-75 min-w-0 gap-4" onClick={() => item.type === 'event' ? setViewingEvent(item) : setViewingNews(item)}>
-                  <div className="min-w-0 flex-1">
+                <div key={item.id} className="bg-white border-2 border-gray-200 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm hover:border-gray-400 transition-colors opacity-75 min-w-0 gap-4">
+                  <div className="min-w-0 flex-1 cursor-pointer" onClick={() => item.type === 'event' ? setViewingEvent(item) : setViewingNews(item)}>
                     <h4 className="font-black text-lg text-gray-500 uppercase tracking-wide line-through decoration-gray-400 leading-tight break-words [overflow-wrap:anywhere]">{item.event_name || item.title}</h4>
                     <span className="text-xs font-bold bg-gray-200 px-4 py-1.5 rounded-full text-gray-600 mt-3 inline-block uppercase tracking-widest">
                       {item.type === 'event' ? 'Архивное Мероприятие' : 'Архивная Новость'}
                     </span>
                   </div>
-                  <button className="text-[#6856BC] font-black uppercase tracking-widest text-sm hover:underline flex-shrink-0">Просмотр</button>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <button onClick={() => item.type === 'event' ? setViewingEvent(item) : setViewingNews(item)} className="text-[#6856BC] font-black uppercase tracking-widest text-sm hover:underline">Просмотр</button>
+                    <button onClick={() => handleDeleteArchiveItem(item)} className="bg-white border-2 border-[#EB5893] text-[#EB5893] hover:bg-[#EB5893] hover:text-white font-black uppercase tracking-widest text-xs px-5 py-2 rounded-full transition-colors shadow-sm">Удалить</button>
+                  </div>
                 </div>
               ))}
             </div>

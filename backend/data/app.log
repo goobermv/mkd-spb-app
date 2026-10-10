@@ -1644,3 +1644,75 @@
 [API]	2026/10/10 21:31:42 logger.go:55: [INFO]	Retrieving all applications...
 [API]	2026/10/10 21:31:42 logger.go:71: [SUCCESS]	Applications retrieved successfully
 [API]	2026/10/10 21:31:42 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 applications
+[API]	2026/10/10 21:36:46 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/event_registrations/user/72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:46 logger.go:55: [INFO]	Attempting to get registrations by ID: 72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:46 logger.go:71: [SUCCESS]	Registrations retrieved successfully for user: 72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:46 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 event registrations
+[API]	2026/10/10 21:36:46 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/10 21:36:46 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/10 21:36:47 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/10 21:36:47 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/10 21:36:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/10 21:36:47 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/10 21:36:47 logger.go:71: [SUCCESS]	News blocks retrieved successfully
+[API]	2026/10/10 21:36:47 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 news blocks
+[API]	2026/10/10 21:36:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/users
+[API]	2026/10/10 21:36:47 logger.go:55: [INFO]	Retrieving all users...
+[API]	2026/10/10 21:36:47 logger.go:71: [SUCCESS]	Users retrieved successfully
+[API]	2026/10/10 21:36:47 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 users
+[API]	2026/10/10 21:36:47 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/applications
+[API]	2026/10/10 21:36:47 logger.go:55: [INFO]	Retrieving all applications...
+[API]	2026/10/10 21:36:47 logger.go:71: [SUCCESS]	Applications retrieved successfully
+[API]	2026/10/10 21:36:47 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 applications
+[API]	2026/10/10 21:36:56 logger.go:55: [INFO]	Incoming HTTP request: DELETE /api/v1/news_blocks/46284117-944b-49ec-8fcb-0afa22172382
+[API]	2026/10/10 21:36:56 logger.go:55: [INFO]	Deleting news block: 46284117-944b-49ec-8fcb-0afa22172382
+[API]	2026/10/10 21:36:56 logger.go:71: [SUCCESS]	News block deleted successfully: 46284117-944b-49ec-8fcb-0afa22172382 (User: 72fb996a-b9f8-4d60-9cd2-b797a389ac40)
+[API]	2026/10/10 21:36:56 logger.go:71: [SUCCESS]	HTTP response 204 No Content for deleted news block ID: 46284117-944b-49ec-8fcb-0afa22172382
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	News blocks retrieved successfully
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 news blocks
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/event_registrations/user/72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Attempting to get registrations by ID: 72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	Registrations retrieved successfully for user: 72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 event registrations
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/event_registrations/user/72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Attempting to get registrations by ID: 72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	Registrations retrieved successfully for user: 72fb996a-b9f8-4d60-9cd2-b797a389ac40
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 event registrations
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	News blocks retrieved successfully
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 news blocks
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/users
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Retrieving all users...
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	Users retrieved successfully
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 users
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/applications
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Retrieving all applications...
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	Applications retrieved successfully
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 applications
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/10 21:36:57 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	News blocks retrieved successfully
+[API]	2026/10/10 21:36:57 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 news blocks
+[API]	2026/10/10 21:36:58 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/users
+[API]	2026/10/10 21:36:58 logger.go:55: [INFO]	Retrieving all users...
+[API]	2026/10/10 21:36:58 logger.go:71: [SUCCESS]	Users retrieved successfully
+[API]	2026/10/10 21:36:58 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 users
+[API]	2026/10/10 21:36:58 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/applications
+[API]	2026/10/10 21:36:58 logger.go:55: [INFO]	Retrieving all applications...
+[API]	2026/10/10 21:36:58 logger.go:71: [SUCCESS]	Applications retrieved successfully
+[API]	2026/10/10 21:36:58 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 applications
