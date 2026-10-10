@@ -92,8 +92,8 @@ const HomePage = ({ newsList, currentUser }) => {
                 <button onClick={prevNews} className="bg-white p-3 rounded-full shadow-md z-10 flex-shrink-0 text-[#2E1D67] hover:bg-[#2E1D67] hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                   {visibleNews.map(item => (
-                    <div key={item.id} onClick={() => setSelectedNews(item)} className="cursor-pointer transition-transform hover:-translate-y-2 h-full">
-                      <NewsCard title={item.title} date={new Date(item.publication_date).toLocaleDateString()} description={item.description} />
+                    <div key={item.id} onClick={() => setSelectedNews(item)} className="cursor-pointer transition-transform hover:-translate-y-2 h-full min-w-0">
+                      <NewsCard title={item.title} date={new Date(item.publication_date).toLocaleDateString()} description={item.description} news_block_picture={item.news_block_picture} />
                     </div>
                   ))}
                 </div>
@@ -145,29 +145,35 @@ const HomePage = ({ newsList, currentUser }) => {
       )}
 
       {selectedNews && (
-        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedNews(null)}>
-          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={() => setSelectedNews(null)}>
+          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl font-['Onest',sans-serif] items-center my-auto max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setSelectedNews(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
-            <div className="flex-1 flex flex-col justify-between mt-4 md:mt-0">
+            <div className="flex-1 flex flex-col justify-between mt-4 md:mt-0 w-full min-w-0 pr-0 md:pr-4">
               <div>
-                <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-widest mb-6 pr-6 leading-tight">{selectedNews.title}</h3>
-                <p className="text-gray-700 text-lg font-medium leading-relaxed mb-6 whitespace-pre-line">{selectedNews.description}</p>
+                <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-widest mb-6 pr-8 leading-tight break-words [overflow-wrap:anywhere]">{selectedNews.title}</h3>
+                <p className="text-gray-700 text-lg font-medium leading-relaxed mb-6 whitespace-pre-line break-words [overflow-wrap:anywhere]">{selectedNews.description}</p>
               </div>
               <div>
                 <p className="text-[#6856BC] font-black text-xl mb-6"> Дата: {new Date(selectedNews.publication_date).toLocaleDateString()}</p>
                 <button onClick={() => navigate('/news')} className="bg-[#FBBA00] hover:bg-[#e0a600] text-[#2E1D67] font-black py-4 px-8 rounded-full transition-colors shadow-xl text-lg uppercase tracking-widest">Все новости</button>
               </div>
             </div>
-            <div className="md:w-[350px] md:h-[450px] h-[300px] bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl shadow-inner flex items-center justify-center text-[#2E1D67] font-black uppercase tracking-widest text-xl flex-shrink-0 border-4 border-white">Афиша</div>
+            <div className="w-full md:w-[320px] aspect-square bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl shadow-inner flex items-center justify-center text-[#2E1D67] font-black uppercase tracking-widest text-xl flex-shrink-0 border-4 border-white overflow-hidden relative">
+              {selectedNews.news_block_picture ? (
+                <img src={selectedNews.news_block_picture} alt={selectedNews.title} className="w-full h-full object-cover" />
+              ) : (
+                <span>Афиша</span>
+              )}
+            </div>
           </div>
         </div>
       )}
 
       {isApplicationModalOpen && (
-        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setIsApplicationModalOpen(false)}>
-           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={() => setIsApplicationModalOpen(false)}>
+           <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setIsApplicationModalOpen(false)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
-            <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-2">Заявка в актив</h3>
+            <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-2 pr-8 break-words">Заявка в актив</h3>
             <p className="text-gray-500 mb-8 font-medium">Расскажите нам о себе и почему вы хотите присоединиться.</p>
             <div className="mb-8">
               <label className="block text-[#2E1D67] text-lg font-black uppercase tracking-wider mb-3">Ваша мотивация (почему мы?):</label>

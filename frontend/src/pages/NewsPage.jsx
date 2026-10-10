@@ -26,8 +26,8 @@ const NewsPage = ({ newsList }) => {
           <div className="md:w-3/4 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {filteredNews.length > 0 ? (
               filteredNews.map(news => (
-                <div key={news.id} onClick={() => setSelectedNews(news)} className="cursor-pointer transition-transform hover:-translate-y-1 h-full">
-                  <NewsCard title={news.title} date={new Date(news.publication_date).toLocaleDateString()} description={news.description} />
+                <div key={news.id} onClick={() => setSelectedNews(news)} className="cursor-pointer transition-transform hover:-translate-y-1 h-full min-w-0">
+                  <NewsCard title={news.title} date={new Date(news.publication_date).toLocaleDateString()} description={news.description} news_block_picture={news.news_block_picture} />
                 </div>
               ))
             ) : (
@@ -40,19 +40,25 @@ const NewsPage = ({ newsList }) => {
       </div>
 
       {selectedNews && (
-        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedNews(null)}>
-          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl font-['Onest',sans-serif]" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-[#2E1D67]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto" onClick={() => setSelectedNews(null)}>
+          <div className="bg-white rounded-tl-[80px] rounded-br-[80px] rounded-tr-2xl rounded-bl-2xl p-8 md:p-12 w-full max-w-4xl flex flex-col md:flex-row gap-8 relative shadow-2xl font-['Onest',sans-serif] items-center my-auto max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setSelectedNews(null)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
-            <div className="flex-1 flex flex-col justify-between mt-4 md:mt-0">
+            <div className="flex-1 flex flex-col justify-between mt-4 md:mt-0 w-full min-w-0 pr-0 md:pr-4">
               <div>
-                <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-widest mb-6 pr-6 leading-tight">{selectedNews.title}</h3>
-                <p className="text-gray-700 text-lg font-medium leading-relaxed mb-8 whitespace-pre-line">{selectedNews.description}</p>
+                <h3 className="text-3xl md:text-4xl font-black text-[#2E1D67] uppercase tracking-widest mb-6 pr-8 leading-tight break-words [overflow-wrap:anywhere]">{selectedNews.title}</h3>
+                <p className="text-gray-700 text-lg font-medium leading-relaxed mb-8 whitespace-pre-line break-words [overflow-wrap:anywhere]">{selectedNews.description}</p>
               </div>
               <div>
                 <p className="text-[#6856BC] font-black text-xl mb-6"> Дата: {new Date(selectedNews.publication_date).toLocaleDateString()}</p>
               </div>
             </div>
-            <div className="md:w-[350px] md:h-[450px] h-[300px] bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl shadow-inner flex items-center justify-center text-[#2E1D67] font-black uppercase tracking-widest text-xl flex-shrink-0 border-4 border-white">Фото</div>
+            <div className="w-full md:w-[320px] aspect-square bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl shadow-inner flex items-center justify-center text-[#2E1D67] font-black uppercase tracking-widest text-xl flex-shrink-0 border-4 border-white overflow-hidden relative">
+              {selectedNews.news_block_picture ? (
+                <img src={selectedNews.news_block_picture} alt={selectedNews.title} className="w-full h-full object-cover" />
+              ) : (
+                <span>Фото</span>
+              )}
+            </div>
           </div>
         </div>
       )}
