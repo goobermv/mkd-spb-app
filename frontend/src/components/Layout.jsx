@@ -96,7 +96,7 @@ const Layout = ({ children, currentUser }) => {
             <div>
               <h4 className="font-black uppercase tracking-widest text-lg mb-4 text-white">Контакты</h4>
               <ul className="space-y-2 text-[#F0D8C2] font-medium">
-                <li><span className="font-bold text-white">Email:</span> tbd...</li>
+                <li><span className="font-bold text-white">Email:</span> MKD.SPb1@yandex.ru</li>
                 <li>
                   <span className="font-bold text-white">ВК:</span>{' '}
                   <a href="https://vk.ru/spb_friendshipclub" target="_blank" rel="noreferrer" className="hover:text-[#FBBA00] underline transition-colors">
@@ -109,7 +109,10 @@ const Layout = ({ children, currentUser }) => {
                     t.me/friendshipclub_spb
                   </a>
                 </li>
-                <li><span className="font-bold text-white">MAX:</span> tbd...</li>
+                <li><span className="font-bold text-white">MAX:</span>{' '}
+                  <a href="https://max.ru/join/OftqPPbFxiQ7Cph6UgxDnPrzO620_7K81Rpi-2LdwIQ" target="_blank" rel="noreferrer" className="hover:text-[#FBBA00] underline transition-colors">
+                    max.ru/join/friendshipclub_spb
+                  </a></li>
               </ul>
             </div>
           </div>

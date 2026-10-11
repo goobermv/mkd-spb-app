@@ -6,10 +6,11 @@ import NewsCard from '../components/NewsCard';
 const HomePage = ({ newsList, currentUser }) => {
   const navigate = useNavigate();
   
-  // Слайдер теперь использует только фото 1 и фото 3
   const heroSlides = [
     { src: '/МКД_СПб_1.jpg', alt: 'Слайд 1' },
-    { src: '/МКД_СПб_3.jpg', alt: 'Слайд 3' }
+    { src: '/МКД_СПб_3.jpg', alt: 'Слайд 2' },
+    { src: '/МКД_СПб_4.jpg', alt: 'Слайд 3' },
+    { src: '/МКД_СПб_5.jpg', alt: 'Слайд 4' }
   ];
   const [heroSlide, setHeroSlide] = useState(0);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
@@ -83,7 +84,6 @@ const HomePage = ({ newsList, currentUser }) => {
       <section className="bg-[#2E1D67] w-full h-[500px] md:h-[600px] relative overflow-hidden flex items-center justify-between px-6 md:px-12" onMouseEnter={() => setIsHeroPaused(true)} onMouseLeave={() => setIsHeroPaused(false)}>
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB5893] rounded-bl-full opacity-20 z-0"></div>
         
-        {/* Слайдер с фото */}
         <div className="absolute inset-0 flex items-center justify-center overflow-hidden z-0">
           <img 
             src={heroSlides[heroSlide].src} 
@@ -132,7 +132,7 @@ const HomePage = ({ newsList, currentUser }) => {
             <div className="md:w-1/2">
               <h3 className="text-3xl font-black mb-4 text-[#FBBA00] uppercase tracking-wider">Наша история</h3>
               <p className="text-xl font-bold mb-4 text-[#F0D8C2]">Открыт - 3 ноября 2024 г.</p>
-              <p className="text-white/90 leading-relaxed text-justify text-lg font-medium">Молодёжный Консультационный Дом Санкт-Петербурга был создан как единая площадка для поддержки молодёжных инициатив, объединения городских сообществ и взаимодействия с органами власти.</p>
+              <p className="text-white/90 leading-relaxed text-justify text-lg font-medium">Международный клуб дружбы Санкт-Петербурга был создан по итогам Всемирного фестиваля молодёжи (ВФМ 2024) как уникальная площадка, объединяющая молодых людей с активной гражданской позицией со всего мира. Клуб служит пространством для реализаций международных проектов, проведения социокультурных и спортивных мероприятий, а также языковым и разговорным клубом для неформального общения и укрепления межкультурного диалога.</p>
             </div>
             <div className="md:w-1/3 h-[300px] w-full bg-[#F0D8C2] rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl flex justify-center items-center text-[#2E1D67] shadow-inner font-black uppercase tracking-widest border-4 border-white overflow-hidden">
               <img src="/МКД_СПб_Миссия.jpg" alt="Наша история" className="w-full h-full object-cover" />
@@ -140,14 +140,13 @@ const HomePage = ({ newsList, currentUser }) => {
           </div>
           
           <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
-            {/* Теперь здесь установлено фото 2 */}
             <div className="md:w-1/3 h-[300px] w-full bg-[#F0D8C2] rounded-tr-[60px] rounded-bl-[60px] rounded-tl-2xl rounded-br-2xl flex justify-center items-center text-[#2E1D67] shadow-inner font-black uppercase tracking-widest border-4 border-white order-2 md:order-1 overflow-hidden">
               <img src="/МКД_СПб_2.jpg" alt="Наша миссия" className="w-full h-full object-cover" />
             </div>
             <div className="md:w-1/2 order-1 md:order-2">
               <h3 className="text-3xl font-black mb-4 text-[#FBBA00] uppercase tracking-wider">Наша миссия</h3>
               <p className="text-xl text-[#F0D8C2] font-bold mb-4">Формирование глобального сообщества лидеров.</p>
-              <p className="text-white/90 leading-relaxed text-justify text-lg font-medium">Развитие потенциала молодых людей, создание возможностей для профессионального роста, гражданской активности и реализации социокультурных проектов.</p>
+              <p className="text-white/90 leading-relaxed text-justify text-lg font-medium">Развитие потенциала молодых людей, создание возможностей для их реализации, а также укрепление долгосрочных дружеских, культурных и общественных связей Санкт-Петербурга и России с международным сообществом.</p>
             </div>
           </div>
         </div>
@@ -196,9 +195,9 @@ const HomePage = ({ newsList, currentUser }) => {
            <div className="bg-white rounded-tr-[80px] rounded-bl-[80px] rounded-tl-2xl rounded-br-2xl p-8 md:p-12 w-full max-w-2xl relative shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setIsApplicationModalOpen(false)} className="absolute top-6 right-6 bg-[#F4F5F8] w-12 h-12 rounded-full flex items-center justify-center text-[#2E1D67] text-2xl font-bold hover:bg-[#EB5893] hover:text-white transition-colors shadow-md z-10">×</button>
             <h3 className="text-3xl font-black text-[#2E1D67] uppercase tracking-widest mb-2 pr-8 break-words">Заявка в актив</h3>
-            <p className="text-gray-500 mb-8 font-medium">Расскажите нам о себе и почему вы хотите присоединиться.</p>
+            <p className="text-gray-500 mb-8 font-medium">Расскажите нам о себе и почему вы хотите присоединиться и какой у вас есть опыт или навыки.</p>
             <div className="mb-8">
-              <label className="block text-[#2E1D67] text-lg font-black uppercase tracking-wider mb-3">Ваша мотивация (почему мы?):</label>
+              <label className="block text-[#2E1D67] text-lg font-black uppercase tracking-wider mb-3">Ваша мотивация:</label>
               <textarea 
                 className="w-full bg-[#F4F5F8] border-2 border-transparent rounded-2xl p-4 text-gray-800 shadow-inner focus:outline-none focus:border-[#EB5893] resize-none h-40 transition-all text-lg font-medium"
                 placeholder="Я хочу стать активистом, потому что..."
