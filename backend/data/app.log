@@ -3067,3 +3067,69 @@
 [API]	2026/10/10 23:08:06 logger.go:55: [INFO]	Retrieving all applications...
 [API]	2026/10/10 23:08:06 logger.go:71: [SUCCESS]	Applications retrieved successfully
 [API]	2026/10/10 23:08:06 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 1 applications
+2026/10/10 23:21:04 Successfully connected to the database!
+2026/10/10 23:21:04 Server starting on port 8080...
+[API]	2026/10/11 00:35:59 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/11 00:35:59 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/11 00:35:59 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/11 00:35:59 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/11 00:35:59 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/11 00:35:59 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/11 00:35:59 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/11 00:35:59 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/11 00:35:59 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/11 00:35:59 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/11 00:35:59 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/11 00:35:59 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/11 00:36:00 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/11 00:36:00 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/11 00:36:00 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/11 00:36:00 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/11 14:44:00 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/11 14:44:00 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/11 14:44:00 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/11 14:44:00 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/11 14:44:00 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/11 14:44:00 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/11 14:44:00 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/11 14:44:00 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/11 14:44:00 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/11 14:44:00 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/11 14:44:00 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/11 14:44:00 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/11 14:44:00 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/11 14:44:00 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/11 14:44:00 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/11 14:44:00 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/11 15:31:01 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/11 15:31:01 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/11 15:31:01 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/11 15:31:01 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/11 15:31:01 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/11 15:31:01 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/11 15:31:01 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/11 15:31:01 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/11 15:31:01 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/11 15:31:01 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/11 15:31:01 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/11 15:31:01 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/11 15:31:02 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/11 15:31:02 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/11 15:31:02 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/11 15:31:02 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/11 16:01:14 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/11 16:01:14 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/11 16:01:14 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/11 16:01:14 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/11 16:01:14 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/news_blocks
+[API]	2026/10/11 16:01:14 logger.go:55: [INFO]	Retrieving all news blocks...
+[API]	2026/10/11 16:01:14 logger.go:86: [WARN]	News blocks not found
+[API]	2026/10/11 16:01:14 logger.go:86: [WARN]	No news blocks found
+[API]	2026/10/11 16:01:14 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/11 16:01:14 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/11 16:01:14 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/11 16:01:14 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
+[API]	2026/10/11 16:01:15 logger.go:55: [INFO]	Incoming HTTP request: GET /api/v1/events
+[API]	2026/10/11 16:01:15 logger.go:55: [INFO]	Retrieving all events...
+[API]	2026/10/11 16:01:15 logger.go:71: [SUCCESS]	Events retrieved successfully
+[API]	2026/10/11 16:01:15 logger.go:71: [SUCCESS]	HTTP response 200 OK: retrieved 2 events
