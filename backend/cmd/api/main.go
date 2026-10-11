@@ -24,20 +24,28 @@ import (
 	"github.com/goobermv/mkd-spb-app/pkg/token"
 )
 
-func main() {
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPass := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok && value != "" {
+		return value
+	}
+	return fallback
+}
 
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
+func main() {
+	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		dbURL = "postgres://user:password@localhost:5432/mkd_spb?sslmode=disable"
+		dbHost := getEnv("DB_HOST", "localhost")
+		dbPort := getEnv("DB_PORT", "5432")
+		dbUser := getEnv("DB_USER", "postgres")
+		dbPass := getEnv("DB_PASSWORD", "4601")
+		dbName := getEnv("DB_NAME", "mkd_spb_app_db")
+
+		dbURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
 	}
 
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
+		log.Println("[WARN] JWT_SECRET не найден в переменных окружения, используется резервный ключ для локальной разработки!")
 		jwtSecret = "super_secret_key_for_development"
 	}
 
@@ -96,10 +104,7 @@ func main() {
 		authMiddleware,
 	)
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	port := getEnv("PORT", "8080")
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),

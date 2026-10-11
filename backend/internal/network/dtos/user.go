@@ -14,7 +14,7 @@ type RegisterInput struct {
 	Country         string    `json:"country" validate:"required"`
 	JobField        string    `json:"job_field" validate:"required"`
 	UserDescription string    `json:"user_description"`
-	VKLink          string    `json:"vk_link" validate:"omitempty,url"`
+	VKLink          string    `json:"vk_link" validate:"omitempty"`
 }
 
 type LoginInput struct {
@@ -43,11 +43,12 @@ type AuthResponse struct {
 type UpdateUserInfoRequest struct {
 	Email           *string    `json:"email,omitempty" validate:"omitempty,email"`
 	FullName        *string    `json:"full_name,omitempty" validate:"omitempty,min=2"`
+	Role            *string    `json:"role,omitempty"`
 	BirthDate       *time.Time `json:"birth_date,omitempty"`
 	Country         *string    `json:"country,omitempty"`
 	JobField        *string    `json:"job_field,omitempty"`
 	UserDescription *string    `json:"user_description,omitempty"`
-	VKLink          *string    `json:"vk_link,omitempty" validate:"omitempty,url"`
+	VKLink          *string    `json:"vk_link,omitempty" validate:"omitempty"`
 }
 
 type UpdateUserPasswordRequest struct {

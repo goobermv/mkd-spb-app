@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/goobermv/mkd-spb-app/internal/domain"
 	"github.com/goobermv/mkd-spb-app/internal/network/dtos"
+	"github.com/goobermv/mkd-spb-app/internal/network/middleware"
 	usecase "github.com/goobermv/mkd-spb-app/internal/usecases"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
@@ -236,6 +238,40 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, mapToUserResponse(user))
 }
 
+func (h *UserHandler) UpdateUserRole(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
+
+	idStr := chi.URLParam(r, "id")
+	userID, err := uuid.Parse(idStr)
+	if err != nil {
+		h.logger.Errorf(err, "Invalid user ID format in URL for role update: %s", idStr)
+		respondError(w, http.StatusBadRequest, "Invalid ID format")
+		return
+	}
+
+	var input struct {
+		Role string `json:"role" validate:"required"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		h.logger.Errorf(err, "Failed to decode role update input for ID: %s", userID)
+		respondError(w, http.StatusBadRequest, "Invalid request format")
+		return
+	}
+
+	updatedUser, err := h.userUsecase.UpdateRole(r.Context(), userID, input.Role)
+	if err != nil {
+		if errors.Is(err, domain.ErrUserNotFound) {
+			respondError(w, http.StatusNotFound, err.Error())
+			return
+		}
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	h.logger.Successf("HTTP response 200 OK: role updated for user ID: %s", userID)
+	respondJSON(w, http.StatusOK, mapToUserResponse(updatedUser))
+}
+
 func (h *UserHandler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
 
@@ -328,4 +364,94 @@ func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	h.logger.Successf("HTTP response 200 OK: retrieved %d users", len(users))
 	respondJSON(w, http.StatusOK, response)
+}
+
+func (h *UserHandler) ExportUsers(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
+
+	users, err := h.userUsecase.GetAllUsers(r.Context())
+	if err != nil {
+		h.logger.Errorf(err, "Internal error when retrieving users for CSV export")
+		respondError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/csv; charset=utf-8")
+	w.Header().Set("Content-Disposition", "attachment; filename=users_base.csv")
+
+	w.Write([]byte{0xEF, 0xBB, 0xBF})
+
+	writer := csv.NewWriter(w)
+	defer writer.Flush()
+
+	header := []string{"ID", "Email", "Full Name", "Role", "Birth Date", "Country", "Job Field", "VK Link", "Created At"}
+	if err := writer.Write(header); err != nil {
+		h.logger.Errorf(err, "Failed to write CSV header")
+		return
+	}
+
+	for _, user := range users {
+		birthDateStr := ""
+		if !user.BirthDate.IsZero() {
+			birthDateStr = user.BirthDate.Format("2006-01-02")
+		}
+		createdAtStr := user.CreatedAt.Format("2006-01-02 15:04:05")
+
+		record := []string{
+			user.ID.String(),
+			user.Email,
+			user.FullName,
+			string(user.UserRole),
+			birthDateStr,
+			user.Country,
+			user.JobField,
+			user.VKLink,
+			createdAtStr,
+		}
+		if err := writer.Write(record); err != nil {
+			h.logger.Errorf(err, "Failed to write CSV record for user ID: %s", user.ID)
+			return
+		}
+	}
+
+	h.logger.Successf("HTTP response 200 OK: exported %d users to CSV", len(users))
+}
+
+func (h *UserHandler) GetMe(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
+
+	userIDVal := r.Context().Value(middleware.UserIDKey)
+	if userIDVal == nil {
+		respondError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	var userID uuid.UUID
+	var err error
+
+	switch v := userIDVal.(type) {
+	case string:
+		userID, err = uuid.Parse(v)
+		if err != nil {
+			respondError(w, http.StatusUnauthorized, "Invalid token claims")
+			return
+		}
+	case uuid.UUID:
+		userID = v
+	default:
+		respondError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	user, err := h.userUsecase.GetUser(r.Context(), userID)
+	if err != nil {
+		if errors.Is(err, domain.ErrUserNotFound) {
+			respondError(w, http.StatusNotFound, err.Error())
+			return
+		}
+		respondError(w, http.StatusInternalServerError, "Internal server error")
+		return
+	}
+
+	respondJSON(w, http.StatusOK, mapToUserResponse(user))
 }

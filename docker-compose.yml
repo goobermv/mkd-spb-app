@@ -5,25 +5,17 @@ services:
     image: postgres:15-alpine
     container_name: mkd_postgres
     restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 4601
-      POSTGRES_DB: mkd_spb_app_db
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-4601}
+      POSTGRES_DB: ${POSTGRES_DB:-mkd_spb_app_db}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    networks:
-      - mkd_network
-
-  redis:
-    image: redis:7-alpine
-    container_name: mkd_redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redisdata:/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
     networks:
       - mkd_network
 
@@ -34,17 +26,18 @@ services:
     container_name: mkd_backend
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=4601
-      - DB_NAME=mkd_spb_app_db
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-4601}
+      - DB_NAME=${POSTGRES_DB:-mkd_spb_app_db}
+      - JWT_SECRET=${JWT_SECRET:-super_secret_jwt_key_change_me_in_prod}
+      - PORT=8080
     depends_on:
       - postgres
-      - redis
     volumes:
       - ./backend:/app
     networks:
@@ -57,8 +50,10 @@ services:
     container_name: mkd_frontend
     ports:
       - "5173:5173"
+    env_file:
+      - .env
     environment:
-      - VITE_API_URL=http://localhost:8080
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8080/api/v1}
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -67,7 +62,6 @@ services:
 
 volumes:
   pgdata:
-  redisdata:
 
 networks:
   mkd_network:

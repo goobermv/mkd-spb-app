@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/goobermv/mkd-spb-app/internal/domain"
@@ -27,6 +29,7 @@ type UserUsecase interface {
 	GetUserByName(ctx context.Context, name string) (*domain.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*domain.User, error)
 	UpdateUser(ctx context.Context, id uuid.UUID, input dtos.UpdateUserInfoRequest) (*domain.User, error)
+	UpdateRole(ctx context.Context, id uuid.UUID, newRole string) (*domain.User, error)
 	UpdatePassword(ctx context.Context, id uuid.UUID, input dtos.UpdateUserPasswordRequest) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	GetAllUsers(ctx context.Context) ([]*domain.User, error)
@@ -52,13 +55,14 @@ func (u *userUsecase) Register(ctx context.Context, input dtos.RegisterInput) (*
 	u.logger.Infof("Attempting to register user with email: %s", input.Email)
 
 	existingUser, err := u.userRepo.FindByEmail(ctx, input.Email)
-	if existingUser != nil {
+	if err == nil && existingUser != nil {
 		u.logger.Warnf("Registration failed: email already exists - %s", input.Email)
 		return nil, domain.ErrUserAlreadyExists
 	}
-	if err != nil {
-		u.logger.Errorf(err, "Error when attempting to find user by email: %s", input.Email)
-		return nil, domain.ErrUserNotFound
+
+	if err != nil && !errors.Is(err, domain.ErrUserNotFound) && !errors.Is(err, sql.ErrNoRows) {
+		u.logger.Errorf(err, "Database error when checking email: %s", input.Email)
+		return nil, err
 	}
 
 	hashedPassword, err := u.hasher.Hash(input.Password)
@@ -213,7 +217,6 @@ func (u *userUsecase) UpdateUser(ctx context.Context, id uuid.UUID, input dtos.U
 		}
 
 		user.Email = *input.Email
-
 		u.logger.Infof("Email updated to: %s for user: %s", *input.Email, id)
 	}
 
@@ -257,6 +260,34 @@ func (u *userUsecase) UpdateUser(ctx context.Context, id uuid.UUID, input dtos.U
 	user.PasswordHash = ""
 
 	u.logger.Successf("User info updated successfully for user: %s", id)
+
+	return user, nil
+}
+
+func (u *userUsecase) UpdateRole(ctx context.Context, id uuid.UUID, newRole string) (*domain.User, error) {
+	u.logger.Infof("Updating role to '%s' for user ID: %s", newRole, id)
+
+	if newRole != domain.UserRoleRegular && newRole != domain.UserRoleActivist && newRole != domain.UserRoleAdmin {
+		u.logger.Warnf("Invalid role provided: %s", newRole)
+		return nil, errors.New("invalid role")
+	}
+
+	user, err := u.userRepo.FindByID(ctx, id)
+	if err != nil || user == nil {
+		u.logger.Warnf("User not found for role update: %s", id)
+		return nil, domain.ErrUserNotFound
+	}
+
+	user.UserRole = newRole
+	user.UpdatedAt = time.Now()
+
+	if err := u.userRepo.Update(ctx, user); err != nil {
+		u.logger.Errorf(err, "Failed to update user role in database: %s", id)
+		return nil, domain.ErrFailedToUpdateUser
+	}
+
+	user.PasswordHash = ""
+	u.logger.Successf("User role updated successfully for user: %s to %s", id, newRole)
 
 	return user, nil
 }

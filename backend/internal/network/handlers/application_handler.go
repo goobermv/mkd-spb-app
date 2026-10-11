@@ -10,6 +10,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/goobermv/mkd-spb-app/internal/domain"
 	"github.com/goobermv/mkd-spb-app/internal/network/dtos"
+	"github.com/goobermv/mkd-spb-app/internal/network/middleware"
 	usecase "github.com/goobermv/mkd-spb-app/internal/usecases"
 	"github.com/goobermv/mkd-spb-app/pkg/logger"
 	"github.com/google/uuid"
@@ -136,22 +137,34 @@ func (h *ApplicationHandler) GetApplicationByDate(w http.ResponseWriter, r *http
 func (h *ApplicationHandler) GetApplicationByUser(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("Incoming HTTP request: %s %s", r.Method, r.URL.Path)
 
-	idStr := chi.URLParam(r, "user_id")
-	userID, err := uuid.Parse(idStr)
-	if err != nil {
-		h.logger.Errorf(err, "Invalid application user ID format in URL: %s", idStr)
-		respondError(w, http.StatusBadRequest, "Invalid ID format")
+	userIDVal := r.Context().Value(middleware.UserIDKey)
+	if userIDVal == nil {
+		respondError(w, http.StatusUnauthorized, "Unauthorized")
 		return
+	}
+
+	var userID uuid.UUID
+	var err error
+
+	switch v := userIDVal.(type) {
+	case string:
+		userID, err = uuid.Parse(v)
+		if err != nil {
+			respondError(w, http.StatusUnauthorized, "Invalid token claims")
+			return
+		}
+	case uuid.UUID:
+		userID = v
 	}
 
 	applications, err := h.applicationUsecase.GetApplicationsByUser(r.Context(), userID)
 	if err != nil {
 		if errors.Is(err, domain.ErrApplicationsNotFound) {
-			h.logger.Warnf("No applications found")
+			h.logger.Warnf("No applications found for user %s", userID)
 			respondError(w, http.StatusNotFound, err.Error())
 			return
 		}
-		h.logger.Errorf(err, "Internal error when retrieving all applications from user: %s", userID)
+		h.logger.Errorf(err, "Internal error when retrieving applications for user: %s", userID)
 		respondError(w, http.StatusInternalServerError, "Internal server error")
 		return
 	}
@@ -161,7 +174,6 @@ func (h *ApplicationHandler) GetApplicationByUser(w http.ResponseWriter, r *http
 		response[i] = mapToApplicationResponse(application)
 	}
 
-	h.logger.Successf("HTTP response 200 OK: retrieved %d applications", len(applications))
 	respondJSON(w, http.StatusOK, response)
 }
 
